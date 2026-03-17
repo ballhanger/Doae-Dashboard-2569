@@ -64,7 +64,7 @@
     <div class="max-w-7xl mx-auto">
         <header class="mb-8 border-b-4 border-kaset-600 pb-5 fade-in-up flex flex-col md:flex-row md:justify-between md:items-end gap-5">
             <div class="flex-grow w-full md:w-1/2">
-                <p class="text-lg md:text-xl font-semibold text-slate-500 mb-1">Dashboard รายงานความก้าวหน้า</p>
+                <p class="text-lg md:text-xl font-semibold text-slate-500 mb-1">Dashboard</p>
                 <h1 id="display-project-name" class="text-2xl md:text-3xl font-extrabold text-slate-800 leading-relaxed tracking-tight text-indigo-950">กำลังเชื่อมต่อข้อมูล...</h1>
             </div>
             
@@ -217,7 +217,7 @@
             </div>
         </div>
 
-        <div id="issues-main-container" class="fade-in-up delay-500 bg-gradient-to-br from-rose-50 to-white rounded-3xl shadow-sm border border-rose-200 p-6 sm:p-8 mb-12 transform transition-all duration-500 hover:-translate-y-1 hover:shadow-lg">
+        <div id="issues-main-container" class="hidden fade-in-up delay-500 bg-gradient-to-br from-rose-50 to-white rounded-3xl shadow-sm border border-rose-200 p-6 sm:p-8 mb-12 transform transition-all duration-500 hover:-translate-y-1 hover:shadow-lg">
             <h3 class="text-lg sm:text-xl font-bold mb-6 flex items-center border-b border-rose-200/80 pb-4 text-rose-950">
                 <svg class="w-6 h-6 mr-3 text-rose-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                 ปัญหาและอุปสรรคในการดำเนินงาน
@@ -281,7 +281,6 @@
             return "0.00";
         };
 
-        // ฟังก์ชันคำนวณสถานะอัจฉริยะ (ใช้สำหรับกรุ๊ปข้อมูล)
         function determineStatus(dataObj, q, isLast) {
             let pCum = 0; let prevCum = 0;
             if (q >= 1) { pCum += dataObj.planQ1; prevCum = 0; }
@@ -345,7 +344,7 @@
                 MASTER_INDEX.forEach((item, index) => {
                     const option = document.createElement('option');
                     option.value = index;
-                    // ซ่อนเลข 0 สำหรับภาพรวมกรมฯ
+                    // ซ่อนเลข 0 สำหรับเมนูภาพรวมกรมฯ (ข้อ 2)
                     const prefix = (item.seq && String(item.seq) !== "0") ? `${item.seq} ` : '';
                     option.textContent = `${prefix}${item.name}`;
                     select.appendChild(option);
@@ -373,54 +372,69 @@
         async function loadProject(index) {
             const displayTitle = document.getElementById('display-project-name');
             const selectedItem = MASTER_INDEX[index];
-            
-            // อัปเดตชื่อหน้าทันที ไม่ต้องรอโหลดเสร็จ (ใส่ ปีงบประมาณ 2569 ตามที่ขอ)
-            const cleanName = selectedItem.name.replace(/^- /, '');
-            displayTitle.textContent = `${cleanName} ปีงบประมาณ 2569`;
-            displayTitle.classList.remove("text-red-600");
-
-            let urlsToFetch = [];
             const viewLevel = selectedItem.url === "AUTO_ALL" ? "ALL" : (selectedItem.url === "AUTO_GROUP" ? "GROUP" : "SINGLE");
 
-            // อัปเดตคำหัวข้อตารางให้สอดคล้องกับระดับมุมมอง (ตามข้อ 3)
+            // การจัดการชื่อหัวเว็บ (ข้อ 2)
+            const cleanName = selectedItem.name.replace(/^- /, '');
+            if (viewLevel === "ALL") {
+                displayTitle.textContent = `${cleanName} ปีงบประมาณ 2569`;
+            } else {
+                displayTitle.textContent = cleanName;
+            }
+            displayTitle.classList.remove("text-red-600");
+
+            // ระบบซ่อน/โชว์ ปัญหาและอุปสรรคอัจฉริยะ (ข้อ 3) และเปลี่ยนชื่อหัวข้อ
             if (viewLevel === "ALL") {
                 document.getElementById('dynamic-summary-title').innerHTML = `<svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> ภาพรวมสถานะทุกโครงการ`;
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายโครงการ`;
-                document.getElementById('issues-main-container').classList.add('hidden'); // ซ่อนปัญหาอุปสรรคในระดับกรมฯ (ข้อ 4)
+                document.getElementById('issues-main-container').classList.add('hidden'); // ซ่อน
             } else if (viewLevel === "GROUP") {
                 document.getElementById('dynamic-summary-title').innerHTML = `<svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> ภาพรวมสถานะกิจกรรมหลัก`;
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายกิจกรรมหลัก`;
-                document.getElementById('issues-main-container').classList.remove('hidden'); // โชว์ปัญหาอุปสรรค
+                document.getElementById('issues-main-container').classList.add('hidden'); // ซ่อน
             } else {
-                document.getElementById('dynamic-summary-title').innerHTML = `<svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> ภาพรวมสถานะกิจกรรมย่อย`;
+                document.getElementById('dynamic-summary-title').innerHTML = `<svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> ภาพรวมสถานะกิจกรรม`;
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายละเอียดกิจกรรม`;
-                document.getElementById('issues-main-container').classList.remove('hidden'); // โชว์ปัญหาอุปสรรค
+                document.getElementById('issues-main-container').classList.remove('hidden'); // โชว์ให้เฉพาะระดับกิจกรรมเดี่ยว
             }
 
+            // คำนวณว่าต้องดึงลิงก์ไหนบ้าง (แก้บั๊กการบวกตัวเลข ข้อ 4)
+            let itemsToFetch = [];
             if (viewLevel === "ALL") {
-                urlsToFetch = MASTER_INDEX.filter(item => item.url.startsWith("http")).map(item => item.url);
+                itemsToFetch = MASTER_INDEX.filter(item => item.url.startsWith("http"));
             } else if (viewLevel === "GROUP") {
-                urlsToFetch = MASTER_INDEX.filter(item => item.group === selectedItem.group && item.url.startsWith("http")).map(item => item.url);
+                itemsToFetch = MASTER_INDEX.filter(item => item.group === selectedItem.group && item.url.startsWith("http"));
             } else {
-                if(selectedItem.url.startsWith("http")) { urlsToFetch = [selectedItem.url]; } 
-                else { return; } // ลิงก์ไม่ถูกต้อง
+                if(selectedItem.url.startsWith("http")) { 
+                    itemsToFetch = [selectedItem]; 
+                } else { 
+                    return; 
+                }
             }
-
-            const uniqueUrls = [...new Set(urlsToFetch)];
             
             try {
-                // โหลดทุกไฟล์พร้อมกัน
-                const results = await Promise.allSettled(uniqueUrls.map(url => fetchCSVWithCache(url)));
-                const validFetches = uniqueUrls.map((url, i) => ({
-                    url: url, data: results[i].status === 'fulfilled' ? results[i].value : null
-                })).filter(f => f.data !== null);
+                // ดึงข้อมูลตามรายการที่คัดกรองมา (ดึงข้อมูลทีละไอเทม ป้องกันบั๊กลิงก์ซ้ำแล้วข้อมูลหาย)
+                const fetchPromises = itemsToFetch.map(async (item) => {
+                    try {
+                        const data = await fetchCSVWithCache(item.url);
+                        return { item: item, data: data };
+                    } catch (e) {
+                        return { item: item, data: null };
+                    }
+                });
 
+                const validFetches = (await Promise.all(fetchPromises)).filter(f => f.data !== null);
                 let synthesizedRows = [];
 
                 if (viewLevel === "SINGLE") {
-                    // โหลดไฟล์เดี่ยวตรงๆ
+                    // มุมมองเดี่ยว -> ดึงข้อมูลในชีตมาแสดงตรงๆ
                     const data = validFetches[0].data;
                     synthesizedRows = data.map((row, i) => {
+                        let dynamicStat = "❌ ยังไม่ดำเนินการ";
+                        for (let j = currentQuarter; j >= 1; j--) {
+                            let s = row["สถานะไตรมาส " + j] || row["สถานะไตรมาส " + j + " "];
+                            if (s && s.trim() !== "") { dynamicStat = s; break; }
+                        }
                         return {
                             id: i, name: row["โครงการ/กิจกรรม"] || "-", unit: row["หน่วยนับ"] || "-",
                             target: getSafeNum(row, "เป้าหมาย"), actual: getSafeNum(row, "ผลการดำเนินงานสะสม"),
@@ -428,18 +442,17 @@
                             planQ2: getSafeNum(row, "แผนไตรมาส 2"), actualQ2: getSafeNum(row, "ผลไตรมาส 2"),
                             planQ3: getSafeNum(row, "แผนไตรมาส 3"), actualQ3: getSafeNum(row, "ผลไตรมาส 3"),
                             planQ4: getSafeNum(row, "แผนไตรมาส 4"), actualQ4: getSafeNum(row, "ผลไตรมาส 4"),
-                            status: getDynamicStatus(row, currentQuarter),
+                            status: dynamicStat,
                             issue: row["ปัญหาและอุปสรรค"] || row["ปัญหาและอุปสรรค "] || ""
                         };
                     });
                 } 
                 else if (viewLevel === "GROUP") {
-                    // โหลดหลายไฟล์มารวมเป็นหน้าโครงการหลัก
+                    // มุมมองกลุ่มโครงการ -> ดึงหลายชีตมารวมเป็น 1 หน้า
                     let tBudget = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0 };
 
                     validFetches.forEach(f => {
-                        const idx = MASTER_INDEX.find(item => item.url === f.url);
-                        const actName = idx ? idx.name.replace(/^- /, '') : "กิจกรรม";
+                        const actName = f.item.name.replace(/^- /, '') || "กิจกรรม";
                         let aKPI = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0 };
                         let issues = [];
 
@@ -453,7 +466,7 @@
 
                             if (name.includes("งบประมาณ")) {
                                 tBudget.target += rt; tBudget.actual += ra; tBudget.p1 += pq1; tBudget.p2 += pq2; tBudget.p3 += pq3; tBudget.p4 += pq4; tBudget.a1 += aq1; tBudget.a2 += aq2; tBudget.a3 += aq3; tBudget.a4 += aq4;
-                            } else if (name.includes("(KPI)")) {
+                            } else if (name.includes("(KPI)") || (rt > 0 && !name.includes("โครงการพัฒนาทักษะ"))) {
                                 aKPI.target += rt; aKPI.actual += ra; aKPI.p1 += pq1; aKPI.p2 += pq2; aKPI.p3 += pq3; aKPI.p4 += pq4; aKPI.a1 += aq1; aKPI.a2 += aq2; aKPI.a3 += aq3; aKPI.a4 += aq4;
                             }
                             const issue = row["ปัญหาและอุปสรรค"] || row["ปัญหาและอุปสรรค "] || "";
@@ -466,7 +479,7 @@
                             planQ1: aKPI.p1, planQ2: aKPI.p2, planQ3: aKPI.p3, planQ4: aKPI.p4,
                             actualQ1: aKPI.a1, actualQ2: aKPI.a2, actualQ3: aKPI.a3, actualQ4: aKPI.a4,
                             status: determineStatus(aObj, currentQuarter, isLastMonthOfQuarter),
-                            issue: issues.join("<br>")
+                            issue: "" // ปัญหาถูกซ่อนในภาพรวมแล้ว
                         });
                     });
 
@@ -478,13 +491,12 @@
                     });
                 }
                 else if (viewLevel === "ALL") {
-                    // โหลดทุกไฟล์รวมเป็นภาพกรมฯ (Grouping by Project)
+                    // มุมมองระดับอธิบดีกรมฯ -> จัดกลุ่มการบวกเลขตามชื่อโครงการ
                     let tBudget = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0 };
                     let projectKPIs = {}; 
 
                     validFetches.forEach(f => {
-                        const idx = MASTER_INDEX.find(item => item.url === f.url);
-                        const projName = idx ? idx.group : "โครงการอื่นๆ";
+                        const projName = f.item.group || "โครงการอื่นๆ";
 
                         if (!projectKPIs[projName]) {
                             projectKPIs[projName] = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0 };
@@ -500,7 +512,7 @@
 
                             if (name.includes("งบประมาณ")) {
                                 tBudget.target += rt; tBudget.actual += ra; tBudget.p1 += pq1; tBudget.p2 += pq2; tBudget.p3 += pq3; tBudget.p4 += pq4; tBudget.a1 += aq1; tBudget.a2 += aq2; tBudget.a3 += aq3; tBudget.a4 += aq4;
-                            } else if (name.includes("(KPI)")) {
+                            } else if (name.includes("(KPI)") || (rt > 0 && !name.includes("โครงการพัฒนาทักษะ"))) {
                                 projectKPIs[projName].target += rt; projectKPIs[projName].actual += ra; projectKPIs[projName].p1 += pq1; projectKPIs[projName].p2 += pq2; projectKPIs[projName].p3 += pq3; projectKPIs[projName].p4 += pq4; projectKPIs[projName].a1 += aq1; projectKPIs[projName].a2 += aq2; projectKPIs[projName].a3 += aq3; projectKPIs[projName].a4 += aq4;
                             }
                         });
@@ -514,7 +526,7 @@
                             planQ1: aKPI.p1, planQ2: aKPI.p2, planQ3: aKPI.p3, planQ4: aKPI.p4,
                             actualQ1: aKPI.a1, actualQ2: aKPI.a2, actualQ3: aKPI.a3, actualQ4: aKPI.a4,
                             status: determineStatus(aObj, currentQuarter, isLastMonthOfQuarter),
-                            issue: "" // ภาพรวมกรมไม่ต้องโชว์ปัญหา
+                            issue: ""
                         });
                     });
 
@@ -526,17 +538,15 @@
                     });
                 }
                 
-                // ส่งตารางใหญ่ไปวาดกราฟ
                 renderDashboard(synthesizedRows, viewLevel);
 
             } catch (error) {
                 console.error(error);
-                // Title handles error gracefully without changing the main text to red (looks professional)
             }
         }
 
         // =====================================
-        // วาดกราฟและตาราง (หน้าบ้าน)
+        // วาดหน้าเว็บส่วนล่าง
         // =====================================
         function renderDashboard(allRows, viewLevel) {
             // -- 1. งบประมาณ --
@@ -589,7 +599,7 @@
 
             // -- 2. งานภาพรวม (KPI) --
             const activities = allRows.filter(act => act.name !== "-" && !act.name.includes("งบประมาณ"));
-            const kpiActivities = activities.filter(act => act.name.includes("(KPI)"));
+            const kpiActivities = activities.filter(act => act.name.includes("(KPI)") || (act.target > 0));
 
             const totalTarget = kpiActivities.reduce((sum, act) => sum + act.target, 0);
             const totalActual = kpiActivities.reduce((sum, act) => sum + act.actual, 0);
@@ -734,14 +744,14 @@
                 document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => { text.classList.remove('opacity-0'); });
             }, 50);
 
-            // -- 4. การ์ดสรุปสถานะกิจกรรมทั้งหมด --
+            // -- 4. การ์ดสรุปสถานะ --
             const summary = {
-                total: activities.length,
-                onTrack: activities.filter(a => a.status.includes("เป็นไปตามแผน")).length,
-                delayed: activities.filter(a => a.status.includes("ล่าช้า")).length,
-                atRisk: activities.filter(a => a.status.includes("เสี่ยง")).length,
-                notStartedSevere: activities.filter(a => a.status.includes("ยังไม่ดำเนินการ") || a.status.includes("ไม่มี")).length,
-                notStarted: activities.filter(a => a.status.includes("มีแผนอยู่ใน")).length,
+                total: kpiActivities.length,
+                onTrack: kpiActivities.filter(a => a.status.includes("เป็นไปตามแผน")).length,
+                delayed: kpiActivities.filter(a => a.status.includes("ล่าช้า")).length,
+                atRisk: kpiActivities.filter(a => a.status.includes("เสี่ยง")).length,
+                notStartedSevere: kpiActivities.filter(a => a.status.includes("ยังไม่ดำเนินการ") || a.status.includes("ไม่มี")).length,
+                notStarted: kpiActivities.filter(a => a.status.includes("มีแผนอยู่ใน")).length,
             };
 
             document.getElementById('summary-cards').innerHTML = `
@@ -781,7 +791,7 @@
             // -- 5. ตารางกิจกรรม --
             const tbody = document.getElementById('table-body');
             tbody.innerHTML = '';
-            activities.forEach(act => {
+            kpiActivities.forEach(act => {
                 const safeTarget = act.target > 0 ? act.target : 1;
                 const pct = (act.actual / safeTarget) * 100;
                 const q1Pos = Math.min((act.planQ1 / safeTarget) * 100, 100);
@@ -835,8 +845,8 @@
                 document.querySelectorAll('#table-body .bar-chart-col-text').forEach(textEl => { textEl.style.left = textEl.getAttribute('data-left') + '%'; });
             }, 50);
 
-            // -- 6. ปัญหาและอุปสรรค (แสดงเฉพาะหน้าโครงการและกิจกรรมย่อย) --
-            if (viewLevel !== 'ALL') {
+            // -- 6. ปัญหาและอุปสรรค (แสดงเฉพาะหน้าโครงการและกิจกรรมย่อยที่กำหนด) --
+            if (viewLevel === 'SINGLE') {
                 let issuesHtml = '';
                 if (projectStatus.includes("ล่าช้า") || projectStatus.includes("เสี่ยง")) {
                     issuesHtml += `
@@ -847,12 +857,12 @@
                     `;
                 }
 
-                const problematicActivities = activities.filter(a => a.status.includes("ล่าช้า") || a.status.includes("เสี่ยง") || a.status.includes("ยังไม่ดำเนินการ") || a.issue.trim() !== "");
+                const problematicActivities = kpiActivities.filter(a => a.status.includes("ล่าช้า") || a.status.includes("เสี่ยง") || a.status.includes("ยังไม่ดำเนินการ") || (a.issue && a.issue.trim() !== ""));
                 
                 if (problematicActivities.length > 0) {
                     issuesHtml += `<h4 class="font-bold text-rose-950 mb-4 text-base">รายการที่มีความล่าช้า/ปัญหา</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
                     problematicActivities.forEach(act => {
-                        const issueText = act.issue.trim() !== "" ? act.issue : "อยู่ระหว่างตรวจสอบและรวบรวมสาเหตุการดำเนินงานจากหน่วยปฏิบัติ";
+                        const issueText = act.issue && act.issue.trim() !== "" ? act.issue : "อยู่ระหว่างตรวจสอบและรวบรวมสาเหตุการดำเนินงานจากหน่วยปฏิบัติ";
                         
                         let statusColor = "text-slate-600 bg-slate-50 border-slate-200";
                         if (act.status.includes("เสี่ยง")) statusColor = "text-red-700 bg-red-50 border-red-200";
