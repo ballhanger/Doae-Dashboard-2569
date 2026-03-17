@@ -62,7 +62,7 @@
 <body class="p-4 sm:p-6 lg:p-8 text-slate-800">
     
     <div class="max-w-7xl mx-auto">
-        <header class="mb-8 border-b-4 border-kaset-600 pb-5 fade-in-up flex flex-col md:flex-row md:justify-between md:items-end gap-5">
+        <header class="relative z-[100] mb-8 border-b-4 border-kaset-600 pb-5 fade-in-up flex flex-col md:flex-row md:justify-between md:items-end gap-5">
             <div class="flex-grow w-full md:w-1/2 relative z-10">
                 <p class="text-lg md:text-xl font-semibold text-slate-500 mb-1">Dashboard</p>
                 <h1 id="display-project-name" class="text-2xl md:text-3xl font-extrabold text-slate-800 leading-relaxed tracking-tight text-indigo-950">กำลังเชื่อมต่อข้อมูล...</h1>
@@ -74,7 +74,7 @@
                     <span id="dropdown-text" class="truncate">กำลังโหลดสารบัญ...</span>
                     <svg id="dropdown-icon" class="w-6 h-6 text-indigo-600 flex-shrink-0 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
                 </button>
-                <div id="dropdown-menu" class="hidden absolute w-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden transform opacity-0 scale-95 transition-all duration-200 origin-top-right">
+                <div id="dropdown-menu" class="hidden absolute z-[999] w-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden transform opacity-0 scale-95 transition-all duration-200 origin-top-right">
                     <ul id="dropdown-list" class="max-h-[60vh] overflow-y-auto hide-scroll flex flex-col">
                         </ul>
                 </div>
@@ -318,7 +318,7 @@
         }
 
         // =====================================
-        // ระบบ Custom Dropdown Menu (ฉบับ Executive)
+        // ระบบ Custom Dropdown Menu (แก้ปัญหาซ้อนทับ 100%)
         // =====================================
         function toggleDropdown() {
             const menu = document.getElementById('dropdown-menu');
@@ -344,7 +344,6 @@
             setTimeout(() => { menu.classList.add('hidden'); }, 200);
         }
 
-        // ปิดเมนูเมื่อคลิกที่อื่น
         document.addEventListener('click', (event) => {
             const container = document.getElementById('custom-dropdown-container');
             if (container && !container.contains(event.target)) {
@@ -373,7 +372,6 @@
                     group: row["โครงการหลัก"] || ""
                 })).filter(row => row.name !== ""); 
 
-                // สร้าง Custom Dropdown
                 const list = document.getElementById('dropdown-list');
                 list.innerHTML = '';
                 
@@ -382,20 +380,15 @@
                     const isAll = item.url === "AUTO_ALL";
                     const isGroup = item.url === "AUTO_GROUP";
                     const prefix = (item.seq && String(item.seq) !== "0") ? `${item.seq} ` : '';
-                    const displayName = `${prefix}${item.name.replace(/^- /, '')}`; // ดึงขีดลบออกเวลาแสดงในเมนู เพราะเราใช้ Indent แทน
+                    const displayName = `${prefix}${item.name.replace(/^- /, '')}`;
 
                     let classes = "px-5 py-3.5 cursor-pointer transition-colors flex items-center ";
                     
-                    // ดีไซน์สำหรับ: ภาพรวมกรมฯ (ยึดติดบนสุด)
                     if (isAll) {
                         classes += "bg-gradient-to-r from-indigo-800 to-indigo-600 text-white font-extrabold sticky top-0 z-20 hover:from-indigo-900 hover:to-indigo-700 shadow-md border-b-4 border-indigo-900";
-                    } 
-                    // ดีไซน์สำหรับ: โครงการหลัก (ร่มใหญ่)
-                    else if (isGroup) {
+                    } else if (isGroup) {
                         classes += "bg-slate-100 text-indigo-950 font-extrabold border-l-[6px] border-indigo-500 hover:bg-slate-200 border-b border-slate-200 shadow-inner";
-                    } 
-                    // ดีไซน์สำหรับ: กิจกรรมย่อย
-                    else {
+                    } else {
                         classes += "bg-white hover:bg-indigo-50 text-slate-700 pl-10 font-medium border-b border-slate-100";
                     }
                     
@@ -411,7 +404,7 @@
                 });
 
                 if(MASTER_INDEX.length > 0) {
-                    await loadProject(0); // บังคับโหลดภาพรวมกรมฯ อัตโนมัติ
+                    await loadProject(0);
                 } else {
                     document.getElementById('display-project-name').textContent = "ไม่พบข้อมูลในไฟล์สารบัญ";
                 }
@@ -430,11 +423,9 @@
             const selectedItem = MASTER_INDEX[index];
             const viewLevel = selectedItem.url === "AUTO_ALL" ? "ALL" : (selectedItem.url === "AUTO_GROUP" ? "GROUP" : "SINGLE");
 
-            // อัปเดตข้อความในปุ่ม Dropdown (ใส่ลำดับด้วย)
             const prefix = (selectedItem.seq && String(selectedItem.seq) !== "0") ? `${selectedItem.seq} ` : '';
             dropdownText.textContent = `${prefix}${selectedItem.name.replace(/^- /, '')}`;
 
-            // การจัดการชื่อหัวเว็บ (เติมปีงบประมาณเฉพาะภาพรวมกรมฯ)
             const cleanName = selectedItem.name.replace(/^- /, '');
             if (viewLevel === "ALL") {
                 displayTitle.textContent = `${cleanName} ปีงบประมาณ 2569`;
@@ -443,19 +434,18 @@
             }
             displayTitle.classList.remove("text-red-600");
 
-            // ปรับเปลี่ยนหัวข้อให้สอดคล้องกับระดับมุมมอง
             if (viewLevel === "ALL") {
                 document.getElementById('dynamic-summary-title').innerHTML = `<svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> ภาพรวมสถานะทุกโครงการ`;
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายโครงการ`;
-                document.getElementById('issues-main-container').classList.add('hidden'); // ซ่อนส่วนปัญหา
+                document.getElementById('issues-main-container').classList.add('hidden');
             } else if (viewLevel === "GROUP") {
                 document.getElementById('dynamic-summary-title').innerHTML = `<svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> ภาพรวมสถานะกิจกรรมหลัก`;
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายกิจกรรมหลัก`;
-                document.getElementById('issues-main-container').classList.remove('hidden'); // โชว์ปัญหา
+                document.getElementById('issues-main-container').classList.add('hidden');
             } else {
                 document.getElementById('dynamic-summary-title').innerHTML = `<svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> ภาพรวมสถานะกิจกรรม`;
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายละเอียดกิจกรรม`;
-                document.getElementById('issues-main-container').classList.remove('hidden'); // โชว์ปัญหา
+                document.getElementById('issues-main-container').classList.remove('hidden');
             }
 
             let itemsToFetch = [];
