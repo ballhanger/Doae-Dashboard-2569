@@ -54,9 +54,6 @@
         .hide-scroll::-webkit-scrollbar-thumb:hover { background-color: rgba(99, 102, 241, 0.8); border: 1px solid transparent; }
         
         .hover-glow:hover { box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15); }
-        .hover-glow-indigo:hover { box-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.3); }
-        .hover-glow-emerald:hover { box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.3); }
-        .hover-glow-amber:hover { box-shadow: 0 20px 40px -10px rgba(245, 158, 11, 0.3); }
     </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-8 text-slate-800">
@@ -101,7 +98,7 @@
             </div>
         </div>
 
-        <div id="pie-charts-container" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8 fade-in-up delay-300">
+        <div id="pie-charts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 fade-in-up delay-300">
             </div>
 
         <div class="fade-in-up delay-400 bg-gradient-to-br from-slate-100 via-indigo-100/40 to-slate-200 rounded-[2rem] shadow-lg border border-slate-300 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 hover:shadow-xl overflow-hidden">
@@ -113,7 +110,9 @@
             <div class="flex flex-wrap justify-center gap-x-4 sm:gap-x-6 gap-y-2 mt-4 mb-2 text-xs sm:text-sm font-bold text-slate-700 z-20" id="bar-legend-container">
                 <div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-green-300 border border-green-400 mr-2 rounded-sm"></div> แผนดำเนินงาน (KPI)</div>
                 <div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-green-500 border border-green-600 mr-2 rounded-sm"></div> ผลดำเนินงาน (KPI)</div>
-                </div>
+                <div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200" id="legend-budget-plan"><div class="w-3 h-3 bg-amber-300 border border-amber-400 mr-2 rounded-sm"></div> แผนงบประมาณ</div>
+                <div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200" id="legend-budget-act"><div class="w-3 h-3 bg-amber-500 border border-amber-600 mr-2 rounded-sm"></div> ผลเบิกจ่าย</div>
+            </div>
 
             <div class="w-full overflow-x-auto hide-scroll pb-6 pt-4">
                 <div class="relative h-[400px] sm:h-[450px] flex justify-between items-end px-2 sm:px-4 pb-2 transition-all duration-500" id="combined-bar-chart-container">
@@ -213,6 +212,20 @@
             return parseFloat(String(val).replace(/,/g, '')) || 0;
         };
 
+        function getDynamicStatus(row, quarter) {
+            for (let i = quarter; i >= 1; i--) {
+                let s = row["สถานะไตรมาส " + i] || row["สถานะไตรมาส " + i + " "];
+                if (s && s.trim() !== "") return s;
+            }
+            return "❌ ยังไม่ดำเนินการ";
+        }
+
+        const calcSafePct = (actual, plan) => {
+            if (plan > 0) return ((actual / plan) * 100).toFixed(2);
+            if (actual > 0) return "100.00";
+            return "0.00";
+        };
+
         function determineStatus(dataObj, q, isLast) {
             let pCum = 0; let prevCum = 0;
             if (q >= 1) { pCum += dataObj.planQ1; prevCum = 0; }
@@ -256,7 +269,7 @@
         }
 
         // =====================================
-        // ระบบ Custom Dropdown Menu 
+        // ระบบ Custom Dropdown Menu
         // =====================================
         function toggleDropdown() {
             const menu = document.getElementById('dropdown-menu');
@@ -295,7 +308,7 @@
         }
 
         // =====================================
-        // เริ่มการทำงานหลัก
+        // Initialize
         // =====================================
         document.addEventListener('DOMContentLoaded', async () => {
             document.querySelectorAll('.display-quarter').forEach(el => el.textContent = currentQuarter);
@@ -321,10 +334,9 @@
                     const prefix = (item.seq && String(item.seq) !== "0") ? `${item.seq} ` : '';
                     const displayName = `${prefix}${item.name.replace(/^- /, '')}`;
 
-                    li.title = displayName; // Tooltip โชว์ชื่อเต็ม
+                    li.title = displayName; // Tooltip ชื่อเต็ม
 
                     let classes = "px-5 py-3.5 cursor-pointer transition-colors flex items-center ";
-                    
                     if (isAll) {
                         classes += "bg-gradient-to-r from-indigo-800 to-indigo-600 text-white font-extrabold sticky top-0 z-20 hover:from-indigo-900 hover:to-indigo-700 shadow-md border-b-4 border-indigo-900";
                     } else if (isGroup || (!isGroup && !isSub)) {
@@ -334,7 +346,7 @@
                     }
                     
                     li.className = classes;
-                    // ล็อกขนาดไอคอนให้เท่ากันหมดที่ w-5 h-5
+                    // ล็อกไอคอน w-5 h-5 เท่ากันหมด
                     li.innerHTML = `
                         ${isAll ? '<svg class="w-5 h-5 mr-3 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>' : ''}
                         ${(isGroup || (!isGroup && !isSub)) && !isAll ? '<svg class="w-5 h-5 mr-3 text-indigo-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>' : ''}
@@ -357,7 +369,7 @@
         });
 
         // =====================================
-        // สมองกลรวบรวมข้อมูลหลัก (ดึงข้อมูล)
+        // การดึงข้อมูลและประมวลผล
         // =====================================
         async function loadProject(index) {
             const displayTitle = document.getElementById('display-project-name');
@@ -365,32 +377,25 @@
             const selectedItem = MASTER_INDEX[index];
             const viewLevel = selectedItem.url === "AUTO_ALL" ? "ALL" : (selectedItem.url === "AUTO_GROUP" ? "GROUP" : "SINGLE");
 
-            // อัปเดตข้อความปุ่มเมนู
+            // อัปเดตเมนู
             const prefix = (selectedItem.seq && String(selectedItem.seq) !== "0") ? `${selectedItem.seq} ` : '';
             dropdownText.textContent = `${prefix}${selectedItem.name.replace(/^- /, '')}`;
 
-            // การจัดการชื่อหัวเว็บ
+            // อัปเดตหัวเว็บ
             const cleanName = selectedItem.name.replace(/^- /, '');
-            if (viewLevel === "ALL") {
-                displayTitle.textContent = `${cleanName} ปีงบประมาณ 2569`;
-            } else {
-                displayTitle.textContent = cleanName;
-            }
+            displayTitle.textContent = viewLevel === "ALL" ? `${cleanName} ปีงบประมาณ 2569` : cleanName;
             displayTitle.classList.remove("text-red-600");
 
-            // จัดการซ่อน/โชว์ หัวข้อตามเลเวล
+            // จัดการข้อความหัวเรื่อง
             if (viewLevel === "ALL") {
                 document.getElementById('dynamic-summary-title').innerHTML = `<svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> ภาพรวมสถานะทุกโครงการ`;
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายโครงการ`;
-                document.getElementById('issues-main-container').classList.add('hidden'); 
             } else if (viewLevel === "GROUP") {
                 document.getElementById('dynamic-summary-title').innerHTML = `<svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> ภาพรวมสถานะกิจกรรมหลัก`;
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายกิจกรรมหลัก`;
-                document.getElementById('issues-main-container').classList.add('hidden'); 
             } else {
                 document.getElementById('dynamic-summary-title').innerHTML = `<svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> ภาพรวมสถานะกิจกรรม`;
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายละเอียดกิจกรรม`;
-                document.getElementById('issues-main-container').classList.remove('hidden'); 
             }
 
             let itemsToFetch = [];
@@ -399,15 +404,10 @@
             } else if (viewLevel === "GROUP") {
                 itemsToFetch = MASTER_INDEX.filter(item => item.group === selectedItem.group && item.url.startsWith("http") && item.name.trim().startsWith("-"));
             } else {
-                if(selectedItem.url.startsWith("http")) { 
-                    itemsToFetch = [selectedItem]; 
-                } else { 
-                    return; 
-                }
+                if(selectedItem.url.startsWith("http")) itemsToFetch = [selectedItem]; 
             }
             
             try {
-                // โหลดไฟล์ CSV 
                 const fetchPromises = itemsToFetch.map(async (item) => {
                     try {
                         const data = await fetchCSVWithCache(item.url);
@@ -425,123 +425,93 @@
                     return;
                 }
 
-                let synthesizedRows = [];
-
-                if (viewLevel === "SINGLE") {
-                    const data = validFetches[0].data;
-                    synthesizedRows = data.map((row, i) => {
-                        let dynamicStat = "❌ ยังไม่ดำเนินการ";
-                        for (let j = currentQuarter; j >= 1; j--) {
-                            let s = row["สถานะไตรมาส " + j] || row["สถานะไตรมาส " + j + " "];
-                            if (s && s.trim() !== "") { dynamicStat = s; break; }
+                // สกัดข้อมูล Flat ให้รัดกุมที่สุด
+                let flatRows = [];
+                validFetches.forEach(f => {
+                    const fileItem = f.item;
+                    f.data.forEach(row => {
+                        let name = row["โครงการ/กิจกรรม"] || "-";
+                        const unit = row["หน่วยนับ"] || "ราย";
+                        let groupName = "";
+                        
+                        if (viewLevel === "ALL") {
+                            groupName = fileItem.group || "โครงการอื่นๆ";
+                        } else if (viewLevel === "GROUP") {
+                            groupName = fileItem.name.replace(/^- /, '');
+                        } else {
+                            groupName = name; 
                         }
-                        return {
-                            id: i, name: row["โครงการ/กิจกรรม"] || "-", unit: row["หน่วยนับ"] || "-",
+                        
+                        flatRows.push({
+                            originalName: name, groupName: groupName, unit: unit,
+                            isKPI: name.includes("(KPI)") || (getSafeNum(row, "เป้าหมาย") > 0 && !name.includes("งบประมาณ") && !name.includes("โครงการพัฒนาทักษะ")), // เผื่อลืมพิมพ์ (KPI)
+                            isBudget: name.includes("งบประมาณ"),
                             target: getSafeNum(row, "เป้าหมาย"), actual: getSafeNum(row, "ผลการดำเนินงานสะสม"),
                             planQ1: getSafeNum(row, "แผนไตรมาส 1"), actualQ1: getSafeNum(row, "ผลไตรมาส 1"),
                             planQ2: getSafeNum(row, "แผนไตรมาส 2"), actualQ2: getSafeNum(row, "ผลไตรมาส 2"),
                             planQ3: getSafeNum(row, "แผนไตรมาส 3"), actualQ3: getSafeNum(row, "ผลไตรมาส 3"),
                             planQ4: getSafeNum(row, "แผนไตรมาส 4"), actualQ4: getSafeNum(row, "ผลไตรมาส 4"),
-                            status: dynamicStat,
-                            issue: row["ปัญหาและอุปสรรค"] || row["ปัญหาและอุปสรรค "] || ""
-                        };
+                            issue: row["ปัญหาและอุปสรรค"] || row["ปัญหาและอุปสรรค "] || "",
+                            dynamicStat: getDynamicStatus(row, currentQuarter)
+                        });
                     });
-                } 
-                else if (viewLevel === "GROUP") {
-                    let tBudget = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0 };
+                });
 
-                    validFetches.forEach(f => {
-                        const actName = f.item.name.replace(/^- /, '') || "กิจกรรม";
-                        let aKPI = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0, unit: "ราย" };
-                        let issues = [];
-
-                        f.data.forEach(row => {
-                            const name = row["โครงการ/กิจกรรม"] || "";
-                            const unit = row["หน่วยนับ"] || "ราย";
-                            const rt = getSafeNum(row, "เป้าหมาย"); const ra = getSafeNum(row, "ผลการดำเนินงานสะสม");
-                            const pq1 = getSafeNum(row, "แผนไตรมาส 1"); const aq1 = getSafeNum(row, "ผลไตรมาส 1");
-                            const pq2 = getSafeNum(row, "แผนไตรมาส 2"); const aq2 = getSafeNum(row, "ผลไตรมาส 2");
-                            const pq3 = getSafeNum(row, "แผนไตรมาส 3"); const aq3 = getSafeNum(row, "ผลไตรมาส 3");
-                            const pq4 = getSafeNum(row, "แผนไตรมาส 4"); const aq4 = getSafeNum(row, "ผลไตรมาส 4");
-
-                            if (name.includes("งบประมาณ")) {
-                                tBudget.target += rt; tBudget.actual += ra; tBudget.p1 += pq1; tBudget.p2 += pq2; tBudget.p3 += pq3; tBudget.p4 += pq4; tBudget.a1 += aq1; tBudget.a2 += aq2; tBudget.a3 += aq3; tBudget.a4 += aq4;
-                            } 
-                            else if (name.includes("(KPI)")) { 
-                                aKPI.target += rt; aKPI.actual += ra; aKPI.p1 += pq1; aKPI.p2 += pq2; aKPI.p3 += pq3; aKPI.p4 += pq4; aKPI.a1 += aq1; aKPI.a2 += aq2; aKPI.a3 += aq3; aKPI.a4 += aq4;
-                                aKPI.unit = unit; // ยึดหน่วยตาม KPI แรกที่เจอในกลุ่ม
+                let synthesizedRows = [];
+                
+                if (viewLevel === "SINGLE") {
+                    synthesizedRows = flatRows.map(r => ({
+                        name: r.originalName, unit: r.unit, isKPI: r.isKPI, isBudget: r.isBudget,
+                        target: r.target, actual: r.actual,
+                        planQ1: r.planQ1, planQ2: r.planQ2, planQ3: r.planQ3, planQ4: r.planQ4,
+                        actualQ1: r.actualQ1, actualQ2: r.actualQ2, actualQ3: r.actualQ3, actualQ4: r.actualQ4,
+                        status: r.dynamicStat, issue: r.issue
+                    }));
+                } else {
+                    let kpiAgg = {};
+                    let budgetAgg = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0, unit: "บาท" };
+                    let hasBudget = false;
+                    
+                    flatRows.forEach(r => {
+                        if (r.isBudget) {
+                            hasBudget = true;
+                            budgetAgg.target += r.target; budgetAgg.actual += r.actual;
+                            budgetAgg.p1 += r.planQ1; budgetAgg.p2 += r.planQ2; budgetAgg.p3 += r.planQ3; budgetAgg.p4 += r.planQ4;
+                            budgetAgg.a1 += r.actualQ1; budgetAgg.a2 += r.actualQ2; budgetAgg.a3 += r.actualQ3; budgetAgg.a4 += r.actualQ4;
+                        } else if (r.isKPI) {
+                            let key = `${r.groupName}_|_${r.unit}`; // แยกโปรเจกต์ตามหน่วยนับเพื่อไม่ให้เลขปนกัน
+                            if (!kpiAgg[key]) {
+                                kpiAgg[key] = { name: r.groupName, unit: r.unit, target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0, issues: [] };
                             }
-                        });
-
-                        const aObj = { planQ1: aKPI.p1, planQ2: aKPI.p2, planQ3: aKPI.p3, planQ4: aKPI.p4, actual: aKPI.actual };
+                            kpiAgg[key].target += r.target; kpiAgg[key].actual += r.actual;
+                            kpiAgg[key].p1 += r.planQ1; kpiAgg[key].p2 += r.planQ2; kpiAgg[key].p3 += r.planQ3; kpiAgg[key].p4 += r.planQ4;
+                            kpiAgg[key].a1 += r.actualQ1; kpiAgg[key].a2 += r.actualQ2; kpiAgg[key].a3 += r.actualQ3; kpiAgg[key].a4 += r.actualQ4;
+                            if(r.issue) kpiAgg[key].issues.push(`- ${r.issue}`);
+                        }
+                    });
+                    
+                    Object.values(kpiAgg).forEach(agg => {
+                        const aObj = { planQ1: agg.p1, planQ2: agg.p2, planQ3: agg.p3, planQ4: agg.p4, actual: agg.actual };
                         synthesizedRows.push({
-                            name: actName, 
-                            isAggregatedKPI: true, 
-                            unit: aKPI.unit, target: aKPI.target, actual: aKPI.actual,
-                            planQ1: aKPI.p1, planQ2: aKPI.p2, planQ3: aKPI.p3, planQ4: aKPI.p4,
-                            actualQ1: aKPI.a1, actualQ2: aKPI.a2, actualQ3: aKPI.a3, actualQ4: aKPI.a4,
+                            name: agg.name, unit: agg.unit, isKPI: true, isBudget: false, isAggregatedKPI: true,
+                            target: agg.target, actual: agg.actual,
+                            planQ1: agg.p1, planQ2: agg.p2, planQ3: agg.p3, planQ4: agg.p4,
+                            actualQ1: agg.a1, actualQ2: agg.a2, actualQ3: agg.a3, actualQ4: agg.a4,
                             status: determineStatus(aObj, currentQuarter, isLastMonthOfQuarter),
-                            issue: "" 
+                            issue: viewLevel === "GROUP" ? agg.issues.join("<br>") : "" // GROUP ซ่อนปัญหาในกราฟ แต่จะส่งลงตารางปัญหาด้านล่าง
                         });
                     });
-
-                    synthesizedRows.push({
-                        name: "งบประมาณรวม", unit: "บาท", target: tBudget.target, actual: tBudget.actual,
-                        planQ1: tBudget.p1, planQ2: tBudget.p2, planQ3: tBudget.p3, planQ4: tBudget.p4,
-                        actualQ1: tBudget.a1, actualQ2: tBudget.a2, actualQ3: tBudget.a3, actualQ4: tBudget.a4,
-                        status: "AUTO", issue: ""
-                    });
-                }
-                else if (viewLevel === "ALL") {
-                    let tBudget = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0 };
-                    let projectKPIs = {}; 
-
-                    validFetches.forEach(f => {
-                        const projName = f.item.group || "โครงการอื่นๆ";
-
-                        f.data.forEach(row => {
-                            const name = row["โครงการ/กิจกรรม"] || "";
-                            const unit = row["หน่วยนับ"] || "ราย";
-                            const rt = getSafeNum(row, "เป้าหมาย"); const ra = getSafeNum(row, "ผลการดำเนินงานสะสม");
-                            const pq1 = getSafeNum(row, "แผนไตรมาส 1"); const aq1 = getSafeNum(row, "ผลไตรมาส 1");
-                            const pq2 = getSafeNum(row, "แผนไตรมาส 2"); const aq2 = getSafeNum(row, "ผลไตรมาส 2");
-                            const pq3 = getSafeNum(row, "แผนไตรมาส 3"); const aq3 = getSafeNum(row, "ผลไตรมาส 3");
-                            const pq4 = getSafeNum(row, "แผนไตรมาส 4"); const aq4 = getSafeNum(row, "ผลไตรมาส 4");
-
-                            if (name.includes("งบประมาณ")) {
-                                tBudget.target += rt; tBudget.actual += ra; tBudget.p1 += pq1; tBudget.p2 += pq2; tBudget.p3 += pq3; tBudget.p4 += pq4; tBudget.a1 += aq1; tBudget.a2 += aq2; tBudget.a3 += aq3; tBudget.a4 += aq4;
-                            } 
-                            else if (name.includes("(KPI)")) { 
-                                const key = `${projName}_|_${unit}`; // แยกโปรเจกต์ตามหน่วยนับเพื่อไม่ให้เลขปนกัน
-                                if (!projectKPIs[key]) {
-                                    projectKPIs[key] = { name: projName, unit: unit, target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0 };
-                                }
-                                projectKPIs[key].target += rt; projectKPIs[key].actual += ra;
-                                projectKPIs[key].p1 += pq1; projectKPIs[key].p2 += pq2; projectKPIs[key].p3 += pq3; projectKPIs[key].p4 += pq4;
-                                projectKPIs[key].a1 += aq1; projectKPIs[key].a2 += aq2; projectKPIs[key].a3 += aq3; projectKPIs[key].a4 += aq4;
-                            }
-                        });
-                    });
-
-                    Object.keys(projectKPIs).forEach(key => {
-                        const aKPI = projectKPIs[key];
-                        const aObj = { planQ1: aKPI.p1, planQ2: aKPI.p2, planQ3: aKPI.p3, planQ4: aKPI.p4, actual: aKPI.actual };
+                    
+                    if (hasBudget) {
                         synthesizedRows.push({
-                            name: aKPI.name, isAggregatedKPI: true, unit: aKPI.unit, 
-                            target: aKPI.target, actual: aKPI.actual,
-                            planQ1: aKPI.p1, planQ2: aKPI.p2, planQ3: aKPI.p3, planQ4: aKPI.p4,
-                            actualQ1: aKPI.a1, actualQ2: aKPI.a2, actualQ3: aKPI.a3, actualQ4: aKPI.a4,
-                            status: determineStatus(aObj, currentQuarter, isLastMonthOfQuarter),
-                            issue: "" 
+                            name: "งบประมาณรวม", unit: "บาท", isKPI: false, isBudget: true,
+                            target: budgetAgg.target, actual: budgetAgg.actual,
+                            planQ1: budgetAgg.p1, planQ2: budgetAgg.p2, planQ3: budgetAgg.p3, planQ4: budgetAgg.p4,
+                            actualQ1: budgetAgg.a1, actualQ2: budgetAgg.a2, actualQ3: budgetAgg.a3, actualQ4: budgetAgg.a4,
+                            status: determineStatus({actual: budgetAgg.actual, planQ1: budgetAgg.p1, planQ2: budgetAgg.p2, planQ3: budgetAgg.p3, planQ4: budgetAgg.p4}, currentQuarter, isLastMonthOfQuarter),
+                            issue: ""
                         });
-                    });
-
-                    synthesizedRows.push({
-                        name: "งบประมาณรวม", unit: "บาท", target: tBudget.target, actual: tBudget.actual,
-                        planQ1: tBudget.p1, planQ2: tBudget.p2, planQ3: tBudget.p3, planQ4: tBudget.p4,
-                        actualQ1: tBudget.a1, actualQ2: tBudget.a2, actualQ3: tBudget.a3, actualQ4: tBudget.a4,
-                        status: "AUTO", issue: ""
-                    });
+                    }
                 }
                 
                 // โยนข้อมูลให้ฟังก์ชันวาดกราฟ
@@ -553,13 +523,13 @@
         }
 
         // =====================================
-        // ฟังก์ชันวาดกราฟและตาราง 
+        // ฟังก์ชันวาดกราฟและตารางหน้าเว็บ
         // =====================================
         function renderDashboard(allRows, viewLevel) {
             try {
                 // -- 1. จัดกลุ่ม KPI ตามหน่วยนับ (Multi-Unit Engine) --
-                const activities = allRows.filter(act => act.name !== "-" && !act.name.includes("งบประมาณ"));
-                const kpiActivities = activities.filter(act => act.name.includes("(KPI)") || act.isAggregatedKPI);
+                const kpiActivities = allRows.filter(act => act.isKPI);
+                const budgetRows = allRows.filter(act => act.isBudget);
                 
                 const kpiByUnit = {};
                 kpiActivities.forEach(act => {
@@ -571,7 +541,6 @@
                     kpiByUnit[u].acts.push(act);
                 });
 
-                // สร้าง Default ถ้าไม่มีข้อมูล
                 if (Object.keys(kpiByUnit).length === 0) {
                     kpiByUnit["ราย"] = { target: 0, actual: 0, p1: 0, p2: 0, p3: 0, p4: 0, a1: 0, a2: 0, a3: 0, a4: 0, acts: [] };
                 }
@@ -611,33 +580,25 @@
                 });
 
                 // -- 3. งบประมาณ --
-                const budgetRows = allRows.filter(act => act.name.includes("งบประมาณ"));
-                let tBudget = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0, unit: "บาท" };
-                
+                let bPlanTotal = 0, bActTotal = 0;
                 if (budgetRows.length > 0) {
+                    const bObj = budgetRows[0];
                     document.getElementById('budget-section').classList.remove('hidden');
-                    tBudget.target = budgetRows.reduce((sum, r) => sum + r.target, 0);
-                    tBudget.actual = budgetRows.reduce((sum, r) => sum + r.actual, 0);
-                    tBudget.p1 = budgetRows.reduce((sum, r) => sum + r.planQ1, 0);
-                    tBudget.p2 = budgetRows.reduce((sum, r) => sum + r.planQ2, 0);
-                    tBudget.p3 = budgetRows.reduce((sum, r) => sum + r.planQ3, 0);
-                    tBudget.p4 = budgetRows.reduce((sum, r) => sum + r.planQ4, 0);
-                    tBudget.a1 = budgetRows.reduce((sum, r) => sum + r.actualQ1, 0);
-                    tBudget.a2 = budgetRows.reduce((sum, r) => sum + r.actualQ2, 0);
-                    tBudget.a3 = budgetRows.reduce((sum, r) => sum + r.actualQ3, 0);
-                    tBudget.a4 = budgetRows.reduce((sum, r) => sum + r.actualQ4, 0);
-                    tBudget.unit = budgetRows[0].unit || "บาท";
+                    document.getElementById('legend-budget-plan').classList.remove('hidden');
+                    document.getElementById('legend-budget-act').classList.remove('hidden');
 
-                    document.getElementById('budget-target').innerHTML = `${formatMoney(tBudget.target)} <span class="text-xl font-bold text-amber-700/60 ml-1">${tBudget.unit}</span>`;
-                    document.getElementById('budget-actual').innerHTML = `${formatMoney(tBudget.actual)} <span class="text-xl font-bold text-emerald-600/60 ml-1">${tBudget.unit}</span>`;
+                    document.getElementById('budget-target').innerHTML = `${formatMoney(bObj.target)} <span class="text-xl font-bold text-amber-700/60 ml-1">${bObj.unit}</span>`;
+                    document.getElementById('budget-actual').innerHTML = `${formatMoney(bObj.actual)} <span class="text-xl font-bold text-emerald-600/60 ml-1">${bObj.unit}</span>`;
                 } else {
                     document.getElementById('budget-section').classList.add('hidden');
+                    document.getElementById('legend-budget-plan').classList.add('hidden');
+                    document.getElementById('legend-budget-act').classList.add('hidden');
                 }
 
-                // -- 4. วาดกราฟวงกลมเปรียบเทียบ --
+                // -- 4. วาดกราฟวงกลมเปรียบเทียบ (โคลนตามจำนวนหน่วยนับ + 1 งบประมาณ) --
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
-                const pieAnimations = []; 
+                const pieAnimations = [];
 
                 Object.keys(kpiByUnit).forEach((unit, idx) => {
                     const d = kpiByUnit[unit];
@@ -661,7 +622,7 @@
                         <div class="group bg-gradient-to-b from-purple-100 to-purple-50 rounded-[1.5rem] shadow-md border border-purple-200 p-6 sm:p-8 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-2 hover-glow fade-in-up" style="animation-delay: ${idx * 100}ms">
                             <h3 class="text-lg font-bold mb-4 flex items-center text-purple-950">
                                 <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
-                                ผลการดำเนินงานภาพรวม (${unit})
+                                ผลการดำเนินงาน (${unit})
                             </h3>
                             <div class="flex-grow flex items-center justify-center my-6">
                                 <div id="pie-chart-kpi-${idx}" class="conic-chart w-56 h-56 rounded-full relative flex items-center justify-center shadow-[inset_0_2px_15px_rgba(0,0,0,0.15)]" style="background: conic-gradient(#e2e8f0 0% 100%);">
@@ -683,15 +644,16 @@
                 });
 
                 if (budgetRows.length > 0) {
-                    const bPercentCum = tBudget.target > 0 ? ((tBudget.actual / tBudget.target) * 100).toFixed(2) : "0.00";
+                    const bObj = budgetRows[0];
+                    const bPercentCum = bObj.target > 0 ? ((bObj.actual / bObj.target) * 100).toFixed(2) : "0.00";
                     let bCum = 0, bPrevCum = 0;
-                    if (currentQuarter >= 1) { bCum += tBudget.p1; bPrevCum = 0; }
-                    if (currentQuarter >= 2) { bCum += tBudget.p2; bPrevCum += tBudget.p1; }
-                    if (currentQuarter >= 3) { bCum += tBudget.p3; bPrevCum += (tBudget.p1 + tBudget.p2); }
-                    if (currentQuarter >= 4) { bCum += tBudget.p4; bPrevCum += (tBudget.p1 + tBudget.p2 + tBudget.p3); }
+                    if (currentQuarter >= 1) { bCum += bObj.planQ1; bPrevCum = 0; }
+                    if (currentQuarter >= 2) { bCum += bObj.planQ2; bPrevCum += bObj.planQ1; }
+                    if (currentQuarter >= 3) { bCum += bObj.planQ3; bPrevCum += (bObj.planQ1 + bObj.planQ2); }
+                    if (currentQuarter >= 4) { bCum += bObj.planQ4; bPrevCum += (bObj.planQ1 + bObj.planQ2 + bObj.planQ3); }
                     
-                    let bStatus = determineStatus({actual: tBudget.actual, planQ1: tBudget.p1, planQ2: tBudget.p2, planQ3: tBudget.p3, planQ4: tBudget.p4}, currentQuarter, isLastMonthOfQuarter);
-                    let bDisplayPct = bCum > 0 ? (tBudget.actual / bCum) * 100 : (bPrevCum > 0 ? (tBudget.actual / bPrevCum) * 100 : 0);
+                    let bStatus = determineStatus({actual: bObj.actual, planQ1: bObj.planQ1, planQ2: bObj.planQ2, planQ3: bObj.planQ3, planQ4: bObj.planQ4}, currentQuarter, isLastMonthOfQuarter);
+                    let bDisplayPct = bCum > 0 ? (bObj.actual / bCum) * 100 : (bPrevCum > 0 ? (bObj.actual / bPrevCum) * 100 : 0);
 
                     let bPieColor = "#10b981"; 
                     if (bStatus.includes("ล่าช้า")) bPieColor = "#f59e0b"; 
@@ -702,7 +664,7 @@
                         <div class="group bg-gradient-to-b from-emerald-100 to-emerald-50 rounded-[1.5rem] shadow-md border border-emerald-200 p-6 sm:p-8 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-2 hover-glow fade-in-up delay-200">
                             <h3 class="text-lg font-bold mb-4 flex items-center text-emerald-950">
                                 <svg class="w-6 h-6 mr-2 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                ผลการใช้จ่ายงบประมาณรวม
+                                ผลการใช้จ่ายงบประมาณ
                             </h3>
                             <div class="flex-grow flex items-center justify-center my-6">
                                 <div id="pie-chart-budget" class="conic-chart w-56 h-56 rounded-full relative flex items-center justify-center shadow-[inset_0_2px_15px_rgba(0,0,0,0.15)]" style="background: conic-gradient(#e2e8f0 0% 100%);">
@@ -743,13 +705,14 @@
                     
                     let bPlan = 0, bAct = 0;
                     if(budgetRows.length > 0) {
-                        for(let i=1; i<=q; i++) { bPlan += tBudget[`p${i}`]; bAct += tBudget[`a${i}`]; }
+                        for(let i=1; i<=q; i++) { bPlan += budgetRows[0][`planQ${i}`]; bAct += budgetRows[0][`actualQ${i}`]; }
                     }
                     return { q: q, name: `ไตรมาสที่ ${q}`, showActual: currentQuarter >= q, kpis: kpis, bPlan: bPlan, bAct: bAct, bPct: calcSafePct(bAct, bPlan) };
                 });
 
                 const numUnits = Object.keys(kpiByUnit).length;
                 const hasBudget = budgetRows.length > 0 ? 1 : 0;
+                // คำนวณความกว้างหน้าจออัตโนมัติ ไม่ให้กราฟเบียดกันเกินไป
                 const minWidth = Math.max(1200, (numUnits + hasBudget) * 400); 
                 barContainer.style.minWidth = `${minWidth}px`;
 
@@ -786,8 +749,9 @@
                     });
 
                     if(hasBudget) {
-                        const maxB = Math.max(tBudget.target, tBudget.actual, ...[1,2,3,4].map(qx => {
-                            let s = 0; for(let i=1; i<=qx; i++) s+= tBudget[`p${i}`]; return s;
+                        const bObj = budgetRows[0];
+                        const maxB = Math.max(bObj.target, bObj.actual, ...[1,2,3,4].map(qx => {
+                            let s = 0; for(let i=1; i<=qx; i++) s+= bObj[`planQ${i}`]; return s;
                         })) * 1.25 || 1;
                         
                         const bpH = Math.min((q.bPlan / maxB) * 100, 100);
@@ -835,8 +799,9 @@
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => { text.classList.remove('opacity-0'); });
                 }, 50);
 
-                // -- 6. การ์ดสรุปสถานะด้านล่าง --
-                const displayActivities = viewLevel === 'SINGLE' ? activities : kpiActivities;
+                // -- 6. การ์ดสรุปสถานะ --
+                // สำหรับ SINGLE ให้โชว์กิจกรรมทั้งหมด (รวมที่ไม่ใช่ KPI) / สำหรับ ALL, GROUP ให้โชว์เฉพาะ KPI
+                const displayActivities = viewLevel === 'SINGLE' ? allRows.filter(a => !a.isBudget) : kpiActivities;
 
                 const summary = {
                     total: displayActivities.length,
@@ -915,16 +880,15 @@
                         </div>
                     `;
 
-                    const isRowKPI = act.name.includes("(KPI)") || act.isAggregatedKPI;
                     let displayName = act.name;
-                    if (act.name.includes("(KPI)")) {
+                    if (act.isKPI && viewLevel === 'SINGLE') {
                         displayName = act.name.replace("(KPI)", '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 mr-2 border border-blue-200 shadow-sm">(KPI)</span>');
                     }
                     if (viewLevel !== 'SINGLE' && act.isAggregatedKPI && Object.keys(kpiByUnit).length > 1) {
                         displayName += ` <span class="text-[11px] text-slate-400 font-normal">(หน่วย: ${act.unit})</span>`;
                     }
 
-                    const nameStyle = isRowKPI ? "text-cyan-950 font-bold" : "text-cyan-900 font-medium";
+                    const nameStyle = act.isKPI ? "text-cyan-950 font-bold" : "text-cyan-900 font-medium";
 
                     tbody.innerHTML += `
                         <tr class="group/row border-b border-slate-100 hover:bg-cyan-50/50 transition-colors duration-300">
@@ -946,29 +910,16 @@
                 }, 50);
 
                 // -- 8. ปัญหาและอุปสรรค --
-                if (viewLevel === 'SINGLE') {
+                if (viewLevel !== 'ALL') {
                     let issuesHtml = '';
-                    const isAnyRisk = Object.values(kpiByUnit).some(u => {
-                        let st = determineStatus({actual: u.actual, planQ1: u.p1, planQ2: u.p2, planQ3: u.p3, planQ4: u.p4}, currentQuarter, isLastMonthOfQuarter);
-                        return st.includes("ล่าช้า") || st.includes("เสี่ยง");
-                    });
-
-                    if (isAnyRisk) {
-                        issuesHtml += `
-                            <div class="bg-white border-l-4 border-red-500 p-5 rounded-r-xl shadow-sm mb-6 transform transition-transform hover:-translate-y-1">
-                                <h4 class="font-bold text-red-800 mb-2 flex items-center">แจ้งเตือนสถานะภาพรวม</h4>
-                                <p class="text-sm text-red-700 leading-relaxed">ผลการดำเนินงานรวมของกิจกรรมหลัก (KPI) เมื่อเทียบกับแผนงานสะสม อยู่ในเกณฑ์ล่าช้า/เสี่ยง จึงต้องเร่งรัดการจัดกิจกรรมและติดตามแก้ไขปัญหาในพื้นที่อย่างใกล้ชิด</p>
-                            </div>
-                        `;
-                    }
-
+                    
                     const problematicActivities = displayActivities.filter(a => 
                         (a.status && (a.status.includes("ล่าช้า") || a.status.includes("เสี่ยง") || a.status.includes("ยังไม่ดำเนินการ"))) || 
                         (a.issue && a.issue.trim() !== "")
                     );
                     
                     if (problematicActivities.length > 0) {
-                        issuesHtml += `<h4 class="font-bold text-rose-950 mb-4 text-base">รายการที่มีความล่าช้า/ปัญหา</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+                        issuesHtml += `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
                         problematicActivities.forEach(act => {
                             const issueText = act.issue && act.issue.trim() !== "" ? act.issue : "อยู่ระหว่างตรวจสอบและรวบรวมสาเหตุการดำเนินงานจากหน่วยปฏิบัติ";
                             
@@ -978,7 +929,7 @@
                             else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) statusColor = "text-white bg-red-600 border-red-800 shadow-sm animate-pulse";
                             
                             let displayName = act.name;
-                            if (act.name.includes("(KPI)")) {
+                            if (act.isKPI && viewLevel === 'SINGLE') {
                                 displayName = act.name.replace("(KPI)", '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 mr-1">(KPI)</span>');
                             }
 
@@ -998,6 +949,7 @@
                     }
                     document.getElementById('issues-container').innerHTML = issuesHtml;
                 }
+
             } catch (error) {
                 console.error("Error in renderDashboard:", error);
             }
