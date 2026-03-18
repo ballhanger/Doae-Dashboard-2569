@@ -54,9 +54,6 @@
         .hide-scroll::-webkit-scrollbar-thumb:hover { background-color: rgba(99, 102, 241, 0.8); border: 1px solid transparent; }
         
         .hover-glow:hover { box-shadow: 0 20px 40px -10px rgba(0,0,0,0.15); }
-        .hover-glow-indigo:hover { box-shadow: 0 20px 40px -10px rgba(79, 70, 229, 0.3); }
-        .hover-glow-emerald:hover { box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.3); }
-        .hover-glow-amber:hover { box-shadow: 0 20px 40px -10px rgba(245, 158, 11, 0.3); }
     </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-8 text-slate-800">
@@ -76,15 +73,15 @@
                 </button>
                 <div id="dropdown-menu" class="hidden absolute z-[999] w-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden transform opacity-0 scale-95 transition-all duration-200 origin-top-right">
                     <ul id="dropdown-list" class="max-h-[60vh] overflow-y-auto hide-scroll flex flex-col">
-                        </ul>
+                    </ul>
                 </div>
             </div>
         </header>
 
         <div id="kpi-cards-container" class="flex flex-col gap-6 mb-8 relative z-10 fade-in-up delay-100">
-            </div>
+        </div>
 
-        <div id="budget-section" class="hidden fade-in-up delay-200 bg-gradient-to-br from-amber-100 via-amber-200/50 to-amber-50 rounded-[1.5rem] shadow-md border border-amber-300 p-6 sm:p-8 mb-8 relative border-l-[6px] border-l-amber-600 transform transition-all duration-500 hover:-translate-y-1.5 hover-glow-amber">
+        <div id="budget-section" class="hidden fade-in-up delay-200 bg-gradient-to-br from-amber-100 via-amber-200/50 to-amber-50 rounded-[1.5rem] shadow-md border border-amber-300 p-6 sm:p-8 mb-8 relative border-l-[6px] border-l-amber-600 transform transition-all duration-500 hover:-translate-y-1.5 hover-glow">
             <h3 class="text-lg sm:text-xl font-bold mb-5 flex items-center text-amber-950 border-b border-amber-400/50 pb-3">
                 <svg class="w-7 h-7 mr-3 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 งบประมาณรวม
@@ -102,7 +99,7 @@
         </div>
 
         <div id="pie-charts-container" class="grid gap-6 mb-8 fade-in-up delay-300">
-            </div>
+        </div>
 
         <div id="bar-chart-main-container" class="hidden fade-in-up delay-400 bg-gradient-to-br from-slate-100 via-indigo-100/40 to-slate-200 rounded-[2rem] shadow-lg border border-slate-300 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 hover:shadow-xl overflow-hidden">
             <h3 class="text-xl md:text-2xl font-extrabold mb-2 flex items-center text-indigo-950 border-b border-slate-300 pb-4">
@@ -182,6 +179,14 @@
         } else if (currentMonth >= 7 && currentMonth <= 9) { 
             currentQuarter = 4; isLastMonthOfQuarter = (currentMonth === 9); 
         }
+
+        // ชุดสีสำหรับกราฟแท่ง (เรียงตามลำดับหน่วยนับที่เจอ)
+        const kpiColorThemes = [
+            { planBg: 'bg-emerald-200', planBorder: 'border-emerald-400', planText: 'text-emerald-800', actBg: 'bg-emerald-500', actBorder: 'border-emerald-600', actText: 'text-emerald-950', legendPlanBg: 'bg-emerald-300', legendActBg: 'bg-emerald-500' },
+            { planBg: 'bg-blue-200', planBorder: 'border-blue-400', planText: 'text-blue-800', actBg: 'bg-blue-500', actBorder: 'border-blue-600', actText: 'text-blue-950', legendPlanBg: 'bg-blue-300', legendActBg: 'bg-blue-500' },
+            { planBg: 'bg-purple-200', planBorder: 'border-purple-400', planText: 'text-purple-800', actBg: 'bg-purple-500', actBorder: 'border-purple-600', actText: 'text-purple-950', legendPlanBg: 'bg-purple-300', legendActBg: 'bg-purple-500' },
+            { planBg: 'bg-pink-200', planBorder: 'border-pink-400', planText: 'text-pink-800', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-950', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500' }
+        ];
 
         const formatMoney = (num) => new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
         const formatAutoDecimal = (num) => {
@@ -343,7 +348,6 @@
                     }
                     
                     li.className = classes;
-                    // ล็อกไอคอน w-5 h-5 เท่ากันหมด
                     li.innerHTML = `
                         ${isAll ? '<svg class="w-5 h-5 mr-3 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>' : ''}
                         ${(isGroup || (!isGroup && !isSub)) && !isAll ? '<svg class="w-5 h-5 mr-3 text-indigo-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>' : ''}
@@ -374,22 +378,18 @@
             const selectedItem = MASTER_INDEX[index];
             const viewLevel = selectedItem.url === "AUTO_ALL" ? "ALL" : (selectedItem.url === "AUTO_GROUP" ? "GROUP" : "SINGLE");
 
-            // ซ่อนตารางด้านล่างไว้ก่อน รอให้คำนวณเสร็จ
             document.getElementById('bar-chart-main-container').classList.add('hidden');
             document.getElementById('summary-main-container').classList.add('hidden');
             document.getElementById('table-main-container').classList.add('hidden');
             document.getElementById('issues-main-container').classList.add('hidden');
 
-            // อัปเดตเมนู
             const prefix = (selectedItem.seq && String(selectedItem.seq) !== "0") ? `${selectedItem.seq} ` : '';
             dropdownText.textContent = `${prefix}${selectedItem.name.replace(/^- /, '')}`;
 
-            // อัปเดตหัวเว็บ
             const cleanName = selectedItem.name.replace(/^- /, '');
             displayTitle.textContent = viewLevel === "ALL" ? `${cleanName} ปีงบประมาณ 2569` : cleanName;
             displayTitle.classList.remove("text-red-600");
 
-            // จัดการข้อความหัวเรื่อง
             if (viewLevel === "ALL") {
                 document.getElementById('dynamic-summary-title').innerHTML = `<svg class="w-7 h-7 mr-3 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg> ภาพรวมสถานะทุกโครงการ`;
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายโครงการ`;
@@ -428,7 +428,6 @@
                     return;
                 }
 
-                // สกัดข้อมูล Flat ให้รัดกุมที่สุด
                 let flatRows = [];
                 validFetches.forEach(f => {
                     const fileItem = f.item;
@@ -484,25 +483,25 @@
                             budgetAgg.p1 += r.planQ1; budgetAgg.p2 += r.planQ2; budgetAgg.p3 += r.planQ3; budgetAgg.p4 += r.planQ4;
                             budgetAgg.a1 += r.actualQ1; budgetAgg.a2 += r.actualQ2; budgetAgg.a3 += r.actualQ3; budgetAgg.a4 += r.actualQ4;
                         } else if (r.isKPI) {
-                            let key = `${r.groupName}_|_${r.unit}`; // แยกโปรเจกต์ตามหน่วยนับ
+                            let key = `${r.groupName}_|_${r.unit}`; 
                             if (!kpiAgg[key]) {
                                 kpiAgg[key] = { name: r.groupName, unit: r.unit, target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0, issues: [] };
                             }
                             kpiAgg[key].target += r.target; kpiAgg[key].actual += r.actual;
                             kpiAgg[key].p1 += r.planQ1; kpiAgg[key].p2 += r.planQ2; kpiAgg[key].p3 += r.planQ3; kpiAgg[key].p4 += r.planQ4;
                             kpiAgg[key].a1 += r.actualQ1; kpiAgg[key].a2 += r.actualQ2; kpiAgg[key].a3 += r.actualQ3; kpiAgg[key].a4 += r.actualQ4;
-                            if(r.issue) kpiAgg[key].issues.push(`- ${r.issue}`);
+                            if (r.issue && r.issue.trim() !== "") kpiAgg[key].issues.push(`- ${r.issue}`);
                         }
                     });
                     
                     Object.values(kpiAgg).forEach(agg => {
                         synthesizedRows.push({
-                            name: agg.name, unit: agg.unit, isKPI: true, isBudget: false, isAggregatedKPI: true,
+                            name: agg.name, unit: agg.unit, isBudget: false, isKPI: true, isAggregatedKPI: true,
                             target: agg.target, actual: agg.actual,
                             planQ1: agg.p1, planQ2: agg.p2, planQ3: agg.p3, planQ4: agg.p4,
                             actualQ1: agg.a1, actualQ2: agg.a2, actualQ3: agg.a3, actualQ4: agg.a4,
                             status: determineStatus(agg.p1, agg.p2, agg.p3, agg.p4, agg.actual, currentQuarter, isLastMonthOfQuarter),
-                            issue: viewLevel === "GROUP" ? agg.issues.join("<br>") : "" // GROUP จะส่งปัญหาลงตารางด้านล่าง
+                            issue: viewLevel === "GROUP" ? agg.issues.join("<br>") : ""
                         });
                     });
                     
@@ -518,11 +517,9 @@
                     }
                 }
                 
-                // แสดงคอนเทนเนอร์ทั้งหมดและโยนให้กราฟวาด
                 document.getElementById('bar-chart-main-container').classList.remove('hidden');
                 document.getElementById('summary-main-container').classList.remove('hidden');
                 document.getElementById('table-main-container').classList.remove('hidden');
-                if (viewLevel === 'SINGLE') document.getElementById('issues-main-container').classList.remove('hidden');
 
                 renderDashboardUI(synthesizedRows, viewLevel);
 
@@ -536,10 +533,9 @@
         // =====================================
         function renderDashboardUI(allRows, viewLevel) {
             try {
-                // -- 1. จัดกลุ่ม KPI ตามหน่วยนับ (Multi-Unit Engine) --
                 const kpiActivities = allRows.filter(act => act.isKPI);
                 const budgetRows = allRows.filter(act => act.isBudget);
-                const tableActivities = allRows.filter(act => !act.isBudget); // แสดงลงตารางทุกอันที่ไม่ใช่งบ
+                const tableActivities = allRows.filter(act => !act.isBudget); 
                 
                 const kpiByUnit = {};
                 kpiActivities.forEach(act => {
@@ -593,7 +589,7 @@
                     document.getElementById('budget-section').classList.add('hidden');
                 }
 
-                // -- 4. วาดกราฟวงกลมเปรียบเทียบ (Dynamic Grid - ข้อ 3) --
+                // -- 4. วาดกราฟวงกลมเปรียบเทียบ (Dynamic Grid ให้สมมาตร) --
                 const numPieCharts = Object.keys(kpiByUnit).length + (budgetRows.length > 0 ? 1 : 0);
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.className = 'grid gap-6 mb-8 fade-in-up delay-300';
@@ -701,12 +697,14 @@
                     });
                 }, 50);
 
-                // -- 5. วาดกราฟแท่งรวม (Multi-Bar) --
+                // -- 5. วาดกราฟแท่งรวม (Multi-Bar Dynamic Colors) --
                 const barLegend = document.getElementById('bar-legend-container');
                 let legendHtml = '';
-                Object.keys(kpiByUnit).forEach(unit => {
-                    legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-green-300 border border-green-400 mr-2 rounded-sm"></div> แผนงาน (${unit})</div>`;
-                    legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-green-500 border border-green-600 mr-2 rounded-sm"></div> ผลงาน (${unit})</div>`;
+                const units = Object.keys(kpiByUnit);
+                units.forEach((unit, idx) => {
+                    const theme = kpiColorThemes[idx % kpiColorThemes.length];
+                    legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 ${theme.legendPlanBg} border ${theme.planBorder} mr-2 rounded-sm"></div> แผนงาน (${unit})</div>`;
+                    legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 ${theme.legendActBg} border ${theme.actBorder} mr-2 rounded-sm"></div> ผลงาน (${unit})</div>`;
                 });
                 if (budgetRows.length > 0) {
                     legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-amber-300 border border-amber-400 mr-2 rounded-sm"></div> แผนงบประมาณ</div>`;
@@ -718,7 +716,7 @@
                 barContainer.innerHTML = '';
                 
                 const qData = [1, 2, 3, 4].map(q => {
-                    let kpis = Object.keys(kpiByUnit).map(unit => {
+                    let kpis = units.map(unit => {
                         let pPlan = 0, pAct = 0;
                         for(let i=1; i<=q; i++) { pPlan += kpiByUnit[unit][`p${i}`]; pAct += kpiByUnit[unit][`a${i}`]; }
                         return { unit: unit, plan: pPlan, act: pAct, pct: calcSafePct(pAct, pPlan) };
@@ -731,7 +729,7 @@
                     return { q: q, name: `ไตรมาสที่ ${q}`, showActual: currentQuarter >= q, kpis: kpis, bPlan: bPlan, bAct: bAct, bPct: calcSafePct(bAct, bPlan) };
                 });
 
-                const numUnits = Object.keys(kpiByUnit).length;
+                const numUnits = units.length;
                 const hasBudget = budgetRows.length > 0 ? 1 : 0;
                 const minWidth = Math.max(1200, (numUnits + hasBudget) * 400); 
                 barContainer.style.minWidth = `${minWidth}px`;
@@ -739,7 +737,8 @@
                 qData.forEach((q, index) => {
                     let barsHtml = '';
                     
-                    q.kpis.forEach(kpi => {
+                    q.kpis.forEach((kpi, kpiIdx) => {
+                        const theme = kpiColorThemes[kpiIdx % kpiColorThemes.length];
                         const maxVal = Math.max(kpiByUnit[kpi.unit].target, kpiByUnit[kpi.unit].actual, ...[1,2,3,4].map(qx => {
                             let s = 0; for(let i=1; i<=qx; i++) s+= kpiByUnit[kpi.unit][`p${i}`]; return s;
                         })) * 1.25 || 1;
@@ -751,20 +750,19 @@
                         barsHtml += `
                             <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
                                 <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-20 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${ppH}%">
-                                    <span class="text-[10px] sm:text-[11px] font-bold text-green-800 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-green-100">${formatAutoDecimal(kpi.plan)} ${kpi.unit}</span>
+                                    <span class="text-[10px] sm:text-[11px] font-bold ${theme.planText} whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-slate-100">${formatAutoDecimal(kpi.plan)} ${kpi.unit}</span>
                                 </div>
-                                <div class="w-full bg-green-200 border border-green-400 rounded-t-sm bar-chart-col transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${ppH}"></div>
+                                <div class="w-full ${theme.planBg} border ${theme.planBorder} rounded-t-sm bar-chart-col transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${ppH}"></div>
                             </div>
                             ${q.showActual ? `
                             <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
                                 <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-30 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${paH}%">
                                     <span class="${pBadgeClass} text-[10px] sm:text-[11px] px-2 py-0.5 rounded shadow-lg mb-1 whitespace-nowrap font-bold border transition-colors">${kpi.pct}%</span>
-                                    <span class="text-[10px] sm:text-[11px] font-bold text-green-950 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-green-200">${formatAutoDecimal(kpi.act)} ${kpi.unit}</span>
+                                    <span class="text-[10px] sm:text-[11px] font-bold ${theme.actText} whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-slate-200">${formatAutoDecimal(kpi.act)} ${kpi.unit}</span>
                                 </div>
-                                <div class="w-full bg-green-500 rounded-t-sm bar-chart-col shadow-md border border-green-600 transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${paH}"></div>
+                                <div class="w-full ${theme.actBg} rounded-t-sm bar-chart-col shadow-md border ${theme.actBorder} transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${paH}"></div>
                             </div>
                             ` : `<div class="w-6 sm:w-10 lg:w-12 bg-transparent mx-1"></div>`}
-                            <div class="w-1 sm:w-3 border-r border-slate-300/60 h-1/3 my-auto mx-1"></div>
                         `;
                     });
 
@@ -795,8 +793,6 @@
                             </div>
                             ` : `<div class="w-6 sm:w-10 lg:w-12 bg-transparent mx-1"></div>`}
                         `;
-                    } else {
-                        barsHtml = barsHtml.replace(/<div class="w-1 sm:w-3 border-r border-slate-300\/60 h-1\/3 my-auto mx-1"><\/div>$/, '');
                     }
 
                     const cardBgClass = index % 2 === 0 ? "bg-indigo-100/60 border border-indigo-200 shadow-sm" : "bg-white/90 border border-slate-200 shadow-sm";
@@ -819,19 +815,17 @@
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => { text.classList.remove('opacity-0'); });
                 }, 50);
 
-                // -- 6. การ์ดสรุปสถานะอัจฉริยะ (ข้อ 5) --
+                // -- 6. การ์ดสรุปสถานะอัจฉริยะ --
                 const displayActivities = viewLevel === 'SINGLE' ? tableActivities : kpiActivities;
                 
-                // สำหรับหน้าภาพรวมกรมฯ (ALL) ให้นับจำนวนโครงการจริงที่ไม่ซ้ำกัน
                 const uniqueCount = new Set(displayActivities.map(a => a.name)).size;
                 const totalMetrics = displayActivities.length;
                 
                 const titleText = viewLevel === 'ALL' ? 'โครงการทั้งหมด' : 'กิจกรรมทั้งหมด';
-                // ถ้าเป็นหน้าภาพรวมกรมฯ ให้โชว์จำนวนโปรเจกต์ และห้อยท้ายด้วยจำนวนตัวชี้วัด
                 const subText = viewLevel === 'ALL' ? `รวม ${totalMetrics} ตัวชี้วัด` : `รวม ${totalMetrics} รายการ`;
 
                 const summary = {
-                    total: viewLevel === 'ALL' ? uniqueCount : totalMetrics, // จำนวนกล่องแรก
+                    total: viewLevel === 'ALL' ? uniqueCount : totalMetrics, 
                     onTrack: displayActivities.filter(a => a.status.includes("เป็นไปตามแผน")).length,
                     delayed: displayActivities.filter(a => a.status.includes("ล่าช้า")).length,
                     atRisk: displayActivities.filter(a => a.status.includes("เสี่ยง")).length,
@@ -848,35 +842,35 @@
                     <div class="bg-gradient-to-br from-emerald-400 to-green-600 rounded-[1.5rem] p-5 flex flex-col text-center shadow-lg text-white transform transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-10px_rgba(16,185,129,0.5)]">
                         <p class="text-sm font-bold text-green-50 mb-1">เป็นไปตามแผน</p>
                         <p class="text-5xl font-black mb-4 tracking-tight drop-shadow-sm">${summary.onTrack}</p>
-                        <div class="mt-auto"><span class="inline-block text-xs sm:text-sm font-bold text-green-900 bg-white/95 px-4 py-1.5 rounded-full shadow-sm w-full whitespace-nowrap">นับตามตัวชี้วัด</span></div>
+                        <div class="mt-auto"><span class="inline-block text-xs sm:text-sm font-bold text-green-900 bg-white/95 px-4 py-1.5 rounded-full shadow-sm w-full whitespace-nowrap">นับตามตัวชี้วัด (KPI)</span></div>
                     </div>
                     <div class="bg-gradient-to-br from-yellow-400 to-amber-500 rounded-[1.5rem] p-5 flex flex-col text-center shadow-lg text-yellow-950 transform transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-10px_rgba(245,158,11,0.5)]">
                         <p class="text-sm font-bold text-yellow-900 mb-1">ล่าช้า</p>
                         <p class="text-5xl font-black mb-4 tracking-tight drop-shadow-sm text-yellow-950">${summary.delayed}</p>
-                        <div class="mt-auto"><span class="inline-block text-xs sm:text-sm font-bold text-amber-900 bg-white/95 px-3 py-1.5 rounded-full shadow-sm w-full whitespace-nowrap">นับตามตัวชี้วัด</span></div>
+                        <div class="mt-auto"><span class="inline-block text-xs sm:text-sm font-bold text-amber-900 bg-white/95 px-3 py-1.5 rounded-full shadow-sm w-full whitespace-nowrap">นับตามตัวชี้วัด (KPI)</span></div>
                     </div>
                     <div class="bg-gradient-to-br from-red-500 to-rose-600 rounded-[1.5rem] p-5 flex flex-col text-center shadow-lg text-white transform transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-10px_rgba(225,29,72,0.5)]">
                         <p class="text-sm font-bold text-red-100 mb-1">เสี่ยง</p>
                         <p class="text-5xl font-black mb-4 tracking-tight drop-shadow-sm">${summary.atRisk}</p>
-                        <div class="mt-auto"><span class="inline-block text-xs sm:text-sm font-bold text-rose-900 bg-white/95 px-3 py-1.5 rounded-full shadow-sm w-full whitespace-nowrap">นับตามตัวชี้วัด</span></div>
+                        <div class="mt-auto"><span class="inline-block text-xs sm:text-sm font-bold text-rose-900 bg-white/95 px-3 py-1.5 rounded-full shadow-sm w-full whitespace-nowrap">นับตามตัวชี้วัด (KPI)</span></div>
                     </div>
                     <div class="bg-gradient-to-br from-slate-700 to-slate-900 rounded-[1.5rem] p-5 flex flex-col text-center shadow-lg text-white relative overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-10px_rgba(15,23,42,0.5)]">
                         <div class="absolute inset-0 bg-red-500 opacity-20 animate-pulse"></div>
                         <p class="text-sm font-bold text-slate-300 mb-1 relative z-10">ยังไม่ดำเนินการ</p>
                         <p class="text-5xl font-black mb-4 tracking-tight drop-shadow-sm relative z-10">${summary.notStartedSevere}</p>
-                        <div class="mt-auto relative z-10"><span class="inline-block text-xs sm:text-sm font-bold text-red-700 bg-white/95 px-4 py-1.5 rounded-full shadow-sm w-full whitespace-nowrap">นับตามตัวชี้วัด</span></div>
+                        <div class="mt-auto relative z-10"><span class="inline-block text-xs sm:text-sm font-bold text-red-700 bg-white/95 px-4 py-1.5 rounded-full shadow-sm w-full whitespace-nowrap">นับตามตัวชี้วัด (KPI)</span></div>
                     </div>
                     <div class="col-span-2 md:col-span-1 bg-white border-[3px] border-slate-200 border-dashed rounded-[1.5rem] p-5 flex flex-col text-center shadow-sm text-slate-600 transform transition-all duration-300 hover:-translate-y-2 hover:bg-slate-50 hover:border-slate-300">
                         <p class="text-sm font-bold text-slate-400 mb-1">มีแผนในไตรมาสถัดไป</p>
                         <p class="text-5xl font-black mb-4 tracking-tight">${summary.notStarted}</p>
-                        <div class="mt-auto"><span class="inline-block text-xs sm:text-sm font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full w-full whitespace-nowrap">นับตามตัวชี้วัด</span></div>
+                        <div class="mt-auto"><span class="inline-block text-xs sm:text-sm font-bold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full w-full whitespace-nowrap">นับตามตัวชี้วัด (KPI)</span></div>
                     </div>
                 `;
 
                 // -- 7. ตารางกิจกรรม --
                 const tbody = document.getElementById('table-body');
                 tbody.innerHTML = '';
-                displayActivities.forEach(act => {
+                tableActivities.forEach(act => {
                     const safeTarget = act.target > 0 ? act.target : 1;
                     const pct = (act.actual / safeTarget) * 100;
                     const q1Pos = Math.min((act.planQ1 / safeTarget) * 100, 100);
@@ -907,13 +901,12 @@
                         </div>
                     `;
 
-                    const isRowKPI = act.name.includes("(KPI)") || act.isAggregatedKPI;
                     let displayName = act.name;
-                    if (act.name.includes("(KPI)")) {
+                    if (act.isKPI && viewLevel === 'SINGLE') {
                         displayName = act.name.replace("(KPI)", '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 mr-2 border border-blue-200 shadow-sm">(KPI)</span>');
                     }
 
-                    const nameStyle = isRowKPI ? "text-cyan-950 font-bold" : "text-cyan-900 font-medium";
+                    const nameStyle = act.isKPI ? "text-cyan-950 font-bold" : "text-cyan-900 font-medium";
 
                     tbody.innerHTML += `
                         <tr class="group/row border-b border-slate-100 hover:bg-cyan-50/50 transition-colors duration-300">
@@ -934,8 +927,8 @@
                     document.querySelectorAll('#table-body .bar-chart-col-text').forEach(textEl => { textEl.style.left = textEl.getAttribute('data-left') + '%'; });
                 }, 50);
 
-                // -- 8. ปัญหาและอุปสรรค (แสดงเฉพาะ SINGLE) --
-                if (viewLevel === 'SINGLE') {
+                // -- 8. ปัญหาและอุปสรรค --
+                if (viewLevel !== 'ALL') {
                     let issuesHtml = '';
                     
                     const problematicActivities = tableActivities.filter(a => 
