@@ -341,7 +341,7 @@
                     const prefix = (item.seq && String(item.seq) !== "0") ? `${item.seq} ` : '';
                     const displayName = `${prefix}${item.name.replace(/^- /, '')}`;
 
-                    li.title = displayName; 
+                    li.title = displayName; // Tooltip ชื่อเต็ม
 
                     let classes = "px-5 py-3.5 cursor-pointer transition-colors flex items-center ";
                     if (isAll) {
@@ -353,6 +353,7 @@
                     }
                     
                     li.className = classes;
+                    // ล็อกไอคอน w-5 h-5 เท่ากันหมด
                     li.innerHTML = `
                         ${isAll ? '<svg class="w-5 h-5 mr-3 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>' : ''}
                         ${(isGroup || (!isGroup && !isSub)) && !isAll ? '<svg class="w-5 h-5 mr-3 text-indigo-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>' : ''}
@@ -383,6 +384,7 @@
             const selectedItem = MASTER_INDEX[index];
             const viewLevel = selectedItem.url === "AUTO_ALL" ? "ALL" : (selectedItem.url === "AUTO_GROUP" ? "GROUP" : "SINGLE");
 
+            // ซ่อนหน้าเว็บระหว่างโหลด
             document.getElementById('bar-chart-main-container').classList.add('hidden');
             document.getElementById('summary-main-container').classList.add('hidden');
             document.getElementById('table-main-container').classList.add('hidden');
@@ -392,7 +394,11 @@
             dropdownText.textContent = `${prefix}${selectedItem.name.replace(/^- /, '')}`;
 
             const cleanName = selectedItem.name.replace(/^- /, '');
-            displayTitle.textContent = viewLevel === "ALL" ? `${cleanName} ปีงบประมาณ 2569` : cleanName;
+            if (viewLevel === "ALL") {
+                displayTitle.textContent = `${cleanName} ปีงบประมาณ 2569`;
+            } else {
+                displayTitle.textContent = cleanName;
+            }
             displayTitle.classList.remove("text-red-600");
 
             if (viewLevel === "ALL") {
@@ -522,9 +528,13 @@
                     }
                 }
                 
+                // Show Main Containers Before Rendering Inner Components
                 document.getElementById('bar-chart-main-container').classList.remove('hidden');
                 document.getElementById('summary-main-container').classList.remove('hidden');
                 document.getElementById('table-main-container').classList.remove('hidden');
+                if (viewLevel === 'SINGLE') {
+                    document.getElementById('issues-main-container').classList.remove('hidden');
+                }
 
                 renderDashboardUI(synthesizedRows, viewLevel);
 
@@ -827,7 +837,7 @@
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => { text.classList.remove('opacity-0'); });
                 }, 50);
 
-                // -- 6. การ์ดสรุปสถานะอัจฉริยะ (ข้อ 1 และ 2) --
+                // -- 6. การ์ดสรุปสถานะอัจฉริยะ --
                 const displayActivities = viewLevel === 'SINGLE' ? tableActivities : kpiActivities;
                 
                 const uniqueCount = new Set(displayActivities.map(a => a.name)).size;
@@ -837,7 +847,6 @@
                 
                 const isKPIView = viewLevel !== 'SINGLE';
                 
-                // สร้างฟังก์ชันช่วยทำป้ายข้อความให้สวยงาม (รองรับ 2 บรรทัดสำหรับ ALL/GROUP)
                 const getLabel = (mainText) => {
                     if (isKPIView) {
                         return `<span class="block text-[10px] sm:text-[11px] font-medium opacity-80 leading-tight mb-0.5 tracking-wide">นับตามตัวชี้วัด (KPI)</span><span class="block leading-tight">${mainText}</span>`;
@@ -955,7 +964,7 @@
                 });
 
                 setTimeout(() => {
-                    document.querySelectorAll('#table-body .bar-chart-col').forEach(bar => { bar.style.width = bar.getAttribute('data-h') + '%'; });
+                    document.querySelectorAll('#table-body .bar-chart-col').forEach(bar => { bar.style.height = bar.getAttribute('data-h') + '%'; });
                     document.querySelectorAll('#table-body .bar-chart-col-text').forEach(textEl => { textEl.style.left = textEl.getAttribute('data-left') + '%'; });
                 }, 50);
 
