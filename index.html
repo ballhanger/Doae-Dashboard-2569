@@ -108,11 +108,11 @@
             </h3>
             
             <div class="flex flex-wrap justify-center gap-x-4 sm:gap-x-6 gap-y-2 mt-4 mb-2 text-xs sm:text-sm font-bold text-slate-700 z-20" id="bar-legend-container">
-                </div>
+            </div>
 
             <div class="w-full overflow-x-auto hide-scroll pb-6 pt-4">
                 <div class="relative h-[400px] sm:h-[450px] flex justify-between items-end px-2 sm:px-4 pb-2 transition-all duration-500" id="combined-bar-chart-container">
-                    </div>
+                </div>
             </div>
         </div>
 
@@ -180,12 +180,18 @@
             currentQuarter = 4; isLastMonthOfQuarter = (currentMonth === 9); 
         }
 
-        // ชุดสีสำหรับกราฟแท่ง (เรียงตามลำดับหน่วยนับที่เจอ)
+        // คลังสี 10 ชุด รองรับได้สูงสุดถึง 10 หน่วยนับโดยสีไม่ซ้ำกัน
         const kpiColorThemes = [
             { planBg: 'bg-emerald-200', planBorder: 'border-emerald-400', planText: 'text-emerald-800', actBg: 'bg-emerald-500', actBorder: 'border-emerald-600', actText: 'text-emerald-950', legendPlanBg: 'bg-emerald-300', legendActBg: 'bg-emerald-500' },
             { planBg: 'bg-blue-200', planBorder: 'border-blue-400', planText: 'text-blue-800', actBg: 'bg-blue-500', actBorder: 'border-blue-600', actText: 'text-blue-950', legendPlanBg: 'bg-blue-300', legendActBg: 'bg-blue-500' },
             { planBg: 'bg-purple-200', planBorder: 'border-purple-400', planText: 'text-purple-800', actBg: 'bg-purple-500', actBorder: 'border-purple-600', actText: 'text-purple-950', legendPlanBg: 'bg-purple-300', legendActBg: 'bg-purple-500' },
-            { planBg: 'bg-pink-200', planBorder: 'border-pink-400', planText: 'text-pink-800', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-950', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500' }
+            { planBg: 'bg-pink-200', planBorder: 'border-pink-400', planText: 'text-pink-800', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-950', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500' },
+            { planBg: 'bg-cyan-200', planBorder: 'border-cyan-400', planText: 'text-cyan-800', actBg: 'bg-cyan-500', actBorder: 'border-cyan-600', actText: 'text-cyan-950', legendPlanBg: 'bg-cyan-300', legendActBg: 'bg-cyan-500' },
+            { planBg: 'bg-rose-200', planBorder: 'border-rose-400', planText: 'text-rose-800', actBg: 'bg-rose-500', actBorder: 'border-rose-600', actText: 'text-rose-950', legendPlanBg: 'bg-rose-300', legendActBg: 'bg-rose-500' },
+            { planBg: 'bg-teal-200', planBorder: 'border-teal-400', planText: 'text-teal-800', actBg: 'bg-teal-500', actBorder: 'border-teal-600', actText: 'text-teal-950', legendPlanBg: 'bg-teal-300', legendActBg: 'bg-teal-500' },
+            { planBg: 'bg-violet-200', planBorder: 'border-violet-400', planText: 'text-violet-800', actBg: 'bg-violet-500', actBorder: 'border-violet-600', actText: 'text-violet-950', legendPlanBg: 'bg-violet-300', legendActBg: 'bg-violet-500' },
+            { planBg: 'bg-fuchsia-200', planBorder: 'border-fuchsia-400', planText: 'text-fuchsia-800', actBg: 'bg-fuchsia-500', actBorder: 'border-fuchsia-600', actText: 'text-fuchsia-950', legendPlanBg: 'bg-fuchsia-300', legendActBg: 'bg-fuchsia-500' },
+            { planBg: 'bg-sky-200', planBorder: 'border-sky-400', planText: 'text-sky-800', actBg: 'bg-sky-500', actBorder: 'border-sky-600', actText: 'text-sky-950', legendPlanBg: 'bg-sky-300', legendActBg: 'bg-sky-500' }
         ];
 
         const formatMoney = (num) => new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
@@ -336,7 +342,7 @@
                     const prefix = (item.seq && String(item.seq) !== "0") ? `${item.seq} ` : '';
                     const displayName = `${prefix}${item.name.replace(/^- /, '')}`;
 
-                    li.title = displayName; // Tooltip ชื่อเต็ม
+                    li.title = displayName; 
 
                     let classes = "px-5 py-3.5 cursor-pointer transition-colors flex items-center ";
                     if (isAll) {
@@ -579,7 +585,6 @@
                 });
 
                 // -- 3. งบประมาณ --
-                let bPlanTotal = 0, bActTotal = 0;
                 if (budgetRows.length > 0) {
                     const bObj = budgetRows[0];
                     document.getElementById('budget-section').classList.remove('hidden');
@@ -589,7 +594,7 @@
                     document.getElementById('budget-section').classList.add('hidden');
                 }
 
-                // -- 4. วาดกราฟวงกลมเปรียบเทียบ (Dynamic Grid ให้สมมาตร) --
+                // -- 4. วาดกราฟวงกลมเปรียบเทียบ (Dynamic Grid) --
                 const numPieCharts = Object.keys(kpiByUnit).length + (budgetRows.length > 0 ? 1 : 0);
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.className = 'grid gap-6 mb-8 fade-in-up delay-300';
@@ -598,8 +603,12 @@
                     pieChartsContainer.classList.add('grid-cols-1', 'max-w-md', 'mx-auto');
                 } else if (numPieCharts === 2) {
                     pieChartsContainer.classList.add('grid-cols-1', 'md:grid-cols-2', 'max-w-4xl', 'mx-auto');
+                } else if (numPieCharts === 3) {
+                    pieChartsContainer.classList.add('grid-cols-1', 'md:grid-cols-3');
+                } else if (numPieCharts === 4) {
+                    pieChartsContainer.classList.add('grid-cols-1', 'md:grid-cols-2', 'xl:grid-cols-4');
                 } else {
-                    pieChartsContainer.classList.add('grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3');
+                    pieChartsContainer.classList.add('grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'xl:grid-cols-4');
                 }
                 
                 pieChartsContainer.innerHTML = '';
@@ -666,7 +675,7 @@
                     if (bCum === 0) bPieColor = "#cbd5e1";
 
                     pieChartsContainer.innerHTML += `
-                        <div class="group bg-gradient-to-b from-emerald-100 to-emerald-50 rounded-[1.5rem] shadow-md border border-emerald-200 p-6 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-2 hover-glow w-full">
+                        <div class="group bg-gradient-to-b from-emerald-100 to-emerald-50 rounded-[1.5rem] shadow-md border border-emerald-200 p-6 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-2 hover-glow w-full fade-in-up delay-200">
                             <h3 class="text-lg font-bold mb-4 flex items-center text-emerald-950">
                                 <svg class="w-6 h-6 mr-2 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 ผลการใช้จ่ายงบประมาณ
@@ -701,11 +710,13 @@
                 const barLegend = document.getElementById('bar-legend-container');
                 let legendHtml = '';
                 const units = Object.keys(kpiByUnit);
+                
                 units.forEach((unit, idx) => {
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
                     legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 ${theme.legendPlanBg} border ${theme.planBorder} mr-2 rounded-sm"></div> แผนงาน (${unit})</div>`;
                     legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 ${theme.legendActBg} border ${theme.actBorder} mr-2 rounded-sm"></div> ผลงาน (${unit})</div>`;
                 });
+                
                 if (budgetRows.length > 0) {
                     legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-amber-300 border border-amber-400 mr-2 rounded-sm"></div> แผนงบประมาณ</div>`;
                     legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-amber-500 border border-amber-600 mr-2 rounded-sm"></div> ผลเบิกจ่าย</div>`;
@@ -731,7 +742,8 @@
 
                 const numUnits = units.length;
                 const hasBudget = budgetRows.length > 0 ? 1 : 0;
-                const minWidth = Math.max(1200, (numUnits + hasBudget) * 400); 
+                // ปรับระยะห่างให้สวยงาม ไม่เบียดกันแม้มียาว 10 หน่วย
+                const minWidth = Math.max(1200, (numUnits + hasBudget) * 300); 
                 barContainer.style.minWidth = `${minWidth}px`;
 
                 qData.forEach((q, index) => {
@@ -775,6 +787,9 @@
                         const bpH = Math.min((q.bPlan / maxB) * 100, 100);
                         const baH = q.showActual ? Math.min((q.bAct / maxB) * 100, 100) : 0;
                         const bBadgeClass = getBadgeColor(q.bAct, q.bPlan);
+
+                        // แทรกช่องว่างให้งบประมาณแยกออกมานิดนึง
+                        barsHtml += `<div class="w-4"></div>`;
 
                         barsHtml += `
                             <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
@@ -904,6 +919,9 @@
                     let displayName = act.name;
                     if (act.isKPI && viewLevel === 'SINGLE') {
                         displayName = act.name.replace("(KPI)", '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 mr-2 border border-blue-200 shadow-sm">(KPI)</span>');
+                    }
+                    if (viewLevel !== 'SINGLE' && act.isAggregatedKPI && Object.keys(kpiByUnit).length > 1) {
+                        displayName += ` <span class="text-[11px] text-slate-400 font-normal">(หน่วย: ${act.unit})</span>`;
                     }
 
                     const nameStyle = act.isKPI ? "text-cyan-950 font-bold" : "text-cyan-900 font-medium";
