@@ -81,33 +81,10 @@
             </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 fade-in-up delay-100 relative z-10">
-            <div class="group bg-gradient-to-br from-indigo-100 to-indigo-50 rounded-[1.5rem] shadow-md border border-indigo-200 p-6 sm:p-8 flex flex-col relative border-l-[6px] border-l-indigo-600 min-h-[160px] transform transition-all duration-500 hover:-translate-y-2 hover-glow-indigo overflow-hidden cursor-default">
-                <div class="w-full text-left z-10 mb-2">
-                    <p class="text-base sm:text-lg font-bold text-indigo-900">เป้าหมายรวม <span class="text-sm font-medium text-indigo-700/80 block sm:inline mt-1 sm:mt-0">(เฉพาะ KPI)</span></p>
-                </div>
-                <div class="w-full flex-grow flex items-center justify-center z-10 pb-2">
-                    <h2 class="text-5xl sm:text-6xl font-black text-indigo-950 tracking-tight transition-all" id="kpi-target">-</h2>
-                </div>
-                <div class="absolute right-[-20px] top-1/2 -translate-y-1/2 opacity-[0.05] group-hover:opacity-[0.1] transform group-hover:scale-[1.2] transition-all duration-700 pointer-events-none">
-                    <svg class="w-48 h-48 text-indigo-900" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
-                </div>
+        <div id="kpi-cards-container" class="flex flex-col gap-6 mb-8 relative z-10 fade-in-up delay-100">
             </div>
 
-            <div class="group bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-[1.5rem] shadow-md border border-emerald-200 p-6 sm:p-8 flex flex-col relative border-l-[6px] border-l-emerald-600 min-h-[160px] transform transition-all duration-500 hover:-translate-y-2 hover-glow-emerald overflow-hidden cursor-default">
-                <div class="w-full text-left z-10 mb-2">
-                    <p class="text-base sm:text-lg font-bold text-emerald-900">ผลการดำเนินงานสะสม <span class="text-sm font-medium text-emerald-700/80 block sm:inline mt-1 sm:mt-0">(เฉพาะ KPI)</span></p>
-                </div>
-                <div class="w-full flex-grow flex items-center justify-center z-10 pb-2">
-                    <h2 class="text-5xl sm:text-6xl font-black text-emerald-950 tracking-tight transition-all" id="kpi-actual">-</h2>
-                </div>
-                <div class="absolute right-[-20px] top-1/2 -translate-y-1/2 opacity-[0.05] group-hover:opacity-[0.1] transform group-hover:scale-[1.2] group-hover:translate-x-2 transition-all duration-700 pointer-events-none">
-                    <svg class="w-48 h-48 text-emerald-900" fill="currentColor" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
-                </div>
-            </div>
-        </div>
-
-        <div id="budget-section" class="hidden fade-in-up delay-200 bg-gradient-to-br from-amber-100 via-amber-200/50 to-amber-50 rounded-[1.5rem] shadow-md border border-amber-300 p-6 sm:p-8 mb-8 relative border-l-[6px] border-l-amber-600 transform transition-all duration-500 hover:-translate-y-1.5 hover-glow-amber">
+        <div id="budget-section" class="hidden fade-in-up delay-200 bg-gradient-to-br from-amber-100 via-amber-200/50 to-amber-50 rounded-[1.5rem] shadow-md border border-amber-300 p-6 sm:p-8 mb-8 relative border-l-[6px] border-l-amber-600 transform transition-all duration-500 hover:-translate-y-1.5 hover-glow">
             <h3 class="text-lg sm:text-xl font-bold mb-5 flex items-center text-amber-950 border-b border-amber-400/50 pb-3">
                 <svg class="w-7 h-7 mr-3 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 งบประมาณรวม
@@ -124,45 +101,8 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8 fade-in-up delay-300">
-            <div class="group bg-gradient-to-b from-purple-100 to-purple-50 rounded-[1.5rem] shadow-md border border-purple-200 p-6 sm:p-8 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-2 hover-glow">
-                <h3 class="text-lg font-bold mb-4 flex items-center text-purple-950">
-                    <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
-                    ผลการดำเนินงานภาพรวม
-                </h3>
-                <div class="flex-grow flex items-center justify-center my-6">
-                    <div id="pie-chart-kpi" class="conic-chart w-56 h-56 rounded-full relative flex items-center justify-center shadow-[inset_0_2px_15px_rgba(0,0,0,0.15)]" style="background: conic-gradient(#e2e8f0 0% 100%);">
-                        <div class="w-40 h-40 bg-white rounded-full flex flex-col items-center justify-center z-10 shadow-lg border-4 border-purple-50 transform transition-transform duration-500 group-hover:scale-105">
-                            <span class="text-4xl font-extrabold text-purple-950 transition-all" id="pie-percent-kpi">0%</span>
-                            <span class="text-xs font-bold text-purple-500 mt-1">เทียบเป้าหมายรวม</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-4 flex flex-col items-center text-center w-full">
-                    <p class="text-sm text-purple-800 font-bold mb-3">สถานะภาพรวมล่าสุด (เทียบแผนสะสมของไตรมาสที่ <span class="display-quarter"></span>)</p>
-                    <div id="project-status-kpi" class="inline-flex items-center justify-center px-5 py-3.5 rounded-2xl text-lg sm:text-[19px] font-bold border-2 shadow-sm w-full bg-white leading-tight transform transition-transform group-hover:scale-[1.02] transition-colors">กำลังโหลด...</div>
-                </div>
+        <div id="pie-charts-container" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8 fade-in-up delay-300">
             </div>
-
-            <div id="budget-pie-container" class="hidden group bg-gradient-to-b from-emerald-100 to-emerald-50 rounded-[1.5rem] shadow-md border border-emerald-200 p-6 sm:p-8 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-2 hover-glow">
-                <h3 class="text-lg font-bold mb-4 flex items-center text-emerald-950">
-                    <svg class="w-6 h-6 mr-2 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    ผลการใช้จ่ายงบประมาณรวม
-                </h3>
-                <div class="flex-grow flex items-center justify-center my-6">
-                    <div id="pie-chart-budget" class="conic-chart w-56 h-56 rounded-full relative flex items-center justify-center shadow-[inset_0_2px_15px_rgba(0,0,0,0.15)]" style="background: conic-gradient(#e2e8f0 0% 100%);">
-                        <div class="w-40 h-40 bg-white rounded-full flex flex-col items-center justify-center z-10 shadow-lg border-4 border-emerald-50 transform transition-transform duration-500 group-hover:scale-105">
-                            <span class="text-4xl font-extrabold text-emerald-950 transition-all" id="pie-percent-budget">0%</span>
-                            <span class="text-xs font-bold text-emerald-500 mt-1">เทียบงบประมาณรวม</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-4 flex flex-col items-center text-center w-full">
-                    <p class="text-sm text-emerald-800 font-bold mb-3">สถานะเบิกจ่ายล่าสุด (เทียบแผนสะสมของไตรมาสที่ <span class="display-quarter"></span>)</p>
-                    <div id="project-status-budget" class="inline-flex items-center justify-center px-5 py-3.5 rounded-2xl text-lg sm:text-[19px] font-bold border-2 shadow-sm w-full bg-white leading-tight transform transition-transform group-hover:scale-[1.02] transition-colors">กำลังโหลด...</div>
-                </div>
-            </div>
-        </div>
 
         <div class="fade-in-up delay-400 bg-gradient-to-br from-slate-100 via-indigo-100/40 to-slate-200 rounded-[2rem] shadow-lg border border-slate-300 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 hover:shadow-xl overflow-hidden">
             <h3 class="text-xl md:text-2xl font-extrabold mb-2 flex items-center text-indigo-950 border-b border-slate-300 pb-4">
@@ -170,16 +110,14 @@
                 ผลการดำเนินงานรวม สะสมรายไตรมาส
             </h3>
             
-            <div class="flex flex-wrap justify-center gap-x-4 sm:gap-x-6 gap-y-2 mt-4 mb-2 text-xs sm:text-sm font-bold text-slate-700 z-20">
-                <div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-green-300 border border-green-400 mr-2 rounded-sm"></div> แผนดำเนินงาน</div>
-                <div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-green-500 border border-green-600 mr-2 rounded-sm"></div> ผลดำเนินงาน</div>
-                <div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-amber-300 border border-amber-400 mr-2 rounded-sm"></div> แผนงบประมาณ</div>
-                <div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-amber-500 border border-amber-600 mr-2 rounded-sm"></div> ผลเบิกจ่าย</div>
-            </div>
+            <div class="flex flex-wrap justify-center gap-x-4 sm:gap-x-6 gap-y-2 mt-4 mb-2 text-xs sm:text-sm font-bold text-slate-700 z-20" id="bar-legend-container">
+                <div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-green-300 border border-green-400 mr-2 rounded-sm"></div> แผนดำเนินงาน (KPI)</div>
+                <div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200"><div class="w-3 h-3 bg-green-500 border border-green-600 mr-2 rounded-sm"></div> ผลดำเนินงาน (KPI)</div>
+                </div>
 
             <div class="w-full overflow-x-auto hide-scroll pb-6 pt-4">
-                <div class="relative h-[400px] sm:h-[450px] min-w-[1200px] flex justify-between items-end px-2 sm:px-4 pb-2 transition-all duration-500" id="combined-bar-chart-container">
-                </div>
+                <div class="relative h-[400px] sm:h-[450px] flex justify-between items-end px-2 sm:px-4 pb-2 transition-all duration-500" id="combined-bar-chart-container">
+                    </div>
             </div>
         </div>
 
@@ -275,12 +213,6 @@
             return parseFloat(String(val).replace(/,/g, '')) || 0;
         };
 
-        const calcSafePct = (actual, plan) => {
-            if (plan > 0) return ((actual / plan) * 100).toFixed(2);
-            if (actual > 0) return "100.00";
-            return "0.00";
-        };
-
         function determineStatus(dataObj, q, isLast) {
             let pCum = 0; let prevCum = 0;
             if (q >= 1) { pCum += dataObj.planQ1; prevCum = 0; }
@@ -363,7 +295,7 @@
         }
 
         // =====================================
-        // เริ่มการทำงาน
+        // เริ่มการทำงานหลัก
         // =====================================
         document.addEventListener('DOMContentLoaded', async () => {
             document.querySelectorAll('.display-quarter').forEach(el => el.textContent = currentQuarter);
@@ -389,8 +321,7 @@
                     const prefix = (item.seq && String(item.seq) !== "0") ? `${item.seq} ` : '';
                     const displayName = `${prefix}${item.name.replace(/^- /, '')}`;
 
-                    // ใส่ title เพื่อให้เป็น Tooltip แสดงชื่อเต็มเวลาเอาเมาส์ชี้ (แก้ข้อ 1.2)
-                    li.title = displayName;
+                    li.title = displayName; // Tooltip โชว์ชื่อเต็ม
 
                     let classes = "px-5 py-3.5 cursor-pointer transition-colors flex items-center ";
                     
@@ -403,7 +334,7 @@
                     }
                     
                     li.className = classes;
-                    // ปรับไอคอนให้ขนาดเท่ากันเป๊ะที่ w-5 h-5 (แก้ข้อ 1.1)
+                    // ล็อกขนาดไอคอนให้เท่ากันหมดที่ w-5 h-5
                     li.innerHTML = `
                         ${isAll ? '<svg class="w-5 h-5 mr-3 text-amber-400 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"></path></svg>' : ''}
                         ${(isGroup || (!isGroup && !isSub)) && !isAll ? '<svg class="w-5 h-5 mr-3 text-indigo-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path></svg>' : ''}
@@ -426,7 +357,7 @@
         });
 
         // =====================================
-        // สมองกลรวบรวมข้อมูลหลัก
+        // สมองกลรวบรวมข้อมูลหลัก (ดึงข้อมูล)
         // =====================================
         async function loadProject(index) {
             const displayTitle = document.getElementById('display-project-name');
@@ -438,7 +369,7 @@
             const prefix = (selectedItem.seq && String(selectedItem.seq) !== "0") ? `${selectedItem.seq} ` : '';
             dropdownText.textContent = `${prefix}${selectedItem.name.replace(/^- /, '')}`;
 
-            // การจัดการชื่อหัวเว็บ (ปีงบประมาณ 2569 โชว์แค่หน้าแรก)
+            // การจัดการชื่อหัวเว็บ
             const cleanName = selectedItem.name.replace(/^- /, '');
             if (viewLevel === "ALL") {
                 displayTitle.textContent = `${cleanName} ปีงบประมาณ 2569`;
@@ -466,7 +397,6 @@
             if (viewLevel === "ALL") {
                 itemsToFetch = MASTER_INDEX.filter(item => item.url.startsWith("http"));
             } else if (viewLevel === "GROUP") {
-                // ดึงเฉพาะไอเทมที่กรุ๊ปตรงกัน และมีขีดนำหน้า (ป้องกันโครงการเดี่ยวมาแทรก)
                 itemsToFetch = MASTER_INDEX.filter(item => item.group === selectedItem.group && item.url.startsWith("http") && item.name.trim().startsWith("-"));
             } else {
                 if(selectedItem.url.startsWith("http")) { 
@@ -522,10 +452,12 @@
 
                     validFetches.forEach(f => {
                         const actName = f.item.name.replace(/^- /, '') || "กิจกรรม";
-                        let aKPI = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0 };
+                        let aKPI = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0, unit: "ราย" };
+                        let issues = [];
 
                         f.data.forEach(row => {
                             const name = row["โครงการ/กิจกรรม"] || "";
+                            const unit = row["หน่วยนับ"] || "ราย";
                             const rt = getSafeNum(row, "เป้าหมาย"); const ra = getSafeNum(row, "ผลการดำเนินงานสะสม");
                             const pq1 = getSafeNum(row, "แผนไตรมาส 1"); const aq1 = getSafeNum(row, "ผลไตรมาส 1");
                             const pq2 = getSafeNum(row, "แผนไตรมาส 2"); const aq2 = getSafeNum(row, "ผลไตรมาส 2");
@@ -535,8 +467,9 @@
                             if (name.includes("งบประมาณ")) {
                                 tBudget.target += rt; tBudget.actual += ra; tBudget.p1 += pq1; tBudget.p2 += pq2; tBudget.p3 += pq3; tBudget.p4 += pq4; tBudget.a1 += aq1; tBudget.a2 += aq2; tBudget.a3 += aq3; tBudget.a4 += aq4;
                             } 
-                            else if (name.includes("(KPI)")) { // ดึงเฉพาะ KPI มาคำนวณเป้าหมายรวมของกลุ่ม
+                            else if (name.includes("(KPI)")) { 
                                 aKPI.target += rt; aKPI.actual += ra; aKPI.p1 += pq1; aKPI.p2 += pq2; aKPI.p3 += pq3; aKPI.p4 += pq4; aKPI.a1 += aq1; aKPI.a2 += aq2; aKPI.a3 += aq3; aKPI.a4 += aq4;
+                                aKPI.unit = unit; // ยึดหน่วยตาม KPI แรกที่เจอในกลุ่ม
                             }
                         });
 
@@ -544,11 +477,11 @@
                         synthesizedRows.push({
                             name: actName, 
                             isAggregatedKPI: true, 
-                            unit: "ราย", target: aKPI.target, actual: aKPI.actual,
+                            unit: aKPI.unit, target: aKPI.target, actual: aKPI.actual,
                             planQ1: aKPI.p1, planQ2: aKPI.p2, planQ3: aKPI.p3, planQ4: aKPI.p4,
                             actualQ1: aKPI.a1, actualQ2: aKPI.a2, actualQ3: aKPI.a3, actualQ4: aKPI.a4,
                             status: determineStatus(aObj, currentQuarter, isLastMonthOfQuarter),
-                            issue: "" // ซ่อนปัญหา
+                            issue: "" 
                         });
                     });
 
@@ -566,12 +499,9 @@
                     validFetches.forEach(f => {
                         const projName = f.item.group || "โครงการอื่นๆ";
 
-                        if (!projectKPIs[projName]) {
-                            projectKPIs[projName] = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0 };
-                        }
-
                         f.data.forEach(row => {
                             const name = row["โครงการ/กิจกรรม"] || "";
+                            const unit = row["หน่วยนับ"] || "ราย";
                             const rt = getSafeNum(row, "เป้าหมาย"); const ra = getSafeNum(row, "ผลการดำเนินงานสะสม");
                             const pq1 = getSafeNum(row, "แผนไตรมาส 1"); const aq1 = getSafeNum(row, "ผลไตรมาส 1");
                             const pq2 = getSafeNum(row, "แผนไตรมาส 2"); const aq2 = getSafeNum(row, "ผลไตรมาส 2");
@@ -581,19 +511,24 @@
                             if (name.includes("งบประมาณ")) {
                                 tBudget.target += rt; tBudget.actual += ra; tBudget.p1 += pq1; tBudget.p2 += pq2; tBudget.p3 += pq3; tBudget.p4 += pq4; tBudget.a1 += aq1; tBudget.a2 += aq2; tBudget.a3 += aq3; tBudget.a4 += aq4;
                             } 
-                            else if (name.includes("(KPI)")) { // ดึงเฉพาะ KPI
-                                projectKPIs[projName].target += rt; projectKPIs[projName].actual += ra; projectKPIs[projName].p1 += pq1; projectKPIs[projName].p2 += pq2; projectKPIs[projName].p3 += pq3; projectKPIs[projName].p4 += pq4; projectKPIs[projName].a1 += aq1; projectKPIs[projName].a2 += aq2; projectKPIs[projName].a3 += aq3; projectKPIs[projName].a4 += aq4;
+                            else if (name.includes("(KPI)")) { 
+                                const key = `${projName}_|_${unit}`; // แยกโปรเจกต์ตามหน่วยนับเพื่อไม่ให้เลขปนกัน
+                                if (!projectKPIs[key]) {
+                                    projectKPIs[key] = { name: projName, unit: unit, target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0 };
+                                }
+                                projectKPIs[key].target += rt; projectKPIs[key].actual += ra;
+                                projectKPIs[key].p1 += pq1; projectKPIs[key].p2 += pq2; projectKPIs[key].p3 += pq3; projectKPIs[key].p4 += pq4;
+                                projectKPIs[key].a1 += aq1; projectKPIs[key].a2 += aq2; projectKPIs[key].a3 += aq3; projectKPIs[key].a4 += aq4;
                             }
                         });
                     });
 
-                    Object.keys(projectKPIs).forEach(pName => {
-                        const aKPI = projectKPIs[pName];
+                    Object.keys(projectKPIs).forEach(key => {
+                        const aKPI = projectKPIs[key];
                         const aObj = { planQ1: aKPI.p1, planQ2: aKPI.p2, planQ3: aKPI.p3, planQ4: aKPI.p4, actual: aKPI.actual };
                         synthesizedRows.push({
-                            name: pName, 
-                            isAggregatedKPI: true,
-                            unit: "ราย", target: aKPI.target, actual: aKPI.actual,
+                            name: aKPI.name, isAggregatedKPI: true, unit: aKPI.unit, 
+                            target: aKPI.target, actual: aKPI.actual,
                             planQ1: aKPI.p1, planQ2: aKPI.p2, planQ3: aKPI.p3, planQ4: aKPI.p4,
                             actualQ1: aKPI.a1, actualQ2: aKPI.a2, actualQ3: aKPI.a3, actualQ4: aKPI.a4,
                             status: determineStatus(aObj, currentQuarter, isLastMonthOfQuarter),
@@ -618,189 +553,275 @@
         }
 
         // =====================================
-        // ฟังก์ชันวาดกราฟและตาราง (แก้บั๊กสมบูรณ์ 100%)
+        // ฟังก์ชันวาดกราฟและตาราง 
         // =====================================
         function renderDashboard(allRows, viewLevel) {
             try {
-                // -- 1. งบประมาณ --
+                // -- 1. จัดกลุ่ม KPI ตามหน่วยนับ (Multi-Unit Engine) --
+                const activities = allRows.filter(act => act.name !== "-" && !act.name.includes("งบประมาณ"));
+                const kpiActivities = activities.filter(act => act.name.includes("(KPI)") || act.isAggregatedKPI);
+                
+                const kpiByUnit = {};
+                kpiActivities.forEach(act => {
+                    const u = act.unit || "ราย";
+                    if (!kpiByUnit[u]) kpiByUnit[u] = { target: 0, actual: 0, p1: 0, p2: 0, p3: 0, p4: 0, a1: 0, a2: 0, a3: 0, a4: 0, acts: [] };
+                    kpiByUnit[u].target += act.target; kpiByUnit[u].actual += act.actual;
+                    kpiByUnit[u].p1 += act.planQ1; kpiByUnit[u].p2 += act.planQ2; kpiByUnit[u].p3 += act.planQ3; kpiByUnit[u].p4 += act.planQ4;
+                    kpiByUnit[u].a1 += act.actualQ1; kpiByUnit[u].a2 += act.actualQ2; kpiByUnit[u].a3 += act.actualQ3; kpiByUnit[u].a4 += act.actualQ4;
+                    kpiByUnit[u].acts.push(act);
+                });
+
+                // สร้าง Default ถ้าไม่มีข้อมูล
+                if (Object.keys(kpiByUnit).length === 0) {
+                    kpiByUnit["ราย"] = { target: 0, actual: 0, p1: 0, p2: 0, p3: 0, p4: 0, a1: 0, a2: 0, a3: 0, a4: 0, acts: [] };
+                }
+
+                // -- 2. วาด Top KPI Cards (โคลนตามจำนวนหน่วยนับ) --
+                const kpiCardsContainer = document.getElementById('kpi-cards-container');
+                kpiCardsContainer.innerHTML = '';
+                
+                Object.keys(kpiByUnit).forEach((unit, idx) => {
+                    const d = kpiByUnit[unit];
+                    kpiCardsContainer.innerHTML += `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full fade-in-up" style="animation-delay: ${idx * 100}ms">
+                            <div class="group bg-gradient-to-br from-indigo-100 to-indigo-50 rounded-[1.5rem] shadow-md border border-indigo-200 p-6 sm:p-8 flex flex-col relative border-l-[6px] border-l-indigo-600 min-h-[160px] transform transition-all duration-500 hover:-translate-y-2 hover-glow-indigo overflow-hidden cursor-default">
+                                <div class="w-full text-left z-10 mb-2">
+                                    <p class="text-base sm:text-lg font-bold text-indigo-900">เป้าหมายรวม <span class="text-sm font-medium text-indigo-700/80 block sm:inline mt-1 sm:mt-0">(เฉพาะ KPI หน่วย: ${unit})</span></p>
+                                </div>
+                                <div class="w-full flex-grow flex items-center justify-center z-10 pb-2">
+                                    <h2 class="text-5xl sm:text-6xl font-black text-indigo-950 tracking-tight transition-all">${formatAutoDecimal(d.target)} <span class="text-xl sm:text-3xl font-bold text-indigo-700/50 ml-1">${unit}</span></h2>
+                                </div>
+                                <div class="absolute right-[-20px] top-1/2 -translate-y-1/2 opacity-[0.05] group-hover:opacity-[0.1] transform group-hover:scale-[1.2] transition-all duration-700 pointer-events-none">
+                                    <svg class="w-48 h-48 text-indigo-900" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                                </div>
+                            </div>
+                            <div class="group bg-gradient-to-br from-emerald-100 to-emerald-50 rounded-[1.5rem] shadow-md border border-emerald-200 p-6 sm:p-8 flex flex-col relative border-l-[6px] border-l-emerald-600 min-h-[160px] transform transition-all duration-500 hover:-translate-y-2 hover-glow-emerald overflow-hidden cursor-default">
+                                <div class="w-full text-left z-10 mb-2">
+                                    <p class="text-base sm:text-lg font-bold text-emerald-900">ผลการดำเนินงานสะสม <span class="text-sm font-medium text-emerald-700/80 block sm:inline mt-1 sm:mt-0">(เฉพาะ KPI หน่วย: ${unit})</span></p>
+                                </div>
+                                <div class="w-full flex-grow flex items-center justify-center z-10 pb-2">
+                                    <h2 class="text-5xl sm:text-6xl font-black text-emerald-950 tracking-tight transition-all">${formatAutoDecimal(d.actual)} <span class="text-xl sm:text-3xl font-bold text-emerald-700/50 ml-1">${unit}</span></h2>
+                                </div>
+                                <div class="absolute right-[-20px] top-1/2 -translate-y-1/2 opacity-[0.05] group-hover:opacity-[0.1] transform group-hover:scale-[1.2] group-hover:translate-x-2 transition-all duration-700 pointer-events-none">
+                                    <svg class="w-48 h-48 text-emerald-900" fill="currentColor" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // -- 3. งบประมาณ --
                 const budgetRows = allRows.filter(act => act.name.includes("งบประมาณ"));
-                let bPlanQ1 = 0, bPlanQ2 = 0, bPlanQ3 = 0, bPlanQ4 = 0;
-                let bActQ1 = 0, bActQ2 = 0, bActQ3 = 0, bActQ4 = 0;
+                let tBudget = { target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0, unit: "บาท" };
                 
                 if (budgetRows.length > 0) {
                     document.getElementById('budget-section').classList.remove('hidden');
-                    document.getElementById('budget-pie-container').classList.remove('hidden');
+                    tBudget.target = budgetRows.reduce((sum, r) => sum + r.target, 0);
+                    tBudget.actual = budgetRows.reduce((sum, r) => sum + r.actual, 0);
+                    tBudget.p1 = budgetRows.reduce((sum, r) => sum + r.planQ1, 0);
+                    tBudget.p2 = budgetRows.reduce((sum, r) => sum + r.planQ2, 0);
+                    tBudget.p3 = budgetRows.reduce((sum, r) => sum + r.planQ3, 0);
+                    tBudget.p4 = budgetRows.reduce((sum, r) => sum + r.planQ4, 0);
+                    tBudget.a1 = budgetRows.reduce((sum, r) => sum + r.actualQ1, 0);
+                    tBudget.a2 = budgetRows.reduce((sum, r) => sum + r.actualQ2, 0);
+                    tBudget.a3 = budgetRows.reduce((sum, r) => sum + r.actualQ3, 0);
+                    tBudget.a4 = budgetRows.reduce((sum, r) => sum + r.actualQ4, 0);
+                    tBudget.unit = budgetRows[0].unit || "บาท";
 
-                    const bTarget = budgetRows.reduce((sum, r) => sum + r.target, 0);
-                    const bActual = budgetRows.reduce((sum, r) => sum + r.actual, 0);
-                    bPlanQ1 = budgetRows.reduce((sum, r) => sum + r.planQ1, 0);
-                    bPlanQ2 = budgetRows.reduce((sum, r) => sum + r.planQ2, 0);
-                    bPlanQ3 = budgetRows.reduce((sum, r) => sum + r.planQ3, 0);
-                    bPlanQ4 = budgetRows.reduce((sum, r) => sum + r.planQ4, 0);
-                    bActQ1 = budgetRows.reduce((sum, r) => sum + r.actualQ1, 0);
-                    bActQ2 = budgetRows.reduce((sum, r) => sum + r.actualQ2, 0);
-                    bActQ3 = budgetRows.reduce((sum, r) => sum + r.actualQ3, 0);
-                    bActQ4 = budgetRows.reduce((sum, r) => sum + r.actualQ4, 0);
-                    
-                    const bUnit = budgetRows[0].unit || "บาท";
-                    const bPercentCum = bTarget > 0 ? ((bActual / bTarget) * 100).toFixed(2) : "0.00";
-                    
-                    let bCurrentPlanCum = 0; let bPreviousPlanCum = 0;
-                    if (currentQuarter >= 1) { bCurrentPlanCum += bPlanQ1; bPreviousPlanCum = 0; }
-                    if (currentQuarter >= 2) { bCurrentPlanCum += bPlanQ2; bPreviousPlanCum += bPlanQ1; }
-                    if (currentQuarter >= 3) { bCurrentPlanCum += bPlanQ3; bPreviousPlanCum += (bPlanQ1 + bPlanQ2); }
-                    if (currentQuarter >= 4) { bCurrentPlanCum += bPlanQ4; bPreviousPlanCum += (bPlanQ1 + bPlanQ2 + bPlanQ3); }
+                    document.getElementById('budget-target').innerHTML = `${formatMoney(tBudget.target)} <span class="text-xl font-bold text-amber-700/60 ml-1">${tBudget.unit}</span>`;
+                    document.getElementById('budget-actual').innerHTML = `${formatMoney(tBudget.actual)} <span class="text-xl font-bold text-emerald-600/60 ml-1">${tBudget.unit}</span>`;
+                } else {
+                    document.getElementById('budget-section').classList.add('hidden');
+                }
 
-                    let bStatus = determineStatus({actual: bActual, planQ1: bPlanQ1, planQ2: bPlanQ2, planQ3: bPlanQ3, planQ4: bPlanQ4}, currentQuarter, isLastMonthOfQuarter);
-                    let bDisplayPct = bCurrentPlanCum > 0 ? (bActual / bCurrentPlanCum) * 100 : (bPreviousPlanCum > 0 ? (bActual / bPreviousPlanCum) * 100 : 0);
+                // -- 4. วาดกราฟวงกลมเปรียบเทียบ --
+                const pieChartsContainer = document.getElementById('pie-charts-container');
+                pieChartsContainer.innerHTML = '';
+                const pieAnimations = []; 
 
-                    document.getElementById('budget-target').innerHTML = `${formatMoney(bTarget)} <span class="text-xl font-bold text-amber-700/60 ml-1">${bUnit}</span>`;
-                    document.getElementById('budget-actual').innerHTML = `${formatMoney(bActual)} <span class="text-xl font-bold text-emerald-600/60 ml-1">${bUnit}</span>`;
+                Object.keys(kpiByUnit).forEach((unit, idx) => {
+                    const d = kpiByUnit[unit];
+                    const percentCum = d.target > 0 ? ((d.actual / d.target) * 100).toFixed(2) : "0.00";
                     
-                    const bPieChart = document.getElementById('pie-chart-budget');
-                    document.getElementById('pie-percent-budget').textContent = bPercentCum + '%';
+                    let pCum = 0, prevCum = 0;
+                    if (currentQuarter >= 1) { pCum += d.p1; prevCum = 0; }
+                    if (currentQuarter >= 2) { pCum += d.p2; prevCum += d.p1; }
+                    if (currentQuarter >= 3) { pCum += d.p3; prevCum += (d.p1 + d.p2); }
+                    if (currentQuarter >= 4) { pCum += d.p4; prevCum += (d.p1 + d.p2 + d.p3); }
+                    
+                    let statusObj = determineStatus({actual: d.actual, planQ1: d.p1, planQ2: d.p2, planQ3: d.p3, planQ4: d.p4}, currentQuarter, isLastMonthOfQuarter);
+                    let displayPct = pCum > 0 ? (d.actual / pCum) * 100 : (prevCum > 0 ? (d.actual / prevCum) * 100 : 0);
+
+                    let pieColor = "#16a34a"; 
+                    if (statusObj.includes("ล่าช้า")) pieColor = "#eab308"; 
+                    if (statusObj.includes("เสี่ยง")) pieColor = "#ef4444"; 
+                    if (pCum === 0) pieColor = "#cbd5e1";
+
+                    pieChartsContainer.innerHTML += `
+                        <div class="group bg-gradient-to-b from-purple-100 to-purple-50 rounded-[1.5rem] shadow-md border border-purple-200 p-6 sm:p-8 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-2 hover-glow fade-in-up" style="animation-delay: ${idx * 100}ms">
+                            <h3 class="text-lg font-bold mb-4 flex items-center text-purple-950">
+                                <svg class="w-6 h-6 mr-2 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                                ผลการดำเนินงานภาพรวม (${unit})
+                            </h3>
+                            <div class="flex-grow flex items-center justify-center my-6">
+                                <div id="pie-chart-kpi-${idx}" class="conic-chart w-56 h-56 rounded-full relative flex items-center justify-center shadow-[inset_0_2px_15px_rgba(0,0,0,0.15)]" style="background: conic-gradient(#e2e8f0 0% 100%);">
+                                    <div class="w-40 h-40 bg-white rounded-full flex flex-col items-center justify-center z-10 shadow-lg border-4 border-purple-50 transform transition-transform duration-500 group-hover:scale-105">
+                                        <span class="text-4xl font-extrabold text-purple-950 transition-all">${percentCum}%</span>
+                                        <span class="text-xs font-bold text-purple-500 mt-1">เทียบเป้าหมายรวม</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex flex-col items-center text-center w-full">
+                                <p class="text-sm text-purple-800 font-bold mb-3">สถานะภาพรวมล่าสุด (ไตรมาสที่ <span class="display-quarter">${currentQuarter}</span>)</p>
+                                <div class="inline-flex items-center justify-center px-5 py-3.5 rounded-2xl text-lg sm:text-[19px] font-bold border-2 shadow-sm w-full bg-white leading-tight transition-colors ${getStatusStyles(statusObj)}">
+                                    ${pCum > 0 ? `${statusObj} (${displayPct > 100 ? 100 : displayPct.toFixed(2)}%)` : statusObj}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    pieAnimations.push({ id: `pie-chart-kpi-${idx}`, color: pieColor, pct: percentCum });
+                });
+
+                if (budgetRows.length > 0) {
+                    const bPercentCum = tBudget.target > 0 ? ((tBudget.actual / tBudget.target) * 100).toFixed(2) : "0.00";
+                    let bCum = 0, bPrevCum = 0;
+                    if (currentQuarter >= 1) { bCum += tBudget.p1; bPrevCum = 0; }
+                    if (currentQuarter >= 2) { bCum += tBudget.p2; bPrevCum += tBudget.p1; }
+                    if (currentQuarter >= 3) { bCum += tBudget.p3; bPrevCum += (tBudget.p1 + tBudget.p2); }
+                    if (currentQuarter >= 4) { bCum += tBudget.p4; bPrevCum += (tBudget.p1 + tBudget.p2 + tBudget.p3); }
+                    
+                    let bStatus = determineStatus({actual: tBudget.actual, planQ1: tBudget.p1, planQ2: tBudget.p2, planQ3: tBudget.p3, planQ4: tBudget.p4}, currentQuarter, isLastMonthOfQuarter);
+                    let bDisplayPct = bCum > 0 ? (tBudget.actual / bCum) * 100 : (bPrevCum > 0 ? (tBudget.actual / bPrevCum) * 100 : 0);
+
                     let bPieColor = "#10b981"; 
                     if (bStatus.includes("ล่าช้า")) bPieColor = "#f59e0b"; 
                     if (bStatus.includes("เสี่ยง")) bPieColor = "#ef4444"; 
-                    if (bCurrentPlanCum === 0) bPieColor = "#cbd5e1";
-                    
-                    bPieChart.style.background = `conic-gradient(#e2e8f0 0% 100%)`;
-                    setTimeout(() => { bPieChart.style.background = `conic-gradient(${bPieColor} 0% ${bPercentCum}%, #ecfdf5 ${bPercentCum}% 100%)`; }, 50);
+                    if (bCum === 0) bPieColor = "#cbd5e1";
 
-                    const bStatusEl = document.getElementById('project-status-budget');
-                    let bStatusText = bCurrentPlanCum > 0 ? `${bStatus} (${bDisplayPct > 100 ? 100 : bDisplayPct.toFixed(2)}%)` : bStatus;
-                    bStatusEl.textContent = bStatusText;
-                    bStatusEl.className = `inline-flex items-center justify-center px-5 py-3.5 rounded-2xl text-lg sm:text-[19px] font-bold border-2 shadow-sm w-full bg-white leading-tight transition-colors ${getStatusStyles(bStatus)}`;
-                } else {
-                    document.getElementById('budget-section').classList.add('hidden');
-                    document.getElementById('budget-pie-container').classList.add('hidden');
+                    pieChartsContainer.innerHTML += `
+                        <div class="group bg-gradient-to-b from-emerald-100 to-emerald-50 rounded-[1.5rem] shadow-md border border-emerald-200 p-6 sm:p-8 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-2 hover-glow fade-in-up delay-200">
+                            <h3 class="text-lg font-bold mb-4 flex items-center text-emerald-950">
+                                <svg class="w-6 h-6 mr-2 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                ผลการใช้จ่ายงบประมาณรวม
+                            </h3>
+                            <div class="flex-grow flex items-center justify-center my-6">
+                                <div id="pie-chart-budget" class="conic-chart w-56 h-56 rounded-full relative flex items-center justify-center shadow-[inset_0_2px_15px_rgba(0,0,0,0.15)]" style="background: conic-gradient(#e2e8f0 0% 100%);">
+                                    <div class="w-40 h-40 bg-white rounded-full flex flex-col items-center justify-center z-10 shadow-lg border-4 border-emerald-50 transform transition-transform duration-500 group-hover:scale-105">
+                                        <span class="text-4xl font-extrabold text-emerald-950 transition-all">${bPercentCum}%</span>
+                                        <span class="text-xs font-bold text-emerald-500 mt-1">เทียบงบประมาณรวม</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex flex-col items-center text-center w-full">
+                                <p class="text-sm text-emerald-800 font-bold mb-3">สถานะเบิกจ่ายล่าสุด (ไตรมาสที่ <span class="display-quarter">${currentQuarter}</span>)</p>
+                                <div class="inline-flex items-center justify-center px-5 py-3.5 rounded-2xl text-lg sm:text-[19px] font-bold border-2 shadow-sm w-full bg-white leading-tight transition-colors ${getStatusStyles(bStatus)}">
+                                    ${bCum > 0 ? `${bStatus} (${bDisplayPct > 100 ? 100 : bDisplayPct.toFixed(2)}%)` : bStatus}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    pieAnimations.push({ id: `pie-chart-budget`, color: bPieColor, pct: bPercentCum });
                 }
 
-                // -- 2. งานภาพรวม (KPI) --
-                const activities = allRows.filter(act => act.name !== "-" && !act.name.includes("งบประมาณ"));
-                const kpiActivities = activities.filter(act => act.name.includes("(KPI)") || act.isAggregatedKPI);
+                setTimeout(() => {
+                    pieAnimations.forEach(anim => {
+                        const el = document.getElementById(anim.id);
+                        if(el) el.style.background = `conic-gradient(${anim.color} 0% ${anim.pct}%, #ecfdf5 ${anim.pct}% 100%)`;
+                    });
+                }, 50);
 
-                const totalTarget = kpiActivities.reduce((sum, act) => sum + act.target, 0);
-                const totalActual = kpiActivities.reduce((sum, act) => sum + act.actual, 0);
-                const percentCum = totalTarget > 0 ? ((totalActual / totalTarget) * 100).toFixed(2) : "0.00";
-                
-                const planQ1 = kpiActivities.reduce((sum, act) => sum + act.planQ1, 0);
-                const planQ2 = kpiActivities.reduce((sum, act) => sum + act.planQ2, 0);
-                const planQ3 = kpiActivities.reduce((sum, act) => sum + act.planQ3, 0);
-                const planQ4 = kpiActivities.reduce((sum, act) => sum + act.planQ4, 0);
-
-                let projectStatus = determineStatus({actual: totalActual, planQ1: planQ1, planQ2: planQ2, planQ3: planQ3, planQ4: planQ4}, currentQuarter, isLastMonthOfQuarter);
-                
-                let currentPlanCum = 0; let previousPlanCum = 0;
-                if (currentQuarter >= 1) { currentPlanCum += planQ1; previousPlanCum = 0; }
-                if (currentQuarter >= 2) { currentPlanCum += planQ2; previousPlanCum += planQ1; }
-                if (currentQuarter >= 3) { currentPlanCum += planQ3; previousPlanCum += (planQ1 + planQ2); }
-                if (currentQuarter >= 4) { currentPlanCum += planQ4; previousPlanCum += (planQ1 + planQ2 + planQ3); }
-                let displayPct = currentPlanCum > 0 ? (totalActual / currentPlanCum) * 100 : (previousPlanCum > 0 ? (totalActual / previousPlanCum) * 100 : 0);
-
-                document.getElementById('kpi-target').innerHTML = `${formatAutoDecimal(totalTarget)} <span class="text-xl sm:text-3xl font-bold text-indigo-700/50 ml-1">ราย</span>`;
-                document.getElementById('kpi-actual').innerHTML = `${formatAutoDecimal(totalActual)} <span class="text-xl sm:text-3xl font-bold text-emerald-700/50 ml-1">ราย</span>`;
-                
-                const pieChart = document.getElementById('pie-chart-kpi');
-                document.getElementById('pie-percent-kpi').textContent = percentCum + '%';
-                
-                let pieColor = "#16a34a"; 
-                if (projectStatus.includes("ล่าช้า")) pieColor = "#eab308"; 
-                if (projectStatus.includes("เสี่ยง")) pieColor = "#ef4444"; 
-                if (currentPlanCum === 0) pieColor = "#cbd5e1";
-
-                pieChart.style.background = `conic-gradient(#e2e8f0 0% 100%)`;
-                setTimeout(() => { pieChart.style.background = `conic-gradient(${pieColor} 0% ${percentCum}%, #f1f5f9 ${percentCum}% 100%)`; }, 50);
-
-                const statusEl = document.getElementById('project-status-kpi');
-                let displayStatusText = currentPlanCum > 0 ? `${projectStatus} (${displayPct > 100 ? 100 : displayPct.toFixed(2)}%)` : projectStatus;
-                statusEl.textContent = displayStatusText;
-                statusEl.className = `inline-flex items-center justify-center px-5 py-3.5 rounded-2xl text-lg sm:text-[19px] font-bold border-2 shadow-sm w-full bg-white leading-tight transition-colors ${getStatusStyles(projectStatus)}`;
-
-                // -- 3. กราฟแท่งรวม (ใช้ KPI ล้วนๆ) --
-                const actualQ1 = kpiActivities.reduce((sum, act) => sum + act.actualQ1, 0);
-                const actualQ2 = kpiActivities.reduce((sum, act) => sum + act.actualQ2, 0);
-                const actualQ3 = kpiActivities.reduce((sum, act) => sum + act.actualQ3, 0);
-                const actualQ4 = kpiActivities.reduce((sum, act) => sum + act.actualQ4, 0);
-
-                const qData = [
-                    { 
-                        name: 'ไตรมาสที่ 1', showActual: currentQuarter >= 1, 
-                        pPlan: planQ1, pAct: actualQ1, pPct: calcSafePct(actualQ1, planQ1),
-                        bPlan: bPlanQ1, bAct: bActQ1, bPct: calcSafePct(bActQ1, bPlanQ1)
-                    },
-                    { 
-                        name: 'ไตรมาสที่ 2', showActual: currentQuarter >= 2, 
-                        pPlan: planQ1 + planQ2, pAct: actualQ1 + actualQ2, pPct: calcSafePct(actualQ1+actualQ2, planQ1+planQ2),
-                        bPlan: bPlanQ1 + bPlanQ2, bAct: bActQ1 + bActQ2, bPct: calcSafePct(bActQ1+bActQ2, bPlanQ1+bPlanQ2)
-                    },
-                    { 
-                        name: 'ไตรมาสที่ 3', showActual: currentQuarter >= 3, 
-                        pPlan: planQ1 + planQ2 + planQ3, pAct: actualQ1 + actualQ2 + actualQ3, pPct: calcSafePct(actualQ1+actualQ2+actualQ3, planQ1+planQ2+planQ3),
-                        bPlan: bPlanQ1 + bPlanQ2 + bPlanQ3, bAct: bActQ1 + bActQ2 + bActQ3, bPct: calcSafePct(bActQ1+bActQ2+bActQ3, bPlanQ1+bPlanQ2+bPlanQ3)
-                    },
-                    { 
-                        name: 'ไตรมาสที่ 4', showActual: currentQuarter >= 4, 
-                        pPlan: planQ1 + planQ2 + planQ3 + planQ4, pAct: actualQ1 + actualQ2 + actualQ3 + actualQ4, pPct: calcSafePct(actualQ1+actualQ2+actualQ3+actualQ4, planQ1+planQ2+planQ3+planQ4),
-                        bPlan: bPlanQ1 + bPlanQ2 + bPlanQ3 + bPlanQ4, bAct: bActQ1 + bActQ2 + bActQ3 + bActQ4, bPct: calcSafePct(bActQ1+bActQ2+bActQ3+bActQ4, bPlanQ1+bPlanQ2+bPlanQ3+bPlanQ4)
-                    }
-                ];
-
-                const maxP = Math.max(...qData.map(d => Math.max(d.pPlan, d.pAct))) * 1.25 || 1; 
-                const maxB = Math.max(...qData.map(d => Math.max(d.bPlan, d.bAct))) * 1.25 || 1; 
-
+                // -- 5. วาดกราฟแท่งรวม (Multi-Bar) --
                 const barContainer = document.getElementById('combined-bar-chart-container');
                 barContainer.innerHTML = '';
                 
-                qData.forEach((q, index) => {
-                    const ppH = (q.pPlan / maxP) * 100;
-                    const paH = q.showActual ? (q.pAct / maxP) * 100 : 0;
-                    const bpH = (q.bPlan / maxB) * 100;
-                    const baH = q.showActual ? (q.bAct / maxB) * 100 : 0;
-
-                    const pBadgeClass = getBadgeColor(q.pAct, q.pPlan);
-                    const bBadgeClass = getBadgeColor(q.bAct, q.bPlan);
-
-                    const cardBgClass = index % 2 === 0 
-                        ? "bg-indigo-100/60 border border-indigo-200 shadow-sm" 
-                        : "bg-white/90 border border-slate-200 shadow-sm";
+                const qData = [1, 2, 3, 4].map(q => {
+                    let kpis = Object.keys(kpiByUnit).map(unit => {
+                        let pPlan = 0, pAct = 0;
+                        for(let i=1; i<=q; i++) { pPlan += kpiByUnit[unit][`p${i}`]; pAct += kpiByUnit[unit][`a${i}`]; }
+                        return { unit: unit, plan: pPlan, act: pAct, pct: calcSafePct(pAct, pPlan) };
+                    });
                     
+                    let bPlan = 0, bAct = 0;
+                    if(budgetRows.length > 0) {
+                        for(let i=1; i<=q; i++) { bPlan += tBudget[`p${i}`]; bAct += tBudget[`a${i}`]; }
+                    }
+                    return { q: q, name: `ไตรมาสที่ ${q}`, showActual: currentQuarter >= q, kpis: kpis, bPlan: bPlan, bAct: bAct, bPct: calcSafePct(bAct, bPlan) };
+                });
+
+                const numUnits = Object.keys(kpiByUnit).length;
+                const hasBudget = budgetRows.length > 0 ? 1 : 0;
+                const minWidth = Math.max(1200, (numUnits + hasBudget) * 400); 
+                barContainer.style.minWidth = `${minWidth}px`;
+
+                qData.forEach((q, index) => {
+                    let barsHtml = '';
+                    
+                    q.kpis.forEach(kpi => {
+                        const maxVal = Math.max(kpiByUnit[kpi.unit].target, kpiByUnit[kpi.unit].actual, ...[1,2,3,4].map(qx => {
+                            let s = 0; for(let i=1; i<=qx; i++) s+= kpiByUnit[kpi.unit][`p${i}`]; return s;
+                        })) * 1.25 || 1;
+                        
+                        const ppH = Math.min((kpi.plan / maxVal) * 100, 100);
+                        const paH = q.showActual ? Math.min((kpi.act / maxVal) * 100, 100) : 0;
+                        const pBadgeClass = getBadgeColor(kpi.act, kpi.plan);
+
+                        barsHtml += `
+                            <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
+                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-20 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${ppH}%">
+                                    <span class="text-[10px] sm:text-[11px] font-bold text-green-800 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-green-100">${formatAutoDecimal(kpi.plan)} ${kpi.unit}</span>
+                                </div>
+                                <div class="w-full bg-green-200 border border-green-400 rounded-t-sm bar-chart-col transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${ppH}"></div>
+                            </div>
+                            ${q.showActual ? `
+                            <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
+                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-30 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${paH}%">
+                                    <span class="${pBadgeClass} text-[10px] sm:text-[11px] px-2 py-0.5 rounded shadow-lg mb-1 whitespace-nowrap font-bold border transition-colors">${kpi.pct}%</span>
+                                    <span class="text-[10px] sm:text-[11px] font-bold text-green-950 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-green-200">${formatAutoDecimal(kpi.act)} ${kpi.unit}</span>
+                                </div>
+                                <div class="w-full bg-green-500 rounded-t-sm bar-chart-col shadow-md border border-green-600 transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${paH}"></div>
+                            </div>
+                            ` : `<div class="w-6 sm:w-10 lg:w-12 bg-transparent mx-1"></div>`}
+                            <div class="w-1 sm:w-3 border-r border-slate-300/60 h-1/3 my-auto mx-1"></div>
+                        `;
+                    });
+
+                    if(hasBudget) {
+                        const maxB = Math.max(tBudget.target, tBudget.actual, ...[1,2,3,4].map(qx => {
+                            let s = 0; for(let i=1; i<=qx; i++) s+= tBudget[`p${i}`]; return s;
+                        })) * 1.25 || 1;
+                        
+                        const bpH = Math.min((q.bPlan / maxB) * 100, 100);
+                        const baH = q.showActual ? Math.min((q.bAct / maxB) * 100, 100) : 0;
+                        const bBadgeClass = getBadgeColor(q.bAct, q.bPlan);
+
+                        barsHtml += `
+                            <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
+                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-20 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${bpH}%">
+                                    <span class="text-[10px] sm:text-[11px] font-bold text-amber-800 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-amber-100">${formatMoney(q.bPlan)} บาท</span>
+                                </div>
+                                <div class="w-full bg-amber-200 border border-amber-400 rounded-t-sm bar-chart-col transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${bpH}"></div>
+                            </div>
+                            ${q.showActual ? `
+                            <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
+                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-30 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${baH}%">
+                                    <span class="${bBadgeClass} text-[10px] sm:text-[11px] px-2 py-0.5 rounded shadow-lg mb-1 whitespace-nowrap font-bold border transition-colors">${q.bPct}%</span>
+                                    <span class="text-[10px] sm:text-[11px] font-bold text-amber-950 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-amber-200">${formatMoney(q.bAct)} บาท</span>
+                                </div>
+                                <div class="w-full bg-amber-500 rounded-t-sm bar-chart-col shadow-md border border-amber-600 transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${baH}"></div>
+                            </div>
+                            ` : `<div class="w-6 sm:w-10 lg:w-12 bg-transparent mx-1"></div>`}
+                        `;
+                    } else {
+                        barsHtml = barsHtml.replace(/<div class="w-1 sm:w-3 border-r border-slate-300\/60 h-1\/3 my-auto mx-1"><\/div>$/, '');
+                    }
+
+                    const cardBgClass = index % 2 === 0 ? "bg-indigo-100/60 border border-indigo-200 shadow-sm" : "bg-white/90 border border-slate-200 shadow-sm";
                     const labelBgClass = index % 2 === 0 ? "bg-indigo-600 text-white shadow-md" : "bg-slate-600 text-white shadow-md";
 
                     barContainer.innerHTML += `
-                        <div class="group/bar flex flex-col items-center w-1/4 h-full justify-end ${cardBgClass} backdrop-blur-sm rounded-3xl mx-2 sm:mx-4 relative pt-4 pb-2 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.3)] hover:z-40">
-                            <div class="flex items-end space-x-2 sm:space-x-4 h-full w-full justify-center relative z-10 px-2 sm:px-4">
-                                <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-16 group/item hover:z-50">
-                                    <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-20 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${ppH}%">
-                                        <span class="text-[10px] sm:text-xs font-bold text-green-800 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-green-100">${formatAutoDecimal(q.pPlan)}</span>
-                                    </div>
-                                    <div class="w-full bg-green-200 border border-green-400 rounded-t-sm bar-chart-col transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${ppH}"></div>
-                                </div>
-                                ${q.showActual ? `
-                                <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-16 group/item hover:z-50">
-                                    <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-30 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${paH}%">
-                                        <span class="${pBadgeClass} text-[10px] sm:text-xs px-2 py-0.5 rounded shadow-lg mb-1 whitespace-nowrap font-bold border transition-colors">${q.pPct}%</span>
-                                        <span class="text-[10px] sm:text-xs font-bold text-green-950 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-green-200">${formatAutoDecimal(q.pAct)}</span>
-                                    </div>
-                                    <div class="w-full bg-green-500 rounded-t-sm bar-chart-col shadow-md border border-green-600 transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${paH}"></div>
-                                </div>
-                                ` : `<div class="w-6 sm:w-10 lg:w-16 bg-transparent"></div>`}
-                                <div class="w-4 sm:w-8"></div>
-                                <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-16 group/item hover:z-50">
-                                    <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-20 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${bpH}%">
-                                        <span class="text-[10px] sm:text-xs font-bold text-amber-800 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-amber-100">${formatMoney(q.bPlan)}</span>
-                                    </div>
-                                    <div class="w-full bg-amber-200 border border-amber-400 rounded-t-sm bar-chart-col transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${bpH}"></div>
-                                </div>
-                                ${q.showActual ? `
-                                <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-16 group/item hover:z-50">
-                                    <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-30 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${baH}%">
-                                        <span class="${bBadgeClass} text-[10px] sm:text-xs px-2 py-0.5 rounded shadow-lg mb-1 whitespace-nowrap font-bold border transition-colors">${q.bPct}%</span>
-                                        <span class="text-[10px] sm:text-xs font-bold text-amber-950 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-amber-200">${formatMoney(q.bAct)}</span>
-                                    </div>
-                                    <div class="w-full bg-amber-500 rounded-t-sm bar-chart-col shadow-md border border-amber-600 transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${baH}"></div>
-                                </div>
-                                ` : `<div class="w-6 sm:w-10 lg:w-16 bg-transparent"></div>`}
+                        <div class="group/bar flex flex-col items-center flex-1 h-full justify-end ${cardBgClass} backdrop-blur-sm rounded-3xl mx-2 relative pt-4 pb-2 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(79,70,229,0.3)] hover:z-40">
+                            <div class="flex items-end justify-center h-full w-full relative z-10 px-2">
+                                ${barsHtml}
                             </div>
                             <div class="mt-5 mb-2 px-6 py-2 ${labelBgClass} rounded-full text-sm sm:text-base font-bold z-20 text-center w-[85%] truncate transition-all duration-300 group-hover/bar:scale-105">
                                 ${q.name}
@@ -814,7 +835,7 @@
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => { text.classList.remove('opacity-0'); });
                 }, 50);
 
-                // -- 4. การ์ดสรุปสถานะ --
+                // -- 6. การ์ดสรุปสถานะด้านล่าง --
                 const displayActivities = viewLevel === 'SINGLE' ? activities : kpiActivities;
 
                 const summary = {
@@ -860,7 +881,7 @@
                     </div>
                 `;
 
-                // -- 5. ตารางกิจกรรม --
+                // -- 7. ตารางกิจกรรม --
                 const tbody = document.getElementById('table-body');
                 tbody.innerHTML = '';
                 displayActivities.forEach(act => {
@@ -899,6 +920,10 @@
                     if (act.name.includes("(KPI)")) {
                         displayName = act.name.replace("(KPI)", '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 mr-2 border border-blue-200 shadow-sm">(KPI)</span>');
                     }
+                    if (viewLevel !== 'SINGLE' && act.isAggregatedKPI && Object.keys(kpiByUnit).length > 1) {
+                        displayName += ` <span class="text-[11px] text-slate-400 font-normal">(หน่วย: ${act.unit})</span>`;
+                    }
+
                     const nameStyle = isRowKPI ? "text-cyan-950 font-bold" : "text-cyan-900 font-medium";
 
                     tbody.innerHTML += `
@@ -920,14 +945,19 @@
                     document.querySelectorAll('#table-body .bar-chart-col-text').forEach(textEl => { textEl.style.left = textEl.getAttribute('data-left') + '%'; });
                 }, 50);
 
-                // -- 6. ปัญหาและอุปสรรค --
+                // -- 8. ปัญหาและอุปสรรค --
                 if (viewLevel === 'SINGLE') {
                     let issuesHtml = '';
-                    if (projectStatus.includes("ล่าช้า") || projectStatus.includes("เสี่ยง")) {
+                    const isAnyRisk = Object.values(kpiByUnit).some(u => {
+                        let st = determineStatus({actual: u.actual, planQ1: u.p1, planQ2: u.p2, planQ3: u.p3, planQ4: u.p4}, currentQuarter, isLastMonthOfQuarter);
+                        return st.includes("ล่าช้า") || st.includes("เสี่ยง");
+                    });
+
+                    if (isAnyRisk) {
                         issuesHtml += `
                             <div class="bg-white border-l-4 border-red-500 p-5 rounded-r-xl shadow-sm mb-6 transform transition-transform hover:-translate-y-1">
-                                <h4 class="font-bold text-red-800 mb-2 flex items-center">ภาพรวมสถานะ (${projectStatus.replace(/\\(.*\\)/, '')})</h4>
-                                <p class="text-sm text-red-700 leading-relaxed">ผลการดำเนินงานรวมเมื่อเทียบกับแผนงานสะสม อยู่ในเกณฑ์ล่าช้า/เสี่ยง จึงต้องเร่งรัดการจัดกิจกรรมและติดตามแก้ไขปัญหาในพื้นที่อย่างใกล้ชิด</p>
+                                <h4 class="font-bold text-red-800 mb-2 flex items-center">แจ้งเตือนสถานะภาพรวม</h4>
+                                <p class="text-sm text-red-700 leading-relaxed">ผลการดำเนินงานรวมของกิจกรรมหลัก (KPI) เมื่อเทียบกับแผนงานสะสม อยู่ในเกณฑ์ล่าช้า/เสี่ยง จึงต้องเร่งรัดการจัดกิจกรรมและติดตามแก้ไขปัญหาในพื้นที่อย่างใกล้ชิด</p>
                             </div>
                         `;
                     }
