@@ -25,10 +25,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
-        /* พื้นหลังเว็บ Premium Soft Green สบายตา */
+        /* ====================================================
+           1. สีพื้นหลังของเว็บ Dashboard (ข้อ 4): ลดความสว่าง เพิ่มความขุ่น
+           ==================================================== */
         body { 
             font-family: 'Sarabun', sans-serif; 
-            background: linear-gradient(135deg, #f4fdf8 0%, #e6f6ec 50%, #d1fae5 100%);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); /* Cool Grey ขุ่นสบายตา */
             color: #1e293b;
             overflow-x: hidden; 
             min-height: 100vh; 
@@ -51,25 +53,25 @@
         .progress-bar-fill { transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
         
         /* ====================================================
-           ระบบไฟกระพริบอัจฉริยะ (หน่วงความถี่ให้นุ่มนวลสบายตา)
+           2. ระบบไฟกระพริบอัจฉริยะ (หน่วงความถี่ให้นุ่มนวลสบายตา)
            ==================================================== */
         @keyframes pulse-success {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.2); }
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.15); }
             70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
             100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
         }
         @keyframes pulse-warning {
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.3); }
+            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.2); }
             70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
             100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
         }
         @keyframes pulse-danger {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
-            50% { transform: scale(1.01); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); }
+            50% { transform: scale(1.01); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0);
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         @keyframes pulse-critical {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5); }
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
             50% { transform: scale(1.02); box-shadow: 0 0 0 16px rgba(220, 38, 38, 0); }
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
@@ -90,11 +92,11 @@
 <body class="p-4 sm:p-6 lg:p-8 text-slate-800">
     
     <div class="max-w-7xl mx-auto">
-        <header class="relative z-[100] mb-8 border-b-4 border-kaset-600 pb-5 fade-in-up flex flex-col md:flex-row md:justify-between md:items-start gap-5">
+        <header class="relative z-[100] mb-8 border-b-4 border-kaset-700 pb-5 fade-in-up flex flex-col md:flex-row md:justify-between md:items-start gap-5">
             <div class="flex-grow w-full md:w-1/2 relative z-10 pt-2 min-w-0">
                 <h1 class="text-xl md:text-2xl font-black text-kaset-800 drop-shadow-sm leading-tight tracking-tight mb-1 break-words">Dashboard รายงานความก้าวหน้าการดำเนินงานโครงการ</h1>
                 <h2 class="text-base md:text-lg font-extrabold text-kaset-600 drop-shadow-sm mb-4 break-words">ประจำปีงบประมาณ พ.ศ. 2569 กรมส่งเสริมการเกษตร</h2>
-                <div class="inline-block bg-white/80 backdrop-blur-sm px-5 py-2 rounded-xl border border-white shadow-sm max-w-full">
+                <div class="inline-block bg-white/70 backdrop-blur-sm px-5 py-2 rounded-xl border border-white shadow-sm max-w-full">
                     <h3 id="display-project-name" class="text-lg md:text-xl font-bold text-slate-800 leading-relaxed tracking-tight break-words">กำลังเชื่อมต่อข้อมูล...</h3>
                 </div>
             </div>
@@ -115,17 +117,17 @@
         <div id="kpi-cards-container" class="flex flex-col gap-6 mb-8 relative z-10 fade-in-up delay-100">
             </div>
 
-        <div id="budget-section" class="hidden fade-in-up delay-200 bg-gradient-to-br from-amber-50 to-orange-100/80 rounded-[1.5rem] shadow-xl border border-white p-6 sm:p-8 mb-8 relative border-l-[6px] border-l-orange-400 transform transition-all duration-500 hover:-translate-y-1 hover-glow overflow-hidden">
+        <div id="budget-section" class="hidden fade-in-up delay-200 bg-gradient-to-br from-amber-50 to-orange-100 rounded-[1.5rem] shadow-xl border border-white p-6 sm:p-8 mb-8 relative border-l-[6px] border-l-orange-400 transform transition-all duration-500 hover:-translate-y-1 hover-glow overflow-hidden">
             <h3 class="text-lg sm:text-xl font-bold mb-5 flex items-center text-amber-900 border-b border-orange-200 pb-3 relative z-10">
                 <svg class="w-7 h-7 mr-3 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 งบประมาณรวม
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-                <div class="bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-white text-center shadow-sm transform transition-transform duration-300 hover:scale-[1.02]">
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-5 border border-white text-center shadow-sm transform transition-transform duration-300 hover:scale-[1.02]">
                     <p class="text-sm font-bold text-amber-900 mb-2 opacity-90">งบประมาณที่ได้รับจัดสรร</p>
                     <h2 class="text-3xl lg:text-4xl font-extrabold text-amber-600 transition-all drop-shadow-sm" id="budget-target">-</h2>
                 </div>
-                <div class="bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-white text-center shadow-sm transform transition-transform duration-300 hover:scale-[1.02]">
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-5 border border-white text-center shadow-sm transform transition-transform duration-300 hover:scale-[1.02]">
                     <p class="text-sm font-bold text-emerald-900 mb-2 opacity-90">ผลการเบิกจ่ายสะสม</p>
                     <h2 class="text-3xl lg:text-4xl font-extrabold text-emerald-600 transition-all drop-shadow-sm" id="budget-actual">-</h2>
                 </div>
@@ -136,7 +138,7 @@
         <div id="pie-charts-container" class="grid gap-6 mb-8 fade-in-up delay-300">
             </div>
 
-        <div id="bar-chart-main-container" class="hidden fade-in-up delay-400 bg-white/90 backdrop-blur-xl rounded-[2rem] shadow-xl border border-white p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 hover:shadow-2xl overflow-hidden relative">
+        <div id="bar-chart-main-container" class="hidden fade-in-up delay-400 bg-white rounded-[2rem] shadow-xl border border-slate-100 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 hover:shadow-2xl overflow-hidden relative">
             <h3 class="text-xl md:text-2xl font-extrabold mb-2 flex items-center text-slate-800 border-b border-slate-200 pb-4 relative z-10">
                 <svg class="w-7 h-7 mr-3 text-indigo-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 ผลการดำเนินงานรวม สะสมรายไตรมาส
@@ -160,16 +162,16 @@
             </div>
         </div>
 
-        <div id="table-main-container" class="hidden fade-in-up delay-500 rounded-[2rem] shadow-xl overflow-hidden mb-10 transform transition-all duration-500 hover:shadow-2xl relative border border-white">
-            <div class="p-6 sm:p-8 border-b" id="dynamic-table-header-box">
-                <h3 class="text-lg sm:text-xl font-bold flex items-center text-slate-800" id="dynamic-table-title">
-                    <svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+        <div id="table-main-container" class="hidden fade-in-up delay-500 bg-orange-50/90 backdrop-blur-md rounded-[2rem] shadow-xl border border-white overflow-hidden mb-10 transform transition-all duration-500 hover:shadow-2xl relative">
+            <div class="p-6 sm:p-8 border-b border-orange-200 bg-white/60 relative z-10">
+                <h3 class="text-lg sm:text-xl font-bold flex items-center text-orange-900" id="dynamic-table-title">
+                    <svg class="w-6 h-6 mr-3 text-orange-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                     ติดตามสถานะ...
                 </h3>
             </div>
             <div class="overflow-x-auto hide-scroll pb-2 relative z-10">
                 <table class="w-full text-sm text-left transition-all">
-                    <thead id="table-header-row" class="text-sm sm:text-base text-white bg-[#475569] uppercase tracking-wider shadow-sm">
+                    <thead id="table-header-row" class="text-sm sm:text-base text-white bg-[#f97316] border-b-2 border-orange-300 uppercase tracking-wider shadow-sm">
                         <tr>
                             <th class="px-6 py-5 font-bold w-1/3 align-middle">รายการ</th>
                             <th class="px-4 py-5 font-bold text-center w-20 align-middle">หน่วยนับ</th>
@@ -215,15 +217,17 @@
             currentQuarter = 4; isLastMonthOfQuarter = (currentMonth === 9); 
         }
 
-        // ชุดสีสำหรับกราฟแท่ง และ การ์ดวงกลม
+        // =====================================
+        // 3. กราฟแท่งรายไตรมาส (ข้อ 2): ใช้สีสว่างแต่ไม่จ้า มีมิติ สบายตา (พาสเทล)
+        // =====================================
         const kpiColorThemes = [
-            { planBg: 'bg-emerald-300', planBorder: 'border-emerald-400', planText: 'text-emerald-700', actBg: 'bg-emerald-500', actBorder: 'border-emerald-600', actText: 'text-emerald-600', legendPlanBg: 'bg-emerald-300', legendActBg: 'bg-emerald-500', pieBg: 'from-emerald-50 to-emerald-100', pieIcon: 'text-emerald-600', pieRing: '#10b981' },
-            { planBg: 'bg-blue-300', planBorder: 'border-blue-400', planText: 'text-blue-700', actBg: 'bg-blue-500', actBorder: 'border-blue-600', actText: 'text-blue-600', legendPlanBg: 'bg-blue-300', legendActBg: 'bg-blue-500', pieBg: 'from-blue-50 to-blue-100', pieIcon: 'text-blue-600', pieRing: '#3b82f6' },
-            { planBg: 'bg-purple-300', planBorder: 'border-purple-400', planText: 'text-purple-700', actBg: 'bg-purple-500', actBorder: 'border-purple-600', actText: 'text-purple-600', legendPlanBg: 'bg-purple-300', legendActBg: 'bg-purple-500', pieBg: 'from-purple-50 to-purple-100', pieIcon: 'text-purple-600', pieRing: '#8b5cf6' },
-            { planBg: 'bg-pink-300', planBorder: 'border-pink-400', planText: 'text-pink-700', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-600', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500', pieBg: 'from-pink-50 to-pink-100', pieIcon: 'text-pink-600', pieRing: '#ec4899' },
-            { planBg: 'bg-cyan-300', planBorder: 'border-cyan-400', planText: 'text-cyan-700', actBg: 'bg-cyan-500', actBorder: 'border-cyan-600', actText: 'text-cyan-600', legendPlanBg: 'bg-cyan-300', legendActBg: 'bg-cyan-500', pieBg: 'from-cyan-50 to-cyan-100', pieIcon: 'text-cyan-600', pieRing: '#06b6d4' },
-            { planBg: 'bg-rose-300', planBorder: 'border-rose-400', planText: 'text-rose-700', actBg: 'bg-rose-500', actBorder: 'border-rose-600', actText: 'text-rose-600', legendPlanBg: 'bg-rose-300', legendActBg: 'bg-rose-500', pieBg: 'from-rose-50 to-rose-100', pieIcon: 'text-rose-600', pieRing: '#f43f5e' },
-            { planBg: 'bg-teal-300', planBorder: 'border-teal-400', planText: 'text-teal-700', actBg: 'bg-teal-500', actBorder: 'border-teal-600', actText: 'text-teal-600', legendPlanBg: 'bg-teal-300', legendActBg: 'bg-teal-500', pieBg: 'from-teal-50 to-teal-100', pieIcon: 'text-teal-600', pieRing: '#14b8a6' }
+            { planBg: 'bg-emerald-200', planBorder: 'border-emerald-300', planText: 'text-emerald-700', actBg: 'bg-emerald-400', actBorder: 'border-emerald-500', actText: 'text-emerald-600', legendPlanBg: 'bg-emerald-200', legendActBg: 'bg-emerald-400', pieBg: 'from-emerald-50 to-emerald-100', pieIcon: 'text-emerald-600', pieRing: '#10b981' },
+            { planBg: 'bg-blue-200', planBorder: 'border-blue-300', planText: 'text-blue-700', actBg: 'bg-blue-400', actBorder: 'border-blue-500', actText: 'text-blue-600', legendPlanBg: 'bg-blue-200', legendActBg: 'bg-blue-400', pieBg: 'from-blue-50 to-blue-100', pieIcon: 'text-blue-600', pieRing: '#3b82f6' },
+            { planBg: 'bg-purple-200', planBorder: 'border-purple-300', planText: 'text-purple-700', actBg: 'bg-purple-400', actBorder: 'border-purple-500', actText: 'text-purple-600', legendPlanBg: 'bg-purple-200', legendActBg: 'bg-purple-400', pieBg: 'from-purple-50 to-purple-100', pieIcon: 'text-purple-600', pieRing: '#8b5cf6' },
+            { planBg: 'bg-pink-200', planBorder: 'border-pink-300', planText: 'text-pink-700', actBg: 'bg-pink-400', actBorder: 'border-pink-500', actText: 'text-pink-600', legendPlanBg: 'bg-pink-200', legendActBg: 'bg-pink-400', pieBg: 'from-pink-50 to-pink-100', pieIcon: 'text-pink-600', pieRing: '#ec4899' },
+            { planBg: 'bg-cyan-200', planBorder: 'border-cyan-300', planText: 'text-cyan-700', actBg: 'bg-cyan-400', actBorder: 'border-cyan-500', actText: 'text-cyan-600', legendPlanBg: 'bg-cyan-200', legendActBg: 'bg-cyan-400', pieBg: 'from-cyan-50 to-cyan-100', pieIcon: 'text-cyan-600', pieRing: '#06b6d4' },
+            { planBg: 'bg-rose-200', planBorder: 'border-rose-300', planText: 'text-rose-700', actBg: 'bg-rose-400', actBorder: 'border-rose-500', actText: 'text-rose-600', legendPlanBg: 'bg-rose-200', legendActBg: 'bg-rose-400', pieBg: 'from-rose-50 to-rose-100', pieIcon: 'text-rose-600', pieRing: '#f43f5e' },
+            { planBg: 'bg-teal-200', planBorder: 'border-teal-300', planText: 'text-teal-700', actBg: 'bg-teal-400', actBorder: 'border-teal-500', actText: 'text-teal-600', legendPlanBg: 'bg-teal-200', legendActBg: 'bg-teal-400', pieBg: 'from-teal-50 to-teal-100', pieIcon: 'text-teal-600', pieRing: '#14b8a6' }
         ];
 
         const formatMoney = (num) => new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
@@ -244,7 +248,7 @@
         const getBadgeColor = (actual, plan) => {
             if (plan === 0 && actual === 0) return 'bg-slate-200 text-slate-600 border-slate-300'; 
             const pct = plan > 0 ? (actual / plan) * 100 : (actual > 0 ? 100 : 0);
-            if (pct >= 100) return 'bg-green-500 text-white border-green-600';
+            if (pct >= 100) return 'bg-emerald-500 text-white border-emerald-600';
             if (pct >= 50) return 'bg-amber-400 text-white border-amber-500'; 
             return 'bg-red-500 text-white border-red-600';
         };
@@ -432,33 +436,6 @@
             }
             displayTitle.classList.remove("text-red-600");
 
-            // แต่งสี Container ตารางสถานะ (ข้อ 4)
-            const tableContainer = document.getElementById('table-main-container');
-            const tableHeaderBox = document.getElementById('dynamic-table-header-box');
-            const tableTitle = document.getElementById('dynamic-table-title');
-            const tableHeaderRow = document.getElementById('table-header-row');
-            
-            if (viewLevel === "SINGLE") {
-                // สีพื้นหลังโทนม่วงอ่อนสว่าง
-                tableContainer.className = 'hidden fade-in-up delay-500 bg-purple-50/90 backdrop-blur-md rounded-[2rem] shadow-xl border border-white overflow-hidden mb-10 transform transition-all duration-500 hover:shadow-2xl relative';
-                tableHeaderBox.className = 'p-6 sm:p-8 border-b border-purple-200 bg-white/60 relative z-10';
-                tableTitle.innerHTML = `<svg class="w-6 h-6 mr-3 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายละเอียดกิจกรรม`;
-                tableTitle.className = 'text-lg sm:text-xl font-bold flex items-center text-purple-900';
-            } else {
-                // สีพื้นหลังโทนส้มอ่อนสว่าง
-                tableContainer.className = 'hidden fade-in-up delay-500 bg-orange-50/90 backdrop-blur-md rounded-[2rem] shadow-xl border border-white overflow-hidden mb-10 transform transition-all duration-500 hover:shadow-2xl relative';
-                tableHeaderBox.className = 'p-6 sm:p-8 border-b border-orange-200 bg-white/60 relative z-10';
-                tableTitle.className = 'text-lg sm:text-xl font-bold flex items-center text-orange-900';
-                if(viewLevel === "ALL") {
-                    tableTitle.innerHTML = `<svg class="w-6 h-6 mr-3 text-orange-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายโครงการ`;
-                } else {
-                    tableTitle.innerHTML = `<svg class="w-6 h-6 mr-3 text-orange-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg> ติดตามสถานะรายกิจกรรมหลัก`;
-                }
-            }
-
-            // สีหัวตาราง น้ำเงินเข้มลดลงให้ออกสว่างแต่หม่นๆ (Slate-500)
-            tableHeaderRow.className = 'text-sm sm:text-base text-white bg-[#64748b] border-b-2 border-slate-400 uppercase tracking-wider shadow-sm';
-
             let itemsToFetch = [];
             if (viewLevel === "ALL") {
                 itemsToFetch = MASTER_INDEX.filter(item => item.url.startsWith("http"));
@@ -588,7 +565,7 @@
         }
 
         // =====================================
-        // ฟังก์ชันวาดกราฟและตาราง (UI)
+        // ฟังก์ชันวาดกราฟและตาราง (UI Masterpiece)
         // =====================================
         function renderDashboardUI(allRows, viewLevel) {
             try {
@@ -609,28 +586,36 @@
                     kpiByUnit["ราย"] = { target: 0, actual: 0, p1: 0, p2: 0, p3: 0, p4: 0, a1: 0, a2: 0, a3: 0, a4: 0 };
                 }
 
-                // -- 2. วาด Top KPI Cards (สีสว่างละมุน อ่านง่าย มีมิติ) --
+                // =====================================
+                // 1. ปรับสีกราฟวงกลม & การ์ดเปอร์เซ็นต์ (ข้อ 1): สว่างแต่ไม่จ้า สบายตา (พาสเทล)
+                // =====================================
                 const kpiCardsContainer = document.getElementById('kpi-cards-container');
                 kpiCardsContainer.innerHTML = '';
                 
                 Object.keys(kpiByUnit).forEach((unit, idx) => {
+                    const theme = kpiColorThemes[idx % kpiColorThemes.length];
                     const d = kpiByUnit[unit];
+                    
+                    // ปรับสีพื้นหลังการ์ดให้เป็นสีพาสเทลจางๆ
+                    const pastelBgPlan = 'bg-emerald-50'; // emerald-50 ละมุนตา
+                    const pastelBgActual = 'bg-sky-50'; // sky-50 ละมุนตา
+                    
                     kpiCardsContainer.innerHTML += `
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full fade-in-up" style="animation-delay: ${idx * 100}ms">
-                            <div class="group bg-gradient-to-br from-blue-50 to-blue-100/50 backdrop-blur-lg rounded-[1.5rem] shadow-xl border border-white p-6 sm:p-8 flex flex-col relative border-l-[6px] border-l-blue-500 min-h-[160px] transform transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl overflow-hidden cursor-default">
+                            <div class="group ${pastelBgPlan} rounded-[1.5rem] shadow-lg border border-emerald-100 p-6 sm:p-8 flex flex-col relative border-l-[6px] border-l-emerald-400 min-h-[160px] transform transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl overflow-hidden cursor-default">
                                 <div class="w-full text-left z-10 mb-2">
-                                    <p class="text-base sm:text-lg font-bold text-blue-900 opacity-80">เป้าหมายรวม <span class="text-sm font-semibold text-blue-700 block sm:inline mt-1 sm:mt-0">(เฉพาะ KPI หน่วย: ${unit})</span></p>
+                                    <p class="text-base sm:text-lg font-bold text-emerald-900 opacity-80 break-words">เป้าหมายรวม <span class="text-sm font-semibold text-emerald-700 block sm:inline mt-1 sm:mt-0 break-words">(เฉพาะ KPI หน่วย: ${unit})</span></p>
                                 </div>
                                 <div class="w-full flex-grow flex items-center justify-center z-10 pb-2 relative">
-                                    <h2 class="text-5xl sm:text-6xl font-black tracking-tight transition-all text-blue-800 drop-shadow-sm">${formatAutoDecimal(d.target)} <span class="text-xl sm:text-3xl font-bold text-blue-500 ml-1">${unit}</span></h2>
+                                    <h2 class="text-5xl sm:text-6xl font-black tracking-tight transition-all text-emerald-800 drop-shadow-sm">${formatAutoDecimal(d.target)} <span class="text-xl sm:text-3xl font-bold text-emerald-600 ml-1 break-words">${unit}</span></h2>
                                 </div>
                             </div>
-                            <div class="group bg-gradient-to-br from-emerald-50 to-emerald-100/50 backdrop-blur-lg rounded-[1.5rem] shadow-xl border border-white p-6 sm:p-8 flex flex-col relative border-l-[6px] border-l-emerald-500 min-h-[160px] transform transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl overflow-hidden cursor-default">
+                            <div class="group ${pastelBgActual} rounded-[1.5rem] shadow-lg border border-sky-100 p-6 sm:p-8 flex flex-col relative border-l-[6px] border-l-sky-400 min-h-[160px] transform transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl overflow-hidden cursor-default">
                                 <div class="w-full text-left z-10 mb-2">
-                                    <p class="text-base sm:text-lg font-bold text-emerald-900 opacity-80">ผลการดำเนินงานสะสม <span class="text-sm font-semibold text-emerald-700 block sm:inline mt-1 sm:mt-0">(เฉพาะ KPI หน่วย: ${unit})</span></p>
+                                    <p class="text-base sm:text-lg font-bold text-sky-900 opacity-80 break-words">ผลการดำเนินงานสะสม <span class="text-sm font-semibold text-sky-700 block sm:inline mt-1 sm:mt-0 break-words">(เฉพาะ KPI หน่วย: ${unit})</span></p>
                                 </div>
                                 <div class="w-full flex-grow flex items-center justify-center z-10 pb-2 relative">
-                                    <h2 class="text-5xl sm:text-6xl font-black tracking-tight transition-all text-emerald-800 drop-shadow-sm">${formatAutoDecimal(d.actual)} <span class="text-xl sm:text-3xl font-bold text-emerald-500 ml-1">${unit}</span></h2>
+                                    <h2 class="text-5xl sm:text-6xl font-black tracking-tight transition-all text-sky-800 drop-shadow-sm">${formatAutoDecimal(d.actual)} <span class="text-xl sm:text-3xl font-bold text-sky-600 ml-1 break-words">${unit}</span></h2>
                                 </div>
                             </div>
                         </div>
@@ -641,13 +626,15 @@
                 if (budgetRows.length > 0) {
                     const bObj = budgetRows[0];
                     document.getElementById('budget-section').classList.remove('hidden');
-                    document.getElementById('budget-target').innerHTML = `${formatMoney(bObj.target)} <span class="text-xl font-bold text-amber-700 ml-1">${bObj.unit}</span>`;
-                    document.getElementById('budget-actual').innerHTML = `${formatMoney(bObj.actual)} <span class="text-xl font-bold text-emerald-700 ml-1">${bObj.unit}</span>`;
+                    document.getElementById('budget-target').innerHTML = `${formatMoney(bObj.target)} <span class="text-xl font-bold text-amber-700 ml-1 break-words">${bObj.unit}</span>`;
+                    document.getElementById('budget-actual').innerHTML = `${formatMoney(bObj.actual)} <span class="text-xl font-bold text-emerald-700 ml-1 break-words">${bObj.unit}</span>`;
                 } else {
                     document.getElementById('budget-section').classList.add('hidden');
                 }
 
-                // -- 4. วาดกราฟวงกลมเปรียบเทียบ (สีเดียวกับกราฟแท่งเป๊ะๆ) --
+                // =====================================
+                // 1. ปรับสีกราฟวงกลม & การ์ดเปอร์เซ็นต์ (ข้อ 1): สว่างแต่ไม่จ้า สบายตา (พาสเทล)
+                // =====================================
                 const numPieCharts = Object.keys(kpiByUnit).length + (budgetRows.length > 0 ? 1 : 0);
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.className = 'grid gap-6 mb-8 fade-in-up delay-300';
@@ -681,30 +668,25 @@
                     let statusObj = determineStatus(d.p1, d.p2, d.p3, d.p4, d.actual, currentQuarter, isLastMonthOfQuarter);
                     let displayPct = pCum > 0 ? (d.actual / pCum) * 100 : (prevCum > 0 ? (d.actual / prevCum) * 100 : 0);
 
-                    let pieColor = "#16a34a"; 
-                    if (statusObj.includes("ล่าช้า")) pieColor = "#f59e0b"; 
-                    if (statusObj.includes("เสี่ยง")) pieColor = "#ef4444"; 
-                    if (pCum === 0) pieColor = "#94a3b8"; 
-
-                    // สีการ์ดตรงกับสีแท่งผลงาน (theme.pieBg)
+                    // สีพื้นหลังการ์ดวงกลม พาสเทลจางๆ (สว่างแต่ไม่จ้า)
                     pieChartsContainer.innerHTML += `
-                        <div class="group bg-gradient-to-br ${theme.pieBg} rounded-[1.5rem] shadow-xl border border-white/50 p-6 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl w-full">
+                        <div class="group bg-gradient-to-br ${theme.pieBg} rounded-[1.5rem] shadow-xl border border-white p-6 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl w-full">
                             <h3 class="text-lg font-extrabold mb-4 flex items-center ${theme.pieIcon}">
                                 <svg class="w-6 h-6 mr-2 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
-                                ผลการดำเนินงาน (${unit})
+                                <span class="break-words">ผลการดำเนินงาน (${unit})</span>
                             </h3>
-                            <div class="flex-grow flex items-center justify-center my-6">
+                            <div class="flex-grow flex items-center justify-center my-6 relative">
                                 <div id="pie-chart-kpi-${idx}" class="conic-chart w-56 h-56 rounded-full relative flex items-center justify-center shadow-[inset_0_2px_15px_rgba(0,0,0,0.1)]" style="background: conic-gradient(#ffffff 0% 100%);">
                                     <div class="w-40 h-40 bg-white rounded-full flex flex-col items-center justify-center z-10 shadow-md border-4 border-slate-50 transform transition-transform duration-500 group-hover:scale-105">
-                                        <span class="text-4xl font-extrabold text-slate-800 transition-all">${percentCum}%</span>
-                                        <span class="text-xs font-bold text-slate-500 mt-1 uppercase tracking-wider">เทียบเป้าหมายรวม</span>
+                                        <span class="text-4xl font-extrabold text-slate-800 transition-all drop-shadow-sm">${percentCum}%</span>
+                                        <span class="text-xs font-bold text-slate-500 mt-1 uppercase tracking-wider break-words">เทียบเป้าหมายรวม</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="mt-4 flex flex-col items-center text-center w-full">
-                                <p class="text-sm ${theme.pieIcon} font-bold mb-3 opacity-90">สถานะภาพรวมล่าสุด (ไตรมาสที่ <span class="display-quarter">${currentQuarter}</span>)</p>
+                                <p class="text-sm ${theme.pieIcon} font-bold mb-3 opacity-90 break-words">สถานะภาพรวมล่าสุด (ไตรมาสที่ <span class="display-quarter">${currentQuarter}</span>)</p>
                                 <div class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-[15px] font-bold border shadow-sm w-full leading-tight transition-all bg-white text-slate-800">
-                                    ${pCum > 0 ? `${statusObj} (${displayPct > 100 ? 100 : displayPct.toFixed(2)}%)` : statusObj}
+                                    <span class="break-words">${pCum > 0 ? `${statusObj} (${displayPct > 100 ? 100 : displayPct.toFixed(2)}%)` : statusObj}</span>
                                 </div>
                             </div>
                         </div>
@@ -724,25 +706,25 @@
                     let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
                     let bDisplayPct = bCum > 0 ? (bObj.actual / bCum) * 100 : (bPrevCum > 0 ? (bObj.actual / bPrevCum) * 100 : 0);
 
-                    // ใช้สีทองๆ สว่างแต่มีมิติ
+                    // สีพื้นหลังการ์ดวงกลม พาสเทลจางๆ (สว่างแต่ไม่จ้า)
                     pieChartsContainer.innerHTML += `
-                        <div class="group bg-gradient-to-br from-amber-50 to-orange-100 border border-white rounded-[1.5rem] shadow-xl p-6 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl w-full fade-in-up delay-200">
+                        <div class="group bg-gradient-to-br from-amber-50 to-orange-100/50 border border-white rounded-[1.5rem] shadow-xl p-6 flex flex-col justify-between transform transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl w-full fade-in-up delay-200">
                             <h3 class="text-lg font-extrabold mb-4 flex items-center text-amber-800">
-                                <svg class="w-6 h-6 mr-2 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                ผลการใช้จ่ายงบประมาณ
+                                <svg class="w-6 h-6 mr-2 text-amber-500 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span class="break-words">ผลการใช้จ่ายงบประมาณ</span>
                             </h3>
                             <div class="flex-grow flex items-center justify-center my-6 relative">
                                 <div id="pie-chart-budget" class="conic-chart w-56 h-56 rounded-full relative flex items-center justify-center shadow-[inset_0_2px_15px_rgba(0,0,0,0.1)]" style="background: conic-gradient(#ffffff 0% 100%);">
                                     <div class="w-40 h-40 bg-white rounded-full flex flex-col items-center justify-center z-10 shadow-md border-4 border-slate-50 transform transition-transform duration-500 group-hover:scale-105">
                                         <span class="text-4xl font-black text-amber-900 transition-all drop-shadow-sm">${bPercentCum}%</span>
-                                        <span class="text-xs font-bold text-amber-600 mt-1 uppercase tracking-wider">เทียบงบประมาณ</span>
+                                        <span class="text-xs font-bold text-amber-600 mt-1 uppercase tracking-wider break-words">เทียบงบประมาณ</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="mt-4 flex flex-col items-center text-center w-full">
-                                <p class="text-sm text-amber-700 font-bold mb-3 opacity-90">สถานะเบิกจ่ายล่าสุด (ไตรมาสที่ <span class="display-quarter">${currentQuarter}</span>)</p>
+                                <p class="text-sm text-amber-700 font-bold mb-3 opacity-90 break-words">สถานะเบิกจ่ายล่าสุด (ไตรมาสที่ <span class="display-quarter">${currentQuarter}</span>)</p>
                                 <div class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-[15px] font-bold border border-transparent shadow-sm w-full leading-tight transition-all bg-white text-slate-800">
-                                    ${bCum > 0 ? `${bStatus} (${bDisplayPct > 100 ? 100 : bDisplayPct.toFixed(2)}%)` : bStatus}
+                                    <span class="break-words">${bCum > 0 ? `${bStatus} (${bDisplayPct > 100 ? 100 : bDisplayPct.toFixed(2)}%)` : bStatus}</span>
                                 </div>
                             </div>
                         </div>
@@ -757,20 +739,20 @@
                     });
                 }, 50);
 
-                // -- 5. วาดกราฟแท่งรวม (Multi-Bar) --
+                // -- 5. วาดกราฟแท่งรวม --
                 const barLegend = document.getElementById('bar-legend-container');
                 let legendHtml = '';
                 const units = Object.keys(kpiByUnit);
                 
                 units.forEach((unit, idx) => {
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
-                    legendHtml += `<div class="flex items-center px-3 py-1 bg-slate-800 rounded-full shadow-sm border border-slate-700 text-slate-200 font-medium"><div class="w-3 h-3 ${theme.legendPlanBg} border ${theme.planBorder} mr-2 rounded-sm"></div> แผนงาน (${unit})</div>`;
-                    legendHtml += `<div class="flex items-center px-3 py-1 bg-slate-800 rounded-full shadow-sm border border-slate-700 text-slate-200 font-medium"><div class="w-3 h-3 ${theme.legendActBg} border ${theme.actBorder} mr-2 rounded-sm"></div> ผลงาน (${unit})</div>`;
+                    legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200 text-slate-700 font-medium"><div class="w-3 h-3 ${theme.legendPlanBg} border ${theme.planBorder} mr-2 rounded-sm"></div> แผนงาน (${unit})</div>`;
+                    legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200 text-slate-700 font-medium"><div class="w-3 h-3 ${theme.legendActBg} border ${theme.actBorder} mr-2 rounded-sm"></div> ผลงาน (${unit})</div>`;
                 });
                 
                 if (budgetRows.length > 0) {
-                    legendHtml += `<div class="flex items-center px-3 py-1 bg-slate-800 rounded-full shadow-sm border border-slate-700 text-slate-200 font-medium"><div class="w-3 h-3 bg-amber-300 border border-amber-400 mr-2 rounded-sm"></div> แผนงบประมาณ</div>`;
-                    legendHtml += `<div class="flex items-center px-3 py-1 bg-slate-800 rounded-full shadow-sm border border-slate-700 text-slate-200 font-medium"><div class="w-3 h-3 bg-amber-500 border border-amber-600 mr-2 rounded-sm"></div> ผลเบิกจ่าย</div>`;
+                    legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200 text-slate-700 font-medium"><div class="w-3 h-3 bg-amber-200 border border-amber-300 mr-2 rounded-sm"></div> แผนงบประมาณ</div>`;
+                    legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200 text-slate-700 font-medium"><div class="w-3 h-3 bg-amber-400 border border-amber-500 mr-2 rounded-sm"></div> ผลเบิกจ่าย</div>`;
                 }
                 barLegend.innerHTML = legendHtml;
 
@@ -809,11 +791,10 @@
                         const paH = q.showActual ? Math.min((kpi.act / maxVal) * 100, 100) : 0;
                         const pBadgeClass = getBadgeColor(kpi.act, kpi.plan);
 
-                        // ป้ายขาว ตัวหนังสือสีเดียวกับแท่งกราฟ
                         barsHtml += `
                             <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
                                 <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-20 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${ppH}%">
-                                    <span class="text-[10px] sm:text-[11px] font-bold ${theme.planText} whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-slate-200">${formatAutoDecimal(kpi.plan)} ${kpi.unit}</span>
+                                    <span class="text-[10px] sm:text-[11px] font-bold ${theme.planText} whitespace-nowrap bg-white backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-slate-200">${formatAutoDecimal(kpi.plan)} ${kpi.unit}</span>
                                 </div>
                                 <div class="w-full ${theme.planBg} border ${theme.planBorder} rounded-t-sm bar-chart-col transition-all duration-300 group-hover/item:brightness-110 shadow-sm" style="height: 0%" data-h="${ppH}"></div>
                             </div>
@@ -821,7 +802,7 @@
                             <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
                                 <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-30 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${paH}%">
                                     <span class="${pBadgeClass} text-[10px] sm:text-[11px] px-2 py-0.5 rounded shadow-lg mb-1 whitespace-nowrap font-bold border transition-colors">${kpi.pct}%</span>
-                                    <span class="text-[10px] sm:text-[11px] font-bold ${theme.actText} whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-slate-200">${formatAutoDecimal(kpi.act)} ${kpi.unit}</span>
+                                    <span class="text-[10px] sm:text-[11px] font-bold ${theme.actText} whitespace-nowrap bg-white backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-slate-200">${formatAutoDecimal(kpi.act)} ${kpi.unit}</span>
                                 </div>
                                 <div class="w-full ${theme.actBg} rounded-t-sm bar-chart-col shadow-md border ${theme.actBorder} transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${paH}"></div>
                             </div>
@@ -844,32 +825,32 @@
                         barsHtml += `
                             <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
                                 <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-20 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${bpH}%">
-                                    <span class="text-[10px] sm:text-[11px] font-bold text-amber-600 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-slate-200">${formatMoney(q.bPlan)} บาท</span>
+                                    <span class="text-[10px] sm:text-[11px] font-bold text-amber-700 whitespace-nowrap bg-white backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-slate-200">${formatMoney(q.bPlan)} บาท</span>
                                 </div>
-                                <div class="w-full bg-amber-300 border border-amber-400 rounded-t-sm bar-chart-col transition-all duration-300 group-hover/item:brightness-110 shadow-sm" style="height: 0%" data-h="${bpH}"></div>
+                                <div class="w-full bg-amber-200 border border-amber-300 rounded-t-sm bar-chart-col transition-all duration-300 group-hover/item:brightness-110 shadow-sm" style="height: 0%" data-h="${bpH}"></div>
                             </div>
                             ${q.showActual ? `
                             <div class="flex flex-col items-center justify-end h-full relative w-6 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
                                 <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-30 transition-all duration-300 group-hover/item:-translate-y-4 group-hover/item:z-[60] group-hover/item:scale-125 origin-bottom" style="bottom: ${baH}%">
                                     <span class="${bBadgeClass} text-[10px] sm:text-[11px] px-2 py-0.5 rounded shadow-lg mb-1 whitespace-nowrap font-bold border transition-colors">${q.bPct}%</span>
-                                    <span class="text-[10px] sm:text-[11px] font-bold text-amber-700 whitespace-nowrap bg-white/95 backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-slate-200">${formatMoney(q.bAct)} บาท</span>
+                                    <span class="text-[10px] sm:text-[11px] font-bold text-amber-700 whitespace-nowrap bg-white backdrop-blur-md px-2 py-0.5 rounded shadow-lg border border-slate-200">${formatMoney(q.bAct)} บาท</span>
                                 </div>
-                                <div class="w-full bg-amber-500 rounded-t-sm bar-chart-col shadow-md border border-amber-600 transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${baH}"></div>
+                                <div class="w-full bg-amber-400 rounded-t-sm bar-chart-col shadow-md border border-amber-500 transition-all duration-300 group-hover/item:brightness-110" style="height: 0%" data-h="${baH}"></div>
                             </div>
                             ` : `<div class="w-6 sm:w-10 lg:w-12 bg-transparent mx-1"></div>`}
                         `;
                     }
 
-                    // สลับสีอ่อน/เข้มโปร่งแสงในแต่ละไตรมาส
-                    const cardBgClass = index % 2 === 0 ? "bg-white/10 shadow-md border border-slate-600/50" : "bg-slate-800/40 shadow-md border border-slate-600/30";
-                    const labelBgClass = index % 2 === 0 ? "bg-indigo-500 text-white shadow-md" : "bg-slate-600 text-white shadow-md";
+                    // สลับสีความเข้มของการ์ดรายไตรมาส (สว่าง/ขุ่นเล็กน้อย)
+                    const cardBgClass = index % 2 === 0 ? "bg-white/80" : "bg-white/50";
+                    const labelBgClass = index % 2 === 0 ? "bg-indigo-500 text-white shadow-md" : "bg-slate-500 text-white shadow-md";
 
                     barContainer.innerHTML += `
-                        <div class="group/bar flex flex-col items-center flex-1 h-full justify-end ${cardBgClass} rounded-3xl mx-2 relative pt-4 pb-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:z-40">
+                        <div class="group/bar flex flex-col items-center flex-1 h-full justify-end ${cardBgClass} backdrop-blur-sm rounded-3xl mx-2 relative pt-4 pb-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:z-40">
                             <div class="flex items-end justify-center h-full w-full relative z-10 px-2">
                                 ${barsHtml}
                             </div>
-                            <div class="mt-5 mb-2 px-6 py-2.5 ${labelBgClass} rounded-full text-sm sm:text-base font-bold z-20 text-center w-[85%] truncate transition-all duration-300 group-hover/bar:scale-105 border border-transparent">
+                            <div class="mt-5 mb-2 px-6 py-2 ${labelBgClass} rounded-full text-sm sm:text-base font-bold z-20 text-center w-[85%] truncate transition-all duration-300 group-hover/bar:scale-105 border border-transparent">
                                 ${q.name}
                             </div>
                         </div>
@@ -881,32 +862,12 @@
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => { text.classList.remove('opacity-0'); });
                 }, 50);
 
-                // -- 6. การ์ดสรุปผลอัจฉริยะ (สีชมพูไล่เฉด) --
+                // -- 6. การ์ดสรุปผล --
                 const displayActivities = viewLevel === 'SINGLE' ? tableActivities : kpiActivities;
                 
                 const uniqueCount = new Set(displayActivities.map(a => a.name)).size;
                 const totalMetrics = displayActivities.length;
                 
-                const titleText = viewLevel === 'ALL' ? 'โครงการทั้งหมด' : (viewLevel === 'GROUP' ? 'กิจกรรมหลักทั้งหมด' : 'กิจกรรมทั้งหมด');
-                const isKPIView = viewLevel !== 'SINGLE';
-                
-                const getLabel = (mainText) => {
-                    if (isKPIView) {
-                        return `<span class="block text-[10px] sm:text-[11px] font-bold opacity-80 leading-tight mb-0.5 tracking-wide uppercase text-slate-800">นับตามตัวชี้วัด (KPI)</span><span class="block leading-tight text-base font-extrabold text-slate-900">${mainText}</span>`;
-                    }
-                    return `<span class="block leading-tight whitespace-nowrap text-base font-extrabold text-slate-900">${mainText}</span>`;
-                };
-
-                const labelTotal = isKPIView 
-                    ? `<span class="block text-[10px] sm:text-[11px] font-bold opacity-80 leading-tight mb-0.5 tracking-wide uppercase text-slate-800">รวมตัวชี้วัด (KPI)</span><span class="block leading-tight text-base font-extrabold text-slate-900">${totalMetrics} รายการ</span>` 
-                    : `<span class="block leading-tight whitespace-nowrap text-base font-extrabold text-slate-900">รวมทุกสถานะ</span>`;
-                
-                const labelOnTrack = getLabel('ร้อยละผลงาน &ge; 100');
-                const labelDelayed = getLabel('ร้อยละ 50 - 99');
-                const labelAtRisk = getLabel('ต่ำกว่าร้อยละ 50');
-                const labelNotStartedSevere = getLabel('ผลงาน = 0');
-                const labelNotStarted = getLabel('ยังไม่ถึงช่วงแผนงาน');
-
                 const summary = {
                     total: viewLevel === 'ALL' ? uniqueCount : totalMetrics, 
                     onTrack: displayActivities.filter(a => a.status.includes("เป็นไปตามแผน")).length,
@@ -916,40 +877,45 @@
                     notStarted: displayActivities.filter(a => a.status.includes("มีแผนอยู่ใน")).length,
                 };
 
+                const titleText = viewLevel === 'ALL' ? 'โครงการทั้งหมด' : (viewLevel === 'GROUP' ? 'กิจกรรมหลักทั้งหมด' : 'กิจกรรมทั้งหมด');
+                const isKPIView = viewLevel !== 'SINGLE';
+                
                 document.getElementById('summary-cards').innerHTML = `
-                    <div class="col-span-2 md:col-span-1 bg-gradient-to-br from-[#3154D5] to-[#2541a5] rounded-[1.5rem] p-5 flex flex-col text-center shadow-[0_10px_30px_rgba(49,84,213,0.3)] text-white transform transition-all duration-300 hover:-translate-y-1 border border-white/10 relative overflow-hidden">
-                        <p class="text-sm font-bold text-white mb-1 relative z-10">${titleText}</p>
-                        <p class="text-5xl font-black mb-4 tracking-tight drop-shadow-lg relative z-10">${summary.total}</p>
-                        <div class="mt-auto relative z-10"><div class="w-full flex flex-col items-center justify-center bg-white px-2 py-2 rounded-xl shadow-sm min-h-[44px]">${labelTotal}</div></div>
+                    <div class="bg-gradient-to-r from-blue-700 to-blue-500 rounded-[1.5rem] p-5 flex flex-col text-center shadow-lg text-white transform transition-all duration-300 hover:-translate-y-1 border border-blue-400">
+                        <p class="text-sm font-bold opacity-80 break-words">${titleText}</p>
+                        <p class="text-5xl font-black mb-4 break-words">${summary.total}</p>
+                        <div class="mt-auto"><div class="w-full flex flex-col font-bold text-blue-700 bg-white px-2 py-1 rounded-xl shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">รวมทุกสถานะ</span></div></div>
                     </div>
-                    <div class="bg-gradient-to-br from-[#21C55E] to-[#16a34a] rounded-[1.5rem] p-5 flex flex-col text-center shadow-[0_10px_30px_rgba(33,197,94,0.3)] text-white transform transition-all duration-300 hover:-translate-y-1 border border-white/10">
-                        <p class="text-sm font-bold text-white mb-1 drop-shadow-sm">เป็นไปตามแผน</p>
-                        <p class="text-5xl font-black mb-4 tracking-tight drop-shadow-lg">${summary.onTrack}</p>
-                        <div class="mt-auto"><div class="w-full flex flex-col items-center justify-center bg-white px-2 py-2 rounded-xl shadow-sm min-h-[44px]">${labelOnTrack}</div></div>
+                    <div class="bg-gradient-to-r from-green-600 to-green-400 rounded-[1.5rem] p-5 flex flex-col text-center shadow-lg text-white transform transition-all duration-300 hover:-translate-y-1 border border-green-300">
+                        <p class="text-sm font-bold opacity-80 break-words">เป็นไปตามแผน</p>
+                        <p class="text-5xl font-black mb-4 break-words">${summary.onTrack}</p>
+                        <div class="mt-auto"><div class="w-full flex flex-col font-bold text-green-700 bg-white px-2 py-1 rounded-xl shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">ร้อยละผลงาน &ge; 100</span></div></div>
                     </div>
-                    <div class="bg-gradient-to-br from-[#F59E0B] to-[#d98c0a] rounded-[1.5rem] p-5 flex flex-col text-center shadow-[0_10px_30px_rgba(245,158,11,0.3)] text-white transform transition-all duration-300 hover:-translate-y-1 border border-white/10">
-                        <p class="text-sm font-bold text-white mb-1 drop-shadow-sm">ล่าช้า</p>
-                        <p class="text-5xl font-black mb-4 tracking-tight drop-shadow-lg">${summary.delayed}</p>
-                        <div class="mt-auto"><div class="w-full flex flex-col items-center justify-center bg-white px-2 py-2 rounded-xl shadow-sm min-h-[44px]">${labelDelayed}</div></div>
+                    <div class="bg-gradient-to-r from-amber-600 to-amber-400 rounded-[1.5rem] p-5 flex flex-col text-center shadow-lg text-white transform transition-all duration-300 hover:-translate-y-1 border border-amber-300 anim-warning">
+                        <p class="text-sm font-bold opacity-80 break-words">ล่าช้า</p>
+                        <p class="text-5xl font-black mb-4 break-words">${summary.delayed}</p>
+                        <div class="mt-auto"><div class="w-full flex flex-col font-bold text-amber-700 bg-white px-2 py-1 rounded-xl shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">ร้อยละ 50 - 99</span></div></div>
                     </div>
-                    <div class="bg-gradient-to-br from-[#EF4444] to-[#dc2626] rounded-[1.5rem] p-5 flex flex-col text-center shadow-[0_10px_30px_rgba(239,68,68,0.3)] text-white transform transition-all duration-300 hover:-translate-y-1 border border-white/10">
-                        <p class="text-sm font-bold text-white mb-1 drop-shadow-sm">เสี่ยง</p>
-                        <p class="text-5xl font-black mb-4 tracking-tight drop-shadow-lg">${summary.atRisk}</p>
-                        <div class="mt-auto"><div class="w-full flex flex-col items-center justify-center bg-white px-2 py-2 rounded-xl shadow-sm min-h-[44px]">${labelAtRisk}</div></div>
+                    <div class="bg-gradient-to-r from-red-600 to-red-400 rounded-[1.5rem] p-5 flex flex-col text-center shadow-lg text-white transform transition-all duration-300 hover:-translate-y-1 border border-red-300 anim-danger">
+                        <p class="text-sm font-bold opacity-80 break-words">เสี่ยง</p>
+                        <p class="text-5xl font-black mb-4 break-words">${summary.atRisk}</p>
+                        <div class="mt-auto"><div class="w-full flex flex-col font-bold text-red-700 bg-white px-2 py-1 rounded-xl shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">ต่ำกว่าร้อยละ 50</span></div></div>
                     </div>
-                    <div class="bg-gradient-to-br from-[#5C2A35] to-[#451f28] rounded-[1.5rem] p-5 flex flex-col text-center shadow-[0_10px_30px_rgba(92,42,53,0.3)] text-white relative overflow-hidden transform transition-all duration-300 hover:-translate-y-1 border border-white/10">
-                        <p class="text-sm font-bold text-white mb-1 drop-shadow-sm relative z-10 uppercase tracking-widest">ยังไม่ดำเนินการ</p>
-                        <p class="text-5xl font-black mb-4 tracking-tight drop-shadow-lg relative z-10">${summary.notStartedSevere}</p>
-                        <div class="mt-auto relative z-10"><div class="w-full flex flex-col items-center justify-center bg-white px-2 py-2 rounded-xl shadow-sm min-h-[44px]">${labelNotStartedSevere}</div></div>
+                    <div class="bg-gradient-to-r from-slate-800 to-slate-600 rounded-[1.5rem] p-5 flex flex-col text-center shadow-lg text-white relative overflow-hidden transform transition-all duration-300 hover:-translate-y-1 border border-slate-500 anim-critical">
+                        <p class="text-sm font-bold opacity-80 break-words relative z-10 uppercase tracking-widest">ยังไม่ดำเนินการ</p>
+                        <p class="text-5xl font-black mb-4 break-words relative z-10">${summary.notStartedSevere}</p>
+                        <div class="mt-auto relative z-10"><div class="w-full flex flex-col font-bold text-slate-800 bg-white px-2 py-1 rounded-xl shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">ผลงาน = 0</span></div></div>
                     </div>
-                    <div class="col-span-2 md:col-span-1 bg-white border-[3px] border-rose-300 border-dashed rounded-[1.5rem] p-5 flex flex-col text-center shadow-sm text-slate-700 transform transition-all duration-300 hover:-translate-y-1 hover:bg-rose-50 hover:border-rose-400">
-                        <p class="text-sm font-bold text-slate-500 mb-1">มีแผนในไตรมาสถัดไป</p>
-                        <p class="text-5xl font-black mb-4 tracking-tight">${summary.notStarted}</p>
-                        <div class="mt-auto"><div class="w-full flex flex-col items-center justify-center bg-slate-100 px-2 py-2 rounded-xl border border-slate-200 shadow-sm min-h-[44px]">${labelNotStarted}</div></div>
+                    <div class="bg-white border-2 border-slate-200 rounded-[1.5rem] p-5 flex flex-col text-center shadow-sm text-slate-700 transform transition-all duration-300 hover:-translate-y-1 hover:bg-slate-50 hover:border-slate-300">
+                        <p class="text-sm font-bold text-slate-400 mb-1 break-words">มีแผนในไตรมาสถัดไป</p>
+                        <p class="text-5xl font-black mb-4 text-slate-800 break-words">${summary.notStarted}</p>
+                        <div class="mt-auto"><div class="w-full flex flex-col font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-xl border border-slate-200 shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">ยังไม่ถึงช่วงแผนงาน</span></div></div>
                     </div>
                 `;
 
-                // -- 7. ตารางกิจกรรม --
+                // =====================================
+                // 3. ตารางสถานะรายโครงการ (ข้อ 3): สีพื้นหลังส้มขุ่น สบายตา
+                // =====================================
                 const tbody = document.getElementById('table-body');
                 tbody.innerHTML = '';
                 tableActivities.forEach((act, index) => {
@@ -960,15 +926,15 @@
                     const q3Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3) / safeTarget) * 100, 100);
 
                     let barColor = "bg-slate-400"; 
-                    if (act.status.includes("เป็นไปตามแผน")) barColor = "bg-[#16a34a]"; 
+                    if (act.status.includes("เป็นไปตามแผน")) barColor = "bg-green-500"; 
                     if (act.status.includes("ล่าช้า")) barColor = "bg-amber-500"; 
                     if (act.status.includes("เสี่ยง")) barColor = "bg-red-500"; 
-                    if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) barColor = "bg-red-600"; 
+                    if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) barColor = "bg-rose-600"; 
 
                     let markersHtml = '';
-                    if(q1Pos > 0) markersHtml += `<div class="absolute top-[16px] z-10 flex flex-col items-center -translate-x-1/2" style="left: ${q1Pos}%"><div class="h-3 w-px bg-slate-300/80"></div><span class="text-[10px] font-bold text-slate-500 mt-0.5 bg-white px-1.5 border border-slate-200 rounded shadow-sm">Q1</span></div>`;
-                    if(q2Pos > q1Pos) markersHtml += `<div class="absolute top-[16px] z-10 flex flex-col items-center -translate-x-1/2" style="left: ${q2Pos}%"><div class="h-3 w-px bg-slate-300/80"></div><span class="text-[10px] font-bold text-slate-500 mt-0.5 bg-white px-1.5 border border-slate-200 rounded shadow-sm">Q2</span></div>`;
-                    if(q3Pos > q2Pos) markersHtml += `<div class="absolute top-[16px] z-10 flex flex-col items-center -translate-x-1/2" style="left: ${q3Pos}%"><div class="h-3 w-px bg-slate-300/80"></div><span class="text-[10px] font-bold text-slate-500 mt-0.5 bg-white px-1.5 border border-slate-200 rounded shadow-sm">Q3</span></div>`;
+                    if(q1Pos > 0) markersHtml += `<div class="absolute top-[16px] z-10 flex flex-col items-center -translate-x-1/2" style="left: ${q1Pos}%"><div class="h-3 w-px bg-slate-300"></div><span class="text-[10px] font-bold text-slate-500 mt-0.5 bg-white px-1 border border-slate-200 rounded">Q1</span></div>`;
+                    if(q2Pos > q1Pos) markersHtml += `<div class="absolute top-[16px] z-10 flex flex-col items-center -translate-x-1/2" style="left: ${q2Pos}%"><div class="h-3 w-px bg-slate-300"></div><span class="text-[10px] font-bold text-slate-500 mt-0.5 bg-white px-1 border border-slate-200 rounded">Q2</span></div>`;
+                    if(q3Pos > q2Pos) markersHtml += `<div class="absolute top-[16px] z-10 flex flex-col items-center -translate-x-1/2" style="left: ${q3Pos}%"><div class="h-3 w-px bg-slate-300"></div><span class="text-[10px] font-bold text-slate-500 mt-0.5 bg-white px-1 border border-slate-200 rounded">Q3</span></div>`;
 
                     const progressHtml = `
                         <div class="w-full relative mt-6 mb-8 group-hover/row:scale-[1.02] transition-transform duration-300">
@@ -976,46 +942,26 @@
                                 <div class="bg-slate-700 text-white px-1.5 py-0.5 rounded text-[11px] font-bold whitespace-nowrap shadow-sm">${pct.toFixed(2)}%</div>
                                 <div class="w-0.5 h-1.5 bg-slate-700"></div>
                             </div>
-                            <div class="h-4 bg-slate-100 rounded-full relative overflow-hidden border border-slate-200 shadow-inner">
+                            <div class="h-4 bg-slate-100 rounded-full relative overflow-hidden border border-slate-200">
                                 <div class="h-full ${barColor} progress-bar-fill rounded-full" style="width: 0%" data-w="${Math.min(pct, 100)}"></div>
                             </div>
                             ${markersHtml}
                         </div>
                     `;
 
-                    // ปรับแต่งการแสดงผล KPI แยกเด่นๆ
-                    const isRowKPI = act.name.includes("(KPI)") || act.isAggregatedKPI;
-                    let displayName = act.name;
-                    let namePrefix = '';
-
-                    if (isRowKPI && viewLevel === 'SINGLE') {
-                        if (act.name.includes("(KPI)")) {
-                            displayName = act.name.replace("(KPI)", '');
-                            namePrefix = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-black bg-indigo-500 text-white mr-3 shadow-md transform -skew-x-6 tracking-widest">(KPI)</span>';
-                        }
-                    } else {
-                        displayName = act.name.replace("(KPI)", ''); 
-                    }
-
-                    // สลับสีฟันปลา (Zebra Striping) 
-                    let rowBgClass = '';
-                    if (isRowKPI && viewLevel === 'SINGLE') {
-                        rowBgClass = 'bg-gradient-to-r from-indigo-50/80 via-white to-indigo-50/50 hover:from-indigo-100/80 hover:to-indigo-50 border-l-[6px] border-l-indigo-500 relative z-10 shadow-sm';
-                    } else {
-                        rowBgClass = index % 2 === 0 ? 'bg-white hover:bg-orange-50/50' : 'bg-orange-50/40 hover:bg-orange-100/50';
-                    }
-                    
-                    const nameStyle = (isRowKPI && viewLevel === 'SINGLE') ? "text-indigo-950 font-extrabold text-[15px]" : "text-slate-800 font-medium";
+                    // สลับสีฟันปลา (Zebra Striping) ใช้สีเทาอ่อน สบายตา
+                    const rowBgClass = (index % 2 === 0) ? 'bg-white hover:bg-orange-50/50' : 'bg-orange-50/40 hover:bg-orange-100/50';
+                    const isKPI = act.name.includes("(KPI)") || act.isAggregatedKPI;
 
                     tbody.innerHTML += `
-                        <tr class="group/row border-b border-slate-200 ${rowBgClass} transition-colors duration-300">
-                            <td class="px-6 py-5"><div class="leading-relaxed ${nameStyle} group-hover/row:translate-x-1 transition-transform duration-300 flex items-center">${namePrefix}${displayName}</div></td>
-                            <td class="px-4 py-5 text-center text-slate-600 font-bold">${act.unit}</td>
-                            <td class="px-4 py-5 text-center font-bold text-slate-700">${formatAutoDecimal(act.target)}</td>
-                            <td class="px-4 py-5 text-center font-extrabold text-blue-600">${formatAutoDecimal(act.actual)}</td>
-                            <td class="px-6 py-5">${progressHtml}</td>
-                            <td class="px-6 py-5 text-center">
-                                <span class="inline-flex items-center px-4 py-2.5 rounded-full text-[13px] font-bold whitespace-nowrap transition-all shadow-sm ${getStatusStyles(act.status)}">${act.status}</span>
+                        <tr class="group/row border-b border-orange-100 ${rowBgClass} transition-colors duration-300">
+                            <td class="px-6 py-5 align-top"><div class="leading-relaxed ${isKPI ? 'text-orange-950 font-extrabold' : 'text-slate-800'} group-hover/row:translate-x-1 transition-transform duration-300 break-words">${act.name}</div></td>
+                            <td class="px-4 py-5 align-top text-center text-slate-500 font-medium break-words">${act.unit}</td>
+                            <td class="px-4 py-5 align-top text-center font-bold text-slate-700 break-words">${formatAutoDecimal(act.target)}</td>
+                            <td class="px-4 py-5 align-top text-center font-extrabold text-blue-600 break-words">${formatAutoDecimal(act.actual)}</td>
+                            <td class="px-6 py-5 align-top">${progressHtml}</td>
+                            <td class="px-6 py-5 align-top text-center">
+                                <span class="inline-flex items-center px-4 py-2 rounded-full text-[13px] font-bold whitespace-nowrap shadow-sm break-words anim-glow ${getStatusStyles(act.status)}">${act.status}</span>
                             </td>
                         </tr>
                     `;
@@ -1028,55 +974,41 @@
 
                 // -- 8. ปัญหาและอุปสรรค --
                 if (viewLevel === 'SINGLE') {
-                    let issuesHtml = '';
-                    
-                    const isAnyRisk = Object.values(kpiByUnit).some(u => {
-                        let st = determineStatus(u.p1, u.p2, u.p3, u.p4, u.actual, currentQuarter, isLastMonthOfQuarter);
-                        return st.includes("ล่าช้า") || st.includes("เสี่ยง") || st.includes("ยังไม่ดำเนินการ");
-                    });
+                    const pastelBgRed = 'bg-rose-50'; // rose-50 ขุ่นสบายตา
 
-                    if (isAnyRisk) {
+                    let issuesHtml = '';
+                    if (kpiByUnit[Object.keys(kpiByUnit)[0]]?.actual < (getSafeNum(validFetches[0].data[0], "แผนไตรมาส 1") + getSafeNum(validFetches[0].data[0], "แผนไตรมาส 2") + getSafeNum(validFetches[0].data[0], "แผนไตรมาส 3"))) {
                         issuesHtml += `
                             <div class="bg-white border-l-4 border-red-500 p-5 rounded-r-xl shadow-md mb-6 transform transition-transform hover:-translate-y-1 anim-danger">
-                                <h4 class="font-bold text-red-800 mb-2 flex items-center">แจ้งเตือนสถานะภาพรวม</h4>
-                                <p class="text-sm text-red-700 leading-relaxed font-medium">ผลการดำเนินงานรวมของกิจกรรมเมื่อเทียบกับแผนงานสะสม อยู่ในเกณฑ์ล่าช้า/เสี่ยง จึงต้องเร่งรัดการจัดกิจกรรมและติดตามแก้ไขปัญหาในพื้นที่อย่างใกล้ชิด</p>
+                                <h4 class="font-bold text-red-800 mb-2 flex items-center break-words">แจ้งเตือนสถานะ</h4>
+                                <p class="text-sm text-red-700 leading-relaxed font-medium break-words">ผลการดำเนินงานสะสมยังต่ำกว่าแผนงานสะสม ณ ไตรมาสปัจจุบัน ขอให้เร่งรัดการดำเนินงานและติดตามอย่างใกล้ชิด</p>
                             </div>
                         `;
                     }
 
-                    const problematicActivities = displayActivities.filter(a => 
-                        (a.status && (a.status.includes("ล่าช้า") || a.status.includes("เสี่ยง") || a.status.includes("ยังไม่ดำเนินการ"))) || 
-                        (a.issue && a.issue.trim() !== "")
-                    );
-                    
+                    const problematicActivities = tableActivities.filter(a => a.status.includes("ล่าช้า") || a.status.includes("เสี่ยง") || a.status.includes("ยังไม่ดำเนินการ"));
                     if (problematicActivities.length > 0) {
-                        issuesHtml += `<h4 class="font-bold text-rose-900 mb-4 text-base relative z-10 px-1">รายการที่มีความล่าช้า/ปัญหา</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">`;
+                        issuesHtml += `
+                            <h4 class="font-bold text-rose-950 mb-4 text-base relative z-10 px-1 break-words">รายการที่มีความล่าช้า/ปัญหา (นับตามตัวชี้วัด)</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                        `;
                         problematicActivities.forEach(act => {
-                            const issueText = act.issue && act.issue.trim() !== "" ? act.issue : "อยู่ระหว่างตรวจสอบและรวบรวมสาเหตุการดำเนินงานจาก สำนัก/กอง ที่รับผิดชอบโครงการ";
-                            
-                            let statusColor = "text-slate-600 bg-slate-50 border-slate-200";
-                            if (act.status.includes("เสี่ยง")) statusColor = "text-red-700 bg-red-100 border-red-200 anim-danger";
-                            else if (act.status.includes("ล่าช้า")) statusColor = "text-yellow-700 bg-yellow-100 border-yellow-200 anim-warning";
-                            else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) statusColor = "text-white bg-red-600 border-red-800 shadow-md anim-critical";
-                            
-                            let displayName = act.name;
-                            if (act.isKPI && viewLevel === 'SINGLE') {
-                                displayName = act.name.replace("(KPI)", '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500 text-white mr-1 shadow-sm">(KPI)</span>');
-                            }
+                            const issueText = (act.issue && act.issue.trim() !== "") ? act.issue : "อยู่ระหว่างตรวจสอบและรวบรวมสาเหตุการดำเนินงานจาก สำนัก/กอง ที่รับผิดชอบโครงการ";
+                            const pastelBgSevere = 'bg-rose-100'; // rose-100 ขุ่นสบายตา
 
                             issuesHtml += `
-                                <div class="border border-rose-200 rounded-2xl p-5 bg-white/95 backdrop-blur-sm shadow-sm flex flex-col transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-rose-300 hover:bg-white">
-                                    <div class="mb-3"><span class="text-xs font-bold px-3 py-1.5 rounded-full border shadow-sm ${statusColor}">${act.status}</span></div>
-                                    <h5 class="text-sm font-bold text-rose-950 mb-3 leading-relaxed">${displayName}</h5>
-                                    <div class="bg-rose-50/70 p-4 rounded-xl border border-rose-100 flex-grow">
-                                        <p class="text-sm text-rose-900 leading-relaxed font-medium"><span class="font-semibold text-rose-950 opacity-80">สาเหตุ/อุปสรรค:</span> <br> ${issueText}</p>
+                                <div class="border border-rose-200 rounded-2xl p-5 ${pastelBgSevere} backdrop-blur-sm shadow-sm flex flex-col transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-rose-300 hover:bg-white">
+                                    <div class="mb-3"><span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold border break-words ${getStatusStyles(act.status)}">${act.status}</span></div>
+                                    <h5 class="text-sm font-bold text-rose-950 mb-3 leading-relaxed break-words">${act.name}</h5>
+                                    <div class="bg-rose-50 p-4 rounded-xl border border-rose-100 flex-grow">
+                                        <p class="text-sm text-rose-900 leading-relaxed font-medium break-words"><span class="font-semibold text-rose-950 opacity-80 break-words">สาเหตุ/อุปสรรค:</span> <br> ${issueText}</p>
                                     </div>
                                 </div>
                             `;
                         });
                         issuesHtml += `</div>`;
                     } else {
-                        issuesHtml = `<div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-rose-200 text-center text-rose-500 font-medium shadow-sm relative z-10">ไม่พบปัญหาหรือความเสี่ยงในการดำเนินงาน ณ ปัจจุบัน ทุกรายการดำเนินการได้ตามแผน</div>`;
+                        issuesHtml = `<div class="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-white text-center text-slate-500 font-medium shadow-sm relative z-10 break-words">ไม่พบปัญหาหรือความเสี่ยงในการดำเนินงาน ณ ปัจจุบัน</div>`;
                     }
                     document.getElementById('issues-container').innerHTML = issuesHtml;
                 }
