@@ -45,6 +45,7 @@
         .bar-chart-col-text { transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .progress-bar-fill { transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
         
+        /* Animation ของตาราง */
         @keyframes pulse-success { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
         @keyframes pulse-warning { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
         @keyframes pulse-danger { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); } 50% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
@@ -54,6 +55,17 @@
         .anim-warning { animation: pulse-warning 3s infinite ease-in-out; }
         .anim-danger { animation: pulse-danger 3.5s infinite ease-in-out; }
         .anim-critical { animation: pulse-critical 3s infinite ease-in-out; }
+
+        /* Animation แบบใหม่สำหรับ การ์ดย่อยโดนัท (หน่วงเวลาและความแรงต่างกัน) */
+        @keyframes pulse-success-alt { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); } 70% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        @keyframes pulse-warning-alt { 0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.6); } 70% { box-shadow: 0 0 0 16px rgba(250, 204, 21, 0); } 100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); } }
+        @keyframes pulse-danger-alt { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); } 70% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pulse-critical-alt { 0% { box-shadow: 0 0 0 0 rgba(30, 41, 59, 0.4); } 70% { box-shadow: 0 0 0 12px rgba(30, 41, 59, 0); } 100% { box-shadow: 0 0 0 0 rgba(30, 41, 59, 0); } }
+
+        .anim-success-alt { animation: pulse-success-alt 2.5s infinite ease-in-out; }
+        .anim-warning-alt { animation: pulse-warning-alt 2s infinite ease-in-out; }
+        .anim-danger-alt { animation: pulse-danger-alt 2.2s infinite ease-in-out; }
+        .anim-critical-alt { animation: pulse-critical-alt 2.8s infinite ease-in-out; }
         
         .hide-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
         .hide-scroll::-webkit-scrollbar-track { background: rgba(226, 232, 240, 0.6); border-radius: 10px; margin: 0 15px; }
@@ -191,23 +203,18 @@
             { planBg: 'bg-teal-300', planBorder: 'border-teal-400', planText: 'text-teal-700', actBg: 'bg-teal-500', actBorder: 'border-teal-600', actText: 'text-teal-600', legendPlanBg: 'bg-teal-300', legendActBg: 'bg-teal-500', cardPlanBg: 'bg-gradient-to-br from-teal-200 to-teal-300', cardPlanText: 'text-teal-900', cardActBg: 'bg-gradient-to-br from-teal-500 to-teal-600', cardActText: 'text-white', cardPctBg: 'bg-teal-50', cardPctText: 'text-teal-800' }
         ];
 
-        // 🎨 ชุดสีของ "ป้ายสถานะ" (พรีเมียม ถอด Emoji ออกแล้ว 100%)
-        const getStatusColorConfig = (status) => {
-            if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-[#064E3B]', badgeText: 'text-white', border: 'border-[#047857]', subtext: 'ร้อยละผลงาน ≥ 100' };
-            if (status === "ล่าช้า") return { ring: '#EAB308', badgeBg: 'bg-[#CA8A04]', badgeText: 'text-white', border: 'border-[#A16207]', subtext: 'ร้อยละ 50 - 99' }; // เหลืองสด
-            if (status === "เสี่ยง") return { ring: '#EF4444', badgeBg: 'bg-[#7F1D1D]', badgeText: 'text-white', border: 'border-[#991B1B]', subtext: 'ต่ำกว่าร้อยละ 50' };
-            if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return { ring: '#1E293B', badgeBg: 'bg-[#0F172A]', badgeText: 'text-white', border: 'border-[#1E293B]', subtext: 'ผลงาน = 0' };
-            if (status.includes("มีแผนอยู่ใน")) return { ring: '#94A3B8', badgeBg: 'bg-[#334155]', badgeText: 'text-white', border: 'border-[#475569]', subtext: 'ยังไม่ถึงช่วงแผนงาน' };
-            return { ring: '#CBD5E1', badgeBg: 'bg-slate-700', badgeText: 'text-white', border: 'border-slate-800', subtext: '-' };
+        // 🎨 ชุดสีการ์ดย่อยโดนัทสถานะ (ตาม Requirement ใหม่)
+        const getDonutStatusColorConfig = (status) => {
+            // ใช้ตัวอักษรสีดำสำหรับสถานะในการ์ดย่อย, สีเหลืองสดสำหรับล่าช้า, กล่องย่อยด้านล่างพื้นหลังสีขาว
+            if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-[#D1FAE5]', badgeText: 'text-black', border: 'border-[#34D399]', subtext: 'ร้อยละผลงาน ≥ 100', subtextColor: 'text-[#059669]', animClass: 'anim-success-alt' };
+            if (status === "ล่าช้า") return { ring: '#FACC15', badgeBg: 'bg-[#FEF08A]', badgeText: 'text-black', border: 'border-[#FACC15]', subtext: 'ร้อยละ 50 - 99', subtextColor: 'text-[#D97706]', animClass: 'anim-warning-alt' }; // เหลืองสด
+            if (status === "เสี่ยง") return { ring: '#EF4444', badgeBg: 'bg-[#FEE2E2]', badgeText: 'text-black', border: 'border-[#F87171]', subtext: 'ต่ำกว่าร้อยละ 50', subtextColor: 'text-[#DC2626]', animClass: 'anim-danger-alt' };
+            if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return { ring: '#1E293B', badgeBg: 'bg-[#E2E8F0]', badgeText: 'text-black', border: 'border-[#94A3B8]', subtext: 'ผลงาน = 0', subtextColor: 'text-[#1E293B]', animClass: 'anim-critical-alt' };
+            if (status.includes("มีแผนอยู่ใน")) return { ring: '#94A3B8', badgeBg: 'bg-[#F1F5F9]', badgeText: 'text-black', border: 'border-[#CBD5E1]', subtext: 'ยังไม่ถึงช่วงแผนงาน', subtextColor: 'text-[#475569]', animClass: '' };
+            return { ring: '#CBD5E1', badgeBg: 'bg-white', badgeText: 'text-black', border: 'border-slate-200', subtext: '-', subtextColor: 'text-slate-600', animClass: '' };
         };
 
-        const formatMoney = (num) => new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
-        const formatAutoDecimal = (num) => {
-            if (num % 1 !== 0) return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
-            return new Intl.NumberFormat('th-TH').format(num); 
-        };
-
-        // สไตล์สถานะในตารางด้านล่าง (ถอด Emoji ออกจากเงื่อนไข)
+        // สำหรับตารางด้านล่าง (คงเดิม)
         const getStatusStyles = (status) => {
             if (!status) return "bg-slate-100 text-slate-500 border-slate-200";
             if (status === "เป็นไปตามแผน") return "bg-[#D1FAE5] text-[#065F46] border-[#34D399] shadow-sm anim-success";
@@ -216,6 +223,22 @@
             if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return "bg-[#1E293B] text-white border-[#0F172A] shadow-md anim-critical font-bold tracking-wide";
             if (status.includes("มีแผนอยู่ใน")) return "bg-[#F1F5F9] text-[#475569] border-[#CBD5E1] shadow-sm border font-bold";
             return "bg-slate-100 text-slate-600 border-slate-200";
+        };
+
+        // สัญลักษณ์ 5 สถานะ
+        const getStatusEmoji = (status) => {
+            if (status === "เป็นไปตามแผน") return "🟢";
+            if (status === "ล่าช้า") return "🟡";
+            if (status === "เสี่ยง") return "🔴";
+            if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return "⚫";
+            if (status.includes("มีแผนอยู่ใน")) return "⚪";
+            return "⚪";
+        };
+
+        const formatMoney = (num) => new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+        const formatAutoDecimal = (num) => {
+            if (num % 1 !== 0) return new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+            return new Intl.NumberFormat('th-TH').format(num); 
         };
 
         const getBadgeColor = (actual, plan) => {
@@ -235,7 +258,6 @@
             for (let i = quarter; i >= 1; i--) {
                 let s = row["สถานะไตรมาส " + i] || row["สถานะไตรมาส " + i + " "];
                 if (s && s.trim() !== "") {
-                    // ถอด Emoji ออกจากข้อมูลดิบ ถ้ามี
                     return s.replace(/[🔴🟡🟢⚫⚪❌]/g, '').trim();
                 }
             }
@@ -248,7 +270,6 @@
             return "0.00";
         };
 
-        // ฟังก์ชันคำนวณ % ผลงานเทียบแผนสะสม (ตรงกลางโดนัท)
         function getPctVsCurrentPlan(p1, p2, p3, p4, actual, q, isLast) {
             let pCum = 0; let prevCum = 0;
             if (q >= 1) { pCum += p1; prevCum = 0; }
@@ -265,7 +286,6 @@
             }
         }
 
-        // ระบบสมองกลคำนวณสถานะ (ถอด Emoji ออกทั้งหมด!)
         function determineStatus(p1, p2, p3, p4, actual, q, isLast) {
             let pCum = 0; let prevCum = 0;
             if (q >= 1) { pCum += p1; prevCum = 0; }
@@ -292,7 +312,7 @@
             }
         }
 
-        // ฟังก์ชันวาดเส้น Q บนวงแหวน (องศาอิงตามเป้าหมายทั้งปี)
+        // วาดเส้นมาร์กเกอร์ (ถ้าครบ 100% ใน Q1-Q3 ก็วาดให้ด้วย)
         function generateDonutMarkers(target, q1, q2, q3) {
             if (target <= 0) return '';
             let html = '';
@@ -301,8 +321,8 @@
             const q3Pct = ((q1 + q2 + q3) / target) * 100;
 
             const makeMarker = (pct, label) => {
-                if (pct > 0 && pct < 100) {
-                    const degree = pct * 3.6; // แปลง % เป็นองศา
+                if (pct > 0 && pct <= 100) { // รองรับ 100%
+                    const degree = pct * 3.6; 
                     return `
                         <div class="absolute top-0 left-0 w-full h-full pointer-events-none" style="transform: rotate(${degree}deg)">
                             <div class="absolute top-[-10px] left-1/2 -translate-x-1/2 w-1 h-7 bg-slate-800 rounded-full shadow-md z-20"></div>
@@ -751,7 +771,7 @@
 
 
                 // =====================================
-                // STEP 3: โซนกราฟโดนัทสถานะ (ปรับ UI ใหม่ตาม Request)
+                // STEP 3: โซนกราฟโดนัทสถานะ (ปรับ UI ใหม่ตาม Requirement)
                 // =====================================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
@@ -759,31 +779,21 @@
 
                 pieChartsContainer.classList.remove('hidden');
 
-                // ฟังก์ชันดึงสัญลักษณ์วงกลมสีตามสถานะ
-                const getStatusEmoji = (status) => {
-                    if (status === "เป็นไปตามแผน") return "🟢";
-                    if (status === "ล่าช้า") return "🟡";
-                    if (status === "เสี่ยง") return "🔴";
-                    if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return "⚫";
-                    if (status.includes("มีแผนอยู่ใน")) return "⚪";
-                    return "⚪";
-                };
-                
                 // 3.1 การ์ดสถานะงบประมาณ
                 if (budgetRows.length > 0) {
                     const bObj = budgetRows[0];
                     const bPctYearly = bObj.target > 0 ? ((bObj.actual / bObj.target) * 100) : 0;
                     const bPctCurrent = getPctVsCurrentPlan(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
                     let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
-                    const bStatusColor = getStatusColorConfig(bStatus);
+                    const bStatusColor = getDonutStatusColorConfig(bStatus);
                     
                     pieChartsContainer.innerHTML += `
                         <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-gradient-to-br from-[#FDFBF7] via-[#F3E7D3] to-[#E8D0A5] rounded-[2.5rem] shadow-[0_10px_30px_rgba(212,175,55,0.15)] border-t-2 border-l-2 border-white/80 border-b border-r border-[#D4AF37]/30 flex flex-col items-center relative transition-transform duration-500 hover:-translate-y-2 overflow-hidden">
                             <div class="relative z-10 p-8 flex flex-col items-center w-full h-full">
                                 <div class="mb-8 w-full text-center border-b border-[#D4AF37]/30 pb-4">
-                                    <h4 class="text-xl xl:text-2xl font-black text-[#8B6508] drop-shadow-sm leading-tight truncate w-full">สถานะการใช้จ่ายงบประมาณ (บาท)</h4>
-                                    <p class="text-base font-bold text-black mt-2 uppercase tracking-widest flex items-center justify-center gap-1.5">
-                                        <span class="text-red-500 text-lg drop-shadow-sm">📍</span> ณ ไตรมาสที่ ${currentQuarter}
+                                    <h4 class="text-xl xl:text-2xl font-black text-[#8B6508] drop-shadow-sm leading-tight truncate w-full">สถานะการใช้จ่ายงบประมาณ</h4>
+                                    <p class="text-lg sm:text-xl font-black text-slate-800 mt-2 uppercase tracking-widest flex items-center justify-center gap-2">
+                                        <span class="text-red-500 text-xl drop-shadow-sm">📍</span> ณ ไตรมาสที่ ${currentQuarter}
                                     </p>
                                 </div>
 
@@ -797,13 +807,15 @@
                                 </div>
 
                                 <div class="mt-auto w-full flex flex-col items-center">
-                                    <div class="w-full ${bStatusColor.badgeBg} border-2 ${bStatusColor.border} rounded-2xl p-4 shadow-[0_8px_20px_rgba(0,0,0,0.12)] text-center relative overflow-hidden group flex flex-col items-center justify-center gap-2">
-                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/10 rounded-t-xl"></div>
-                                        <div class="flex items-center gap-2 relative z-10">
-                                            <span class="text-xl xl:text-2xl drop-shadow-md">${getStatusEmoji(bStatus)}</span>
-                                            <span class="text-xl xl:text-2xl font-black ${bStatusColor.badgeText} tracking-wide drop-shadow-md">${bStatus}</span>
+                                    <div class="w-full ${bStatusColor.badgeBg} border-2 ${bStatusColor.border} rounded-2xl p-4 shadow-md text-center relative overflow-hidden flex flex-col items-center justify-center ${bStatusColor.animClass}">
+                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/30 rounded-t-xl pointer-events-none"></div>
+                                        <div class="flex items-center justify-center gap-3 relative z-10 w-full mb-3 mt-1">
+                                            <span class="text-2xl drop-shadow-md">${getStatusEmoji(bStatus)}</span>
+                                            <span class="text-xl xl:text-2xl font-black ${bStatusColor.badgeText} tracking-wide drop-shadow-sm">${bStatus}</span>
                                         </div>
-                                        <p class="text-sm font-bold text-white relative z-10 bg-black/20 px-4 py-1.5 rounded-full border border-white/20 shadow-inner">${bStatusColor.subtext}</p>
+                                        <div class="w-full bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm relative z-10">
+                                            <p class="text-sm sm:text-base font-bold text-center ${bStatusColor.subtextColor}">${bStatusColor.subtext}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -820,7 +832,7 @@
                     let statusObj = determineStatus(d.p1, d.p2, d.p3, d.p4, d.actual, currentQuarter, isLastMonthOfQuarter);
                     
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
-                    const statusColor = getStatusColorConfig(statusObj);
+                    const statusColor = getDonutStatusColorConfig(statusObj);
 
                     pieChartsContainer.innerHTML += `
                         <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] rounded-[2.5rem] shadow-[0_10px_30px_rgba(0,0,0,0.06)] border border-white flex flex-col items-center relative transition-transform duration-500 hover:-translate-y-2 overflow-hidden">
@@ -832,8 +844,8 @@
                                     <h4 class="text-xl xl:text-2xl font-black ${theme.cardPlanText} drop-shadow-sm leading-tight truncate w-full">
                                         สถานะผลการดำเนินงาน (${unit})
                                     </h4>
-                                    <p class="text-base font-bold text-black mt-2 uppercase tracking-widest flex items-center justify-center gap-1.5">
-                                        <span class="text-red-500 text-lg drop-shadow-sm">📍</span> ณ ไตรมาสที่ ${currentQuarter}
+                                    <p class="text-lg sm:text-xl font-black text-slate-800 mt-2 uppercase tracking-widest flex items-center justify-center gap-2">
+                                        <span class="text-red-500 text-xl drop-shadow-sm">📍</span> ณ ไตรมาสที่ ${currentQuarter}
                                     </p>
                                 </div>
 
@@ -847,13 +859,15 @@
                                 </div>
 
                                 <div class="mt-auto w-full flex flex-col items-center">
-                                    <div class="w-full ${statusColor.badgeBg} border-2 ${statusColor.border} rounded-2xl p-4 shadow-[0_8px_20px_rgba(0,0,0,0.12)] text-center relative overflow-hidden group flex flex-col items-center justify-center gap-2">
-                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/10 rounded-t-xl"></div>
-                                        <div class="flex items-center gap-2 relative z-10">
-                                            <span class="text-xl xl:text-2xl drop-shadow-md">${getStatusEmoji(statusObj)}</span>
-                                            <span class="text-xl xl:text-2xl font-black ${statusColor.badgeText} tracking-wide drop-shadow-md">${statusObj}</span>
+                                    <div class="w-full ${statusColor.badgeBg} border-2 ${statusColor.border} rounded-2xl p-4 shadow-md text-center relative overflow-hidden flex flex-col items-center justify-center ${statusColor.animClass}">
+                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/30 rounded-t-xl pointer-events-none"></div>
+                                        <div class="flex items-center justify-center gap-3 relative z-10 w-full mb-3 mt-1">
+                                            <span class="text-2xl drop-shadow-md">${getStatusEmoji(statusObj)}</span>
+                                            <span class="text-xl xl:text-2xl font-black ${statusColor.badgeText} tracking-wide drop-shadow-sm">${statusObj}</span>
                                         </div>
-                                        <p class="text-sm font-bold text-white relative z-10 bg-black/20 px-4 py-1.5 rounded-full border border-white/20 shadow-inner">${statusColor.subtext}</p>
+                                        <div class="w-full bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm relative z-10">
+                                            <p class="text-sm sm:text-base font-bold text-center ${statusColor.subtextColor}">${statusColor.subtext}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
