@@ -21,7 +21,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
-        /* 1. สีพื้นหลังเว็บ Executive Platinum: ขุ่น สว่าง สบายตา */
         body { 
             font-family: 'Sarabun', sans-serif; 
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
@@ -46,7 +45,6 @@
         .bar-chart-col-text { transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .progress-bar-fill { transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
         
-        /* ระบบไฟกระพริบอัจฉริยะ */
         @keyframes pulse-success {
             0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3); }
             70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
@@ -121,11 +119,10 @@
         </header>
 
         <div id="budget-cards-container" class="hidden fade-in-up delay-100 mb-10 relative z-10">
-            </div>
+        </div>
 
         <div id="kpi-cards-container" class="flex flex-col gap-4 mb-12 relative z-10 fade-in-up delay-200">
-            </div>
-
+        </div>
 
         <div id="pie-charts-container" class="hidden"></div>
         <div id="budget-section" class="hidden"></div>
@@ -202,15 +199,15 @@
             currentQuarter = 4; isLastMonthOfQuarter = (currentMonth === 9); 
         }
 
-        // เพิ่มการจับคู่สีพื้นหลังของการ์ด (Card Background) ให้ตรงกับสีบาร์กราฟ
+        // Theme อัปเดตใหม่: เพิ่มสีพื้นหลังแบบพาสเทลอ่อนสุด สำหรับการ์ดเปอร์เซ็นต์ (cardPctBg)
         const kpiColorThemes = [
-            { planBg: 'bg-emerald-300', planBorder: 'border-emerald-400', planText: 'text-emerald-700', actBg: 'bg-emerald-500', actBorder: 'border-emerald-600', actText: 'text-emerald-600', legendPlanBg: 'bg-emerald-300', legendActBg: 'bg-emerald-500', cardPlanBg: 'bg-gradient-to-br from-emerald-200 to-emerald-300', cardPlanText: 'text-emerald-900', cardActBg: 'bg-gradient-to-br from-emerald-500 to-emerald-600', cardActText: 'text-white' },
-            { planBg: 'bg-blue-300', planBorder: 'border-blue-400', planText: 'text-blue-700', actBg: 'bg-blue-500', actBorder: 'border-blue-600', actText: 'text-blue-600', legendPlanBg: 'bg-blue-300', legendActBg: 'bg-blue-500', cardPlanBg: 'bg-gradient-to-br from-blue-200 to-blue-300', cardPlanText: 'text-blue-900', cardActBg: 'bg-gradient-to-br from-blue-500 to-blue-600', cardActText: 'text-white' },
-            { planBg: 'bg-purple-300', planBorder: 'border-purple-400', planText: 'text-purple-700', actBg: 'bg-purple-500', actBorder: 'border-purple-600', actText: 'text-purple-600', legendPlanBg: 'bg-purple-300', legendActBg: 'bg-purple-500', cardPlanBg: 'bg-gradient-to-br from-purple-200 to-purple-300', cardPlanText: 'text-purple-900', cardActBg: 'bg-gradient-to-br from-purple-500 to-purple-600', cardActText: 'text-white' },
-            { planBg: 'bg-pink-300', planBorder: 'border-pink-400', planText: 'text-pink-700', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-600', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500', cardPlanBg: 'bg-gradient-to-br from-pink-200 to-pink-300', cardPlanText: 'text-pink-900', cardActBg: 'bg-gradient-to-br from-pink-500 to-pink-600', cardActText: 'text-white' },
-            { planBg: 'bg-cyan-300', planBorder: 'border-cyan-400', planText: 'text-cyan-700', actBg: 'bg-cyan-500', actBorder: 'border-cyan-600', actText: 'text-cyan-600', legendPlanBg: 'bg-cyan-300', legendActBg: 'bg-cyan-500', cardPlanBg: 'bg-gradient-to-br from-cyan-200 to-cyan-300', cardPlanText: 'text-cyan-900', cardActBg: 'bg-gradient-to-br from-cyan-500 to-cyan-600', cardActText: 'text-white' },
-            { planBg: 'bg-rose-300', planBorder: 'border-rose-400', planText: 'text-rose-700', actBg: 'bg-rose-500', actBorder: 'border-rose-600', actText: 'text-rose-600', legendPlanBg: 'bg-rose-300', legendActBg: 'bg-rose-500', cardPlanBg: 'bg-gradient-to-br from-rose-200 to-rose-300', cardPlanText: 'text-rose-900', cardActBg: 'bg-gradient-to-br from-rose-500 to-rose-600', cardActText: 'text-white' },
-            { planBg: 'bg-teal-300', planBorder: 'border-teal-400', planText: 'text-teal-700', actBg: 'bg-teal-500', actBorder: 'border-teal-600', actText: 'text-teal-600', legendPlanBg: 'bg-teal-300', legendActBg: 'bg-teal-500', cardPlanBg: 'bg-gradient-to-br from-teal-200 to-teal-300', cardPlanText: 'text-teal-900', cardActBg: 'bg-gradient-to-br from-teal-500 to-teal-600', cardActText: 'text-white' }
+            { planBg: 'bg-emerald-300', planBorder: 'border-emerald-400', planText: 'text-emerald-700', actBg: 'bg-emerald-500', actBorder: 'border-emerald-600', actText: 'text-emerald-600', legendPlanBg: 'bg-emerald-300', legendActBg: 'bg-emerald-500', cardPlanBg: 'bg-gradient-to-br from-emerald-200 to-emerald-300', cardPlanText: 'text-emerald-900', cardActBg: 'bg-gradient-to-br from-emerald-500 to-emerald-600', cardActText: 'text-white', cardPctBg: 'bg-emerald-50', cardPctText: 'text-emerald-800' },
+            { planBg: 'bg-blue-300', planBorder: 'border-blue-400', planText: 'text-blue-700', actBg: 'bg-blue-500', actBorder: 'border-blue-600', actText: 'text-blue-600', legendPlanBg: 'bg-blue-300', legendActBg: 'bg-blue-500', cardPlanBg: 'bg-gradient-to-br from-blue-200 to-blue-300', cardPlanText: 'text-blue-900', cardActBg: 'bg-gradient-to-br from-blue-500 to-blue-600', cardActText: 'text-white', cardPctBg: 'bg-blue-50', cardPctText: 'text-blue-800' },
+            { planBg: 'bg-purple-300', planBorder: 'border-purple-400', planText: 'text-purple-700', actBg: 'bg-purple-500', actBorder: 'border-purple-600', actText: 'text-purple-600', legendPlanBg: 'bg-purple-300', legendActBg: 'bg-purple-500', cardPlanBg: 'bg-gradient-to-br from-purple-200 to-purple-300', cardPlanText: 'text-purple-900', cardActBg: 'bg-gradient-to-br from-purple-500 to-purple-600', cardActText: 'text-white', cardPctBg: 'bg-purple-50', cardPctText: 'text-purple-800' },
+            { planBg: 'bg-pink-300', planBorder: 'border-pink-400', planText: 'text-pink-700', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-600', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500', cardPlanBg: 'bg-gradient-to-br from-pink-200 to-pink-300', cardPlanText: 'text-pink-900', cardActBg: 'bg-gradient-to-br from-pink-500 to-pink-600', cardActText: 'text-white', cardPctBg: 'bg-pink-50', cardPctText: 'text-pink-800' },
+            { planBg: 'bg-cyan-300', planBorder: 'border-cyan-400', planText: 'text-cyan-700', actBg: 'bg-cyan-500', actBorder: 'border-cyan-600', actText: 'text-cyan-600', legendPlanBg: 'bg-cyan-300', legendActBg: 'bg-cyan-500', cardPlanBg: 'bg-gradient-to-br from-cyan-200 to-cyan-300', cardPlanText: 'text-cyan-900', cardActBg: 'bg-gradient-to-br from-cyan-500 to-cyan-600', cardActText: 'text-white', cardPctBg: 'bg-cyan-50', cardPctText: 'text-cyan-800' },
+            { planBg: 'bg-rose-300', planBorder: 'border-rose-400', planText: 'text-rose-700', actBg: 'bg-rose-500', actBorder: 'border-rose-600', actText: 'text-rose-600', legendPlanBg: 'bg-rose-300', legendActBg: 'bg-rose-500', cardPlanBg: 'bg-gradient-to-br from-rose-200 to-rose-300', cardPlanText: 'text-rose-900', cardActBg: 'bg-gradient-to-br from-rose-500 to-rose-600', cardActText: 'text-white', cardPctBg: 'bg-rose-50', cardPctText: 'text-rose-800' },
+            { planBg: 'bg-teal-300', planBorder: 'border-teal-400', planText: 'text-teal-700', actBg: 'bg-teal-500', actBorder: 'border-teal-600', actText: 'text-teal-600', legendPlanBg: 'bg-teal-300', legendActBg: 'bg-teal-500', cardPlanBg: 'bg-gradient-to-br from-teal-200 to-teal-300', cardPlanText: 'text-teal-900', cardActBg: 'bg-gradient-to-br from-teal-500 to-teal-600', cardActText: 'text-white', cardPctBg: 'bg-teal-50', cardPctText: 'text-teal-800' }
         ];
 
         const formatMoney = (num) => new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
@@ -551,7 +548,7 @@
         }
 
         // =====================================
-        // ฟังก์ชันวาด UI (การจัดวาง 3 มิติ และ Layout 3 การ์ดใหม่)
+        // ฟังก์ชันวาด UI (การจัดวางตัวเลข 3D & Responsive Number Size)
         // =====================================
         function renderDashboardUI(allRows, viewLevel, isActivity) {
             try {
@@ -588,7 +585,7 @@
                 }
 
                 // =====================================
-                // 1. วาดการ์ด Budget (Premium Gold 3D Frame + White Cards)
+                // 1. วาดการ์ด Budget (Premium Gold 3D Frame + White Cards + Resize Numbers)
                 // =====================================
                 const budgetContainer = document.getElementById('budget-cards-container');
                 budgetContainer.innerHTML = '';
@@ -609,40 +606,35 @@
                             <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 w-full relative z-10">
                                 
                                 <div class="lg:col-span-2 bg-white rounded-[1.5rem] shadow-[0_8px_20px_rgba(0,0,0,0.04)] border-t border-l border-white border-b border-r border-slate-200 p-6 flex flex-col relative hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] transition-all duration-300 group">
-                                    <div class="flex items-start justify-between mb-4">
-                                        <div class="flex items-center">
-                                            <div class="p-3 bg-blue-50 rounded-xl mr-3 border border-blue-100 text-[#2563EB] group-hover:scale-110 transition-transform duration-300 shadow-sm"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div>
-                                            <p class="text-base sm:text-lg font-extrabold text-slate-600 tracking-wide text-left">งบประมาณที่ได้รับจัดสรร</p>
-                                        </div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="p-3 bg-blue-50 rounded-xl mr-3 border border-blue-100 text-[#2563EB] group-hover:scale-110 transition-transform duration-300 shadow-sm"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div>
+                                        <p class="text-base sm:text-lg font-extrabold text-slate-600 tracking-wide text-left">งบประมาณที่ได้รับจัดสรร</p>
                                     </div>
-                                    <div class="mt-auto text-right w-full">
-                                        <h2 class="text-5xl sm:text-6xl font-black text-[#1E3A8A] tracking-tight drop-shadow-sm truncate">${formatMoney(bObj.target)}</h2>
-                                        <p class="text-xl font-bold text-slate-400 mt-2 uppercase tracking-widest">บาท</p>
+                                    <div class="mt-auto text-right w-full pt-4">
+                                        <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black text-[#1E3A8A] tracking-tight drop-shadow-sm truncate">${formatMoney(bObj.target)} <span class="text-base lg:text-lg font-bold text-slate-400 ml-1 uppercase tracking-widest">บาท</span></h2>
                                     </div>
                                 </div>
 
                                 <div class="lg:col-span-2 bg-white rounded-[1.5rem] shadow-[0_8px_20px_rgba(0,0,0,0.04)] border-t border-l border-white border-b border-r border-slate-200 p-6 flex flex-col relative hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(16,185,129,0.15)] transition-all duration-300 group">
-                                    <div class="flex items-start justify-between mb-4">
-                                        <div class="flex items-center">
-                                            <div class="p-3 bg-emerald-50 rounded-xl mr-3 border border-emerald-100 text-[#10B981] group-hover:scale-110 transition-transform duration-300 shadow-sm"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg></div>
-                                            <p class="text-base sm:text-lg font-extrabold text-[#064E3B] tracking-wide text-left">ผลการเบิกจ่ายสะสม</p>
-                                        </div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="p-3 bg-emerald-50 rounded-xl mr-3 border border-emerald-100 text-[#10B981] group-hover:scale-110 transition-transform duration-300 shadow-sm"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg></div>
+                                        <p class="text-base sm:text-lg font-extrabold text-[#064E3B] tracking-wide text-left">ผลการเบิกจ่ายสะสม</p>
                                     </div>
-                                    <div class="mt-auto text-right w-full">
-                                        <h2 class="text-5xl sm:text-6xl font-black text-[#059669] tracking-tight drop-shadow-sm truncate">${formatMoney(bObj.actual)}</h2>
-                                        <p class="text-xl font-bold text-slate-400 mt-2 uppercase tracking-widest">บาท</p>
+                                    <div class="mt-auto text-right w-full pt-4">
+                                        <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black text-[#059669] tracking-tight drop-shadow-sm truncate">${formatMoney(bObj.actual)} <span class="text-base lg:text-lg font-bold text-[#34D399] ml-1 uppercase tracking-widest">บาท</span></h2>
                                     </div>
                                 </div>
 
                                 <div class="lg:col-span-1 bg-white rounded-[1.5rem] shadow-[0_8px_20px_rgba(0,0,0,0.04)] border-t border-l border-white border-b border-r border-slate-200 p-6 flex flex-col relative hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(217,119,6,0.15)] transition-all duration-300 group">
-                                    <div class="flex items-start justify-between mb-4">
-                                        <div class="flex items-center">
-                                            <div class="p-3 bg-amber-50 rounded-xl mr-3 border border-amber-100 text-[#D97706] group-hover:scale-110 transition-transform duration-300 shadow-sm"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg></div>
-                                            <p class="text-base sm:text-lg font-extrabold text-slate-600 tracking-wide text-left">ร้อยละเบิกจ่ายสะสม</p>
+                                    <div class="flex items-start mb-2">
+                                        <div class="p-3 bg-amber-50 rounded-xl mr-3 border border-amber-100 text-[#D97706] group-hover:scale-110 transition-transform duration-300 shadow-sm"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg></div>
+                                        <div class="flex flex-col text-left">
+                                            <p class="text-base sm:text-lg font-extrabold text-slate-600 tracking-wide leading-tight">ร้อยละ</p>
+                                            <p class="text-base sm:text-lg font-extrabold text-slate-600 tracking-wide leading-tight">การเบิกจ่ายสะสม</p>
                                         </div>
                                     </div>
-                                    <div class="mt-auto text-right w-full">
-                                        <h2 class="text-5xl sm:text-6xl font-black text-[#D97706] tracking-tight drop-shadow-sm">${pct.toFixed(2)} <span class="text-3xl font-bold text-amber-500/80 ml-2">%</span></h2>
+                                    <div class="mt-auto text-right w-full pt-4">
+                                        <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black text-[#D97706] tracking-tight drop-shadow-sm">${pct.toFixed(2)} <span class="text-xl lg:text-2xl font-bold text-amber-500/80 ml-1">%</span></h2>
                                     </div>
                                 </div>
                             </div>
@@ -654,7 +646,7 @@
                 }
 
                 // =====================================
-                // 2. วาดการ์ด KPI (ตามหน่วยนับ สีพื้นตรงตามกราฟแท่ง)
+                // 2. วาดการ์ด KPI (ตามหน่วยนับ สีพื้นตรงตามกราฟแท่ง + ตัวเลขกลาง หน่วยชิดขวา)
                 // =====================================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
@@ -671,37 +663,40 @@
                             <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 w-full ${idx < unitKeys.length - 1 ? 'mb-8' : ''}">
                                 
                                 <div class="lg:col-span-2 ${theme.cardPlanBg} rounded-[1.5rem] shadow-md border border-white/40 p-6 flex flex-col relative hover:-translate-y-1.5 hover:shadow-lg transition-all duration-300 group">
-                                    <div class="flex items-center mb-4">
+                                    <div class="flex items-center mb-2">
                                         <div class="p-3 bg-white/50 backdrop-blur-sm rounded-xl mr-3 border border-white/50 ${theme.cardPlanText} group-hover:scale-110 transition-transform duration-300 shadow-sm"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path></svg></div>
                                         <p class="text-base sm:text-lg tracking-wide truncate text-left w-full">
                                             <span class="font-extrabold ${theme.cardPlanText} drop-shadow-sm">${kpiTargetTitlePrefix}</span> 
-                                            <span class="font-medium ${theme.cardPlanText} opacity-80 ml-1">เฉพาะ KPI (${unit})</span>
+                                            <span class="font-medium ${theme.cardPlanText} opacity-80 ml-1.5">เฉพาะ KPI (${unit})</span>
                                         </p>
                                     </div>
-                                    <div class="mt-auto text-right w-full">
-                                        <h2 class="text-5xl sm:text-6xl font-black ${theme.cardPlanText} tracking-tight drop-shadow-md truncate">${formatAutoDecimal(d.target)}</h2>
-                                        <p class="text-xl font-bold ${theme.cardPlanText} opacity-80 mt-2 uppercase tracking-widest">${unit}</p>
+                                    <div class="mt-auto relative flex items-baseline justify-center w-full pt-4 min-h-[50px]">
+                                        <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black ${theme.cardPlanText} tracking-tight drop-shadow-md truncate z-10 px-10">${formatAutoDecimal(d.target)}</h2>
+                                        <p class="absolute right-0 bottom-1 text-sm lg:text-base font-bold ${theme.cardPlanText} opacity-80 uppercase tracking-widest z-20">${unit}</p>
                                     </div>
                                 </div>
 
                                 <div class="lg:col-span-2 ${theme.cardActBg} rounded-[1.5rem] shadow-md border border-white/20 p-6 flex flex-col relative hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 group">
-                                    <div class="flex items-center mb-4">
+                                    <div class="flex items-center mb-2">
                                         <div class="p-3 bg-white/20 backdrop-blur-sm rounded-xl mr-3 border border-white/30 text-white group-hover:scale-110 transition-transform duration-300 shadow-sm"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg></div>
                                         <p class="text-base sm:text-lg font-extrabold text-white tracking-wide text-left truncate drop-shadow-sm">ผลการดำเนินงาน</p>
                                     </div>
-                                    <div class="mt-auto text-right w-full">
-                                        <h2 class="text-5xl sm:text-6xl font-black text-white tracking-tight drop-shadow-md truncate">${formatAutoDecimal(d.actual)}</h2>
-                                        <p class="text-xl font-bold text-white/80 mt-2 uppercase tracking-widest">${unit}</p>
+                                    <div class="mt-auto relative flex items-baseline justify-center w-full pt-4 min-h-[50px]">
+                                        <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black text-white tracking-tight drop-shadow-md truncate z-10 px-10">${formatAutoDecimal(d.actual)}</h2>
+                                        <p class="absolute right-0 bottom-1 text-sm lg:text-base font-bold text-white/80 uppercase tracking-widest z-20">${unit}</p>
                                     </div>
                                 </div>
 
-                                <div class="lg:col-span-1 bg-white rounded-[1.5rem] shadow-[0_8px_20px_rgba(0,0,0,0.04)] border-t border-l border-white border-b border-r border-slate-200 p-6 flex flex-col relative hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] transition-all duration-300 group">
-                                    <div class="flex items-center mb-4">
-                                        <div class="p-3 bg-slate-50 rounded-xl mr-3 border border-slate-100 text-slate-700 group-hover:scale-110 transition-transform duration-300 shadow-sm"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
-                                        <p class="text-base sm:text-lg font-extrabold text-slate-600 tracking-wide text-left">ร้อยละการดำเนินงาน</p>
+                                <div class="lg:col-span-1 ${theme.cardPctBg} rounded-[1.5rem] shadow-[0_8px_20px_rgba(0,0,0,0.04)] border-t border-l border-white border-b border-r border-slate-200/50 p-6 flex flex-col relative hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(0,0,0,0.08)] transition-all duration-300 group">
+                                    <div class="flex items-start mb-2">
+                                        <div class="p-3 bg-white/60 rounded-xl mr-3 border border-white/80 ${theme.cardPctText} group-hover:scale-110 transition-transform duration-300 shadow-sm"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
+                                        <div class="flex flex-col text-left">
+                                            <p class="text-base sm:text-lg font-extrabold ${theme.cardPctText} tracking-wide leading-tight">ร้อยละ</p>
+                                            <p class="text-base sm:text-lg font-extrabold ${theme.cardPctText} tracking-wide leading-tight">การดำเนินงาน</p>
+                                        </div>
                                     </div>
-                                    <div class="mt-auto text-right w-full">
-                                        <h2 class="text-5xl sm:text-6xl font-black text-[#1E3A8A] tracking-tight drop-shadow-sm">${pct.toFixed(2)} <span class="text-3xl font-bold text-slate-400 ml-2">%</span></h2>
+                                    <div class="mt-auto relative flex items-baseline justify-center w-full pt-4 min-h-[50px]">
+                                        <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black ${theme.cardPctText} tracking-tight drop-shadow-sm z-10">${pct.toFixed(2)} <span class="text-xl lg:text-2xl font-bold opacity-80 ml-1">%</span></h2>
                                     </div>
                                 </div>
                             </div>
