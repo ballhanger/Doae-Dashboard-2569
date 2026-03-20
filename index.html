@@ -312,14 +312,17 @@
             }
         }
 
-        // วาดเส้นมาร์กเกอร์ (แก้บั๊กเส้นซ้อนทับกันเมื่อแผนเป็น 0)
+        // วาดเส้นมาร์กเกอร์ (แก้บั๊กเส้นซ้อนทับกันเมื่อแผนเป็น 0 และรองรับทศนิยม)
         function generateDonutMarkers(target, q1, q2, q3) {
             if (target <= 0) return '';
             let html = '';
 
             const makeMarker = (pct, label) => {
-                if (pct > 0 && pct <= 100) { // รองรับ 100%
-                    const degree = pct * 3.6; 
+                // ปรับจาก pct <= 100 เป็น pct <= 100.1 ป้องกันบั๊กทศนิยม
+                if (pct > 0 && pct <= 100.1) { 
+                    // บังคับไม่ให้องศาเกิน 360 (จุด 100%)
+                    const finalPct = Math.min(pct, 100); 
+                    const degree = finalPct * 3.6; 
                     return `
                         <div class="absolute top-0 left-0 w-full h-full pointer-events-none" style="transform: rotate(${degree}deg)">
                             <div class="absolute top-[-10px] left-1/2 -translate-x-1/2 w-1 h-7 bg-slate-800 rounded-full shadow-md z-20"></div>
@@ -709,7 +712,7 @@
                 }
 
                 // =====================================
-                // 2. วาดการ์ด KPI ด้านบน (แก้ตัวอักษรแหว่งที่นี่)
+                // 2. วาดการ์ด KPI ด้านบน
                 // =====================================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
@@ -771,7 +774,7 @@
 
 
                 // =====================================
-                // STEP 3: โซนกราฟโดนัทสถานะ (อัปเดต UI ครบ 7 ข้อ)
+                // STEP 3: โซนกราฟโดนัทสถานะ (ปรับ UI และแก้ทศนิยม)
                 // =====================================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
