@@ -56,7 +56,7 @@
         .anim-danger { animation: pulse-danger 3.5s infinite ease-in-out; }
         .anim-critical { animation: pulse-critical 3s infinite ease-in-out; }
 
-        /* Animation แบบใหม่สำหรับ การ์ดย่อยโดนัท (หน่วงเวลาและความแรงต่างกัน) */
+        /* Animation แบบใหม่สำหรับ การ์ดย่อยโดนัท */
         @keyframes pulse-success-alt { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); } 70% { box-shadow: 0 0 0 14px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
         @keyframes pulse-warning-alt { 0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.6); } 70% { box-shadow: 0 0 0 16px rgba(250, 204, 21, 0); } 100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); } }
         @keyframes pulse-danger-alt { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); } 70% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
@@ -203,9 +203,8 @@
             { planBg: 'bg-teal-300', planBorder: 'border-teal-400', planText: 'text-teal-700', actBg: 'bg-teal-500', actBorder: 'border-teal-600', actText: 'text-teal-600', legendPlanBg: 'bg-teal-300', legendActBg: 'bg-teal-500', cardPlanBg: 'bg-gradient-to-br from-teal-200 to-teal-300', cardPlanText: 'text-teal-900', cardActBg: 'bg-gradient-to-br from-teal-500 to-teal-600', cardActText: 'text-white', cardPctBg: 'bg-teal-50', cardPctText: 'text-teal-800' }
         ];
 
-        // 🎨 ชุดสีการ์ดย่อยโดนัทสถานะ (ตาม Requirement ใหม่)
+        // 🎨 ชุดสีการ์ดย่อยโดนัทสถานะ 
         const getDonutStatusColorConfig = (status) => {
-            // ใช้ตัวอักษรสีดำสำหรับสถานะในการ์ดย่อย, สีเหลืองสดสำหรับล่าช้า, กล่องย่อยด้านล่างพื้นหลังสีขาว
             if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-[#D1FAE5]', badgeText: 'text-black', border: 'border-[#34D399]', subtext: 'ร้อยละผลงาน ≥ 100', subtextColor: 'text-[#059669]', animClass: 'anim-success-alt' };
             if (status === "ล่าช้า") return { ring: '#FACC15', badgeBg: 'bg-[#FEF08A]', badgeText: 'text-black', border: 'border-[#FACC15]', subtext: 'ร้อยละ 50 - 99', subtextColor: 'text-[#D97706]', animClass: 'anim-warning-alt' }; 
             if (status === "เสี่ยง") return { ring: '#EF4444', badgeBg: 'bg-[#FEE2E2]', badgeText: 'text-black', border: 'border-[#F87171]', subtext: 'ต่ำกว่าร้อยละ 50', subtextColor: 'text-[#DC2626]', animClass: 'anim-danger-alt' };
@@ -214,7 +213,7 @@
             return { ring: '#CBD5E1', badgeBg: 'bg-white', badgeText: 'text-black', border: 'border-slate-200', subtext: '-', subtextColor: 'text-slate-600', animClass: '' };
         };
 
-        // สำหรับตารางด้านล่าง (คงเดิม)
+        // สำหรับตารางด้านล่าง
         const getStatusStyles = (status) => {
             if (!status) return "bg-slate-100 text-slate-500 border-slate-200";
             if (status === "เป็นไปตามแผน") return "bg-[#D1FAE5] text-[#065F46] border-[#34D399] shadow-sm anim-success";
@@ -225,7 +224,6 @@
             return "bg-slate-100 text-slate-600 border-slate-200";
         };
 
-        // สัญลักษณ์ 5 สถานะ
         const getStatusEmoji = (status) => {
             if (status === "เป็นไปตามแผน") return "🟢";
             if (status === "ล่าช้า") return "🟡";
@@ -312,15 +310,13 @@
             }
         }
 
-        // วาดเส้นมาร์กเกอร์ (แก้บั๊กเส้นซ้อนทับกันเมื่อแผนเป็น 0 และรองรับทศนิยม)
+        // วาดเส้นมาร์กเกอร์ (แก้บั๊กเส้นซ้อนทับและทศนิยม)
         function generateDonutMarkers(target, q1, q2, q3) {
             if (target <= 0) return '';
             let html = '';
 
             const makeMarker = (pct, label) => {
-                // ปรับจาก pct <= 100 เป็น pct <= 100.1 ป้องกันบั๊กทศนิยม
                 if (pct > 0 && pct <= 100.1) { 
-                    // บังคับไม่ให้องศาเกิน 360 (จุด 100%)
                     const finalPct = Math.min(pct, 100); 
                     const degree = finalPct * 3.6; 
                     return `
@@ -335,7 +331,6 @@
                 return '';
             };
 
-            // วาดขีดเฉพาะไตรมาสที่มีตัวเลขแผนโผล่มาเพิ่มจริงๆ เท่านั้น
             let cum = 0;
             if (q1 > 0) { cum += q1; html += makeMarker((cum / target) * 100, 'Q1'); }
             if (q2 > 0) { cum += q2; html += makeMarker((cum / target) * 100, 'Q2'); }
@@ -621,9 +616,25 @@
         function renderDashboardUI(allRows, viewLevel, isActivity) {
             try {
                 const kpiActivities = allRows.filter(act => act.isKPI);
-                const budgetRows = allRows.filter(act => act.isBudget);
+                const rawBudgetRows = allRows.filter(act => act.isBudget);
                 const tableActivities = allRows.filter(act => !act.isBudget); 
                 
+                // 💡 แก้บั๊กการคำนวณงบประมาณ: จับมัดรวมยอดงบประมาณทุกบรรทัดให้เป็นก้อนเดียว (แก้ปัญหาดึงมาแค่บรรทัดแรก)
+                let budgetRows = [];
+                if (rawBudgetRows.length > 0) {
+                    let aggB = {
+                        target: 0, actual: 0,
+                        planQ1: 0, planQ2: 0, planQ3: 0, planQ4: 0,
+                        actualQ1: 0, actualQ2: 0, actualQ3: 0, actualQ4: 0
+                    };
+                    rawBudgetRows.forEach(r => {
+                        aggB.target += r.target; aggB.actual += r.actual;
+                        aggB.planQ1 += r.planQ1; aggB.planQ2 += r.planQ2; aggB.planQ3 += r.planQ3; aggB.planQ4 += r.planQ4;
+                        aggB.actualQ1 += r.actualQ1; aggB.actualQ2 += r.actualQ2; aggB.actualQ3 += r.actualQ3; aggB.actualQ4 += r.actualQ4;
+                    });
+                    budgetRows = [aggB]; 
+                }
+
                 const kpiByUnit = {};
                 kpiActivities.forEach(act => {
                     const u = act.unit || "ราย";
@@ -774,7 +785,7 @@
 
 
                 // =====================================
-                // STEP 3: โซนกราฟโดนัทสถานะ (ปรับ UI และแก้ทศนิยม)
+                // STEP 3: โซนกราฟโดนัทสถานะ
                 // =====================================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
@@ -923,7 +934,12 @@
                     
                     let bPlan = 0, bAct = 0;
                     if(budgetRows.length > 0) {
-                        for(let i=1; i<=q; i++) { bPlan += budgetRows[0][`planQ${i}`]; bAct += budgetRows[0][`actualQ${i}`]; }
+                        budgetRows.forEach(bRow => {
+                            for(let i=1; i<=q; i++) { 
+                                bPlan += bRow[`planQ${i}`]; 
+                                bAct += bRow[`actualQ${i}`]; 
+                            }
+                        });
                     }
                     return { q: q, name: `ไตรมาสที่ ${q}`, showActual: currentQuarter >= q, kpis: kpis, bPlan: bPlan, bAct: bAct, bPct: calcSafePct(bAct, bPlan) };
                 });
