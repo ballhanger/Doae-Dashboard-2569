@@ -82,33 +82,27 @@
 <body class="p-4 sm:p-6 lg:p-8 text-slate-800">
     
     <div class="max-w-7xl mx-auto">
-        <header class="relative z-[100] mb-10 fade-in-up">
+        <header class="relative z-[100] mb-12 fade-in-up">
             
-            <div class="text-center md:text-left mb-6">
-                <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-[#0D9488] drop-shadow-md leading-tight tracking-tight mb-2">
-                    Dashboard รายงานความก้าวหน้าการดำเนินงานโครงการ
-                </h1>
-                <h2 class="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-3 justify-center md:justify-start">
-                    <span class="text-lg md:text-xl font-extrabold text-[#1E3A8A] drop-shadow-sm">
-                        ประจำปีงบประมาณ พ.ศ. 2569
-                    </span>
-                    <span class="text-xl md:text-2xl lg:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-[#0D9488] drop-shadow-md tracking-tight">
-                        กรมส่งเสริมการเกษตร
-                    </span>
-                </h2>
-            </div>
-            
-            <div class="flex flex-col lg:flex-row gap-5 items-stretch">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
                 
-                <div class="flex-grow bg-white/90 backdrop-blur-md rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-white px-6 py-4 flex items-center min-w-0 transition-all duration-300 hover:shadow-lg">
-                    <h3 id="display-project-name" class="text-lg md:text-xl lg:text-2xl font-bold text-[#1E3A8A] leading-relaxed tracking-wide drop-shadow-sm break-words w-full">
-                        กำลังเชื่อมต่อข้อมูล...
-                    </h3>
+                <div class="text-center md:text-left">
+                    <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-[#0D9488] drop-shadow-md leading-tight tracking-tight mb-2">
+                        Dashboard รายงานความก้าวหน้าการดำเนินงานโครงการ
+                    </h1>
+                    <h2 class="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-3 justify-center md:justify-start">
+                        <span class="text-lg md:text-xl font-extrabold text-[#1E3A8A] drop-shadow-sm">
+                            ประจำปีงบประมาณ พ.ศ. 2569
+                        </span>
+                        <span class="text-xl md:text-2xl lg:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-[#0D9488] drop-shadow-md tracking-tight">
+                            กรมส่งเสริมการเกษตร
+                        </span>
+                    </h2>
                 </div>
-                
-                <div id="custom-dropdown-container" class="w-full lg:w-1/3 xl:w-1/4 relative z-50 flex-shrink-0">
+
+                <div id="custom-dropdown-container" class="w-full md:w-auto md:min-w-[280px] relative z-50 flex-shrink-0 mt-2 md:mt-1">
                     <div class="absolute -inset-1 bg-gradient-to-r from-[#34D399] to-[#2DD4BF] rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
-                    <button id="dropdown-btn" onclick="toggleDropdown()" class="relative w-full h-full bg-white/95 backdrop-blur-xl border border-white text-slate-800 font-extrabold text-sm sm:text-base py-4 px-5 rounded-2xl shadow-lg focus:outline-none hover:border-[#6EE7B7] hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)] transition-all cursor-pointer flex justify-between items-center text-left">
+                    <button id="dropdown-btn" onclick="toggleDropdown()" class="relative w-full bg-white/95 backdrop-blur-xl border border-white text-slate-800 font-extrabold text-sm sm:text-base py-4 px-5 rounded-2xl shadow-lg focus:outline-none hover:border-[#6EE7B7] hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)] transition-all cursor-pointer flex justify-between items-center text-left">
                         <span id="dropdown-text" class="truncate mr-4">กำลังโหลดสารบัญ...</span>
                         <svg id="dropdown-icon" class="w-6 h-6 text-[#059669] flex-shrink-0 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
@@ -117,7 +111,12 @@
                             </ul>
                     </div>
                 </div>
-                
+            </div>
+            
+            <div class="bg-[#FFEDD5] rounded-2xl shadow-md border border-orange-200/50 px-6 py-4 w-full overflow-x-auto hide-scroll flex items-center transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
+                <h3 id="display-project-name" class="text-lg md:text-xl lg:text-2xl font-bold text-[#1E3A8A] whitespace-nowrap leading-relaxed tracking-wide drop-shadow-sm w-full">
+                    กำลังเชื่อมต่อข้อมูล...
+                </h3>
             </div>
             
             <div class="mt-8 h-1.5 w-full bg-gradient-to-r from-[#FDE68A] via-[#F59E0B] to-[#D97706] rounded-full shadow-[0_4px_12px_rgba(217,119,6,0.3)] border-t border-[#FEF3C7]"></div>
@@ -519,8 +518,8 @@
                                 kpiAgg[key] = { name: r.groupName, unit: r.unit, target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0, issues: [] };
                             }
                             kpiAgg[key].target += r.target; kpiAgg[key].actual += r.actual;
-                            kpiAgg[key].p1 += r.planQ1; kpiAgg[key].p2 += r.planQ2; kpiAgg[key].p3 += r.planQ3; kpiAgg[key].p4 += r.planQ4;
-                            kpiAgg[key].a1 += r.actualQ1; kpiAgg[key].a2 += r.actualQ2; kpiAgg[key].a3 += r.actualQ3; kpiAgg[key].a4 += r.actualQ4;
+                            kpiAgg[key].p1 += r.p1; kpiAgg[key].p2 += r.p2; kpiAgg[key].p3 += r.p3; kpiAgg[key].p4 += r.p4;
+                            kpiAgg[key].a1 += r.a1; kpiAgg[key].a2 += r.a2; kpiAgg[key].a3 += r.a3; kpiAgg[key].a4 += r.a4;
                             if (r.issue && r.issue.trim() !== "") kpiAgg[key].issues.push(`- ${r.issue}`);
                         }
                     });
@@ -643,12 +642,12 @@
                     const percentCum = d.target > 0 ? ((d.actual / d.target) * 100).toFixed(2) : "0.00";
                     
                     let pCum = 0, prevCum = 0;
-                    if (currentQuarter >= 1) { pCum += d.p1; prevCum = 0; }
-                    if (currentQuarter >= 2) { pCum += d.p2; prevCum += d.p1; }
-                    if (currentQuarter >= 3) { pCum += d.p3; prevCum += (d.p1 + d.p2); }
-                    if (currentQuarter >= 4) { pCum += d.p4; prevCum += (d.p1 + d.p2 + d.p3); }
+                    if (currentQuarter >= 1) { pCum += d.planQ1; prevCum = 0; }
+                    if (currentQuarter >= 2) { pCum += d.planQ2; prevCum += d.planQ1; }
+                    if (currentQuarter >= 3) { pCum += d.planQ3; prevCum += (d.planQ1 + d.planQ2); }
+                    if (currentQuarter >= 4) { pCum += d.planQ4; prevCum += (d.planQ1 + d.planQ2 + d.planQ3); }
                     
-                    let statusObj = determineStatus(d.p1, d.p2, d.p3, d.p4, d.actual, currentQuarter, isLastMonthOfQuarter);
+                    let statusObj = determineStatus(d.planQ1, d.planQ2, d.planQ3, d.planQ4, d.actual, currentQuarter, isLastMonthOfQuarter);
                     let displayPct = pCum > 0 ? (d.actual / pCum) * 100 : (prevCum > 0 ? (d.actual / prevCum) * 100 : 0);
 
                     pieChartsContainer.innerHTML += `
@@ -742,7 +741,7 @@
                 const qData = [1, 2, 3, 4].map(q => {
                     let kpis = units.map(unit => {
                         let pPlan = 0, pAct = 0;
-                        for(let i=1; i<=q; i++) { pPlan += kpiByUnit[unit][`p${i}`]; pAct += kpiByUnit[unit][`a${i}`]; }
+                        for(let i=1; i<=q; i++) { pPlan += kpiByUnit[unit][`planQ${i}`]; pAct += kpiByUnit[unit][`actualQ${i}`]; }
                         return { unit: unit, plan: pPlan, act: pAct, pct: calcSafePct(pAct, pPlan) };
                     });
                     
@@ -764,7 +763,7 @@
                     q.kpis.forEach((kpi, kpiIdx) => {
                         const theme = kpiColorThemes[kpiIdx % kpiColorThemes.length];
                         const maxVal = Math.max(kpiByUnit[kpi.unit].target, kpiByUnit[kpi.unit].actual, ...[1,2,3,4].map(qx => {
-                            let s = 0; for(let i=1; i<=qx; i++) s+= kpiByUnit[kpi.unit][`p${i}`]; return s;
+                            let s = 0; for(let i=1; i<=qx; i++) s+= kpiByUnit[kpi.unit][`planQ${i}`]; return s;
                         })) * 1.25 || 1;
                         
                         const ppH = Math.min((kpi.plan / maxVal) * 100, 100);
@@ -970,7 +969,7 @@
                     let issuesHtml = '';
                     
                     const isAnyRisk = Object.values(kpiByUnit).some(u => {
-                        let st = determineStatus(u.p1, u.p2, u.p3, u.p4, u.actual, currentQuarter, isLastMonthOfQuarter);
+                        let st = determineStatus(u.planQ1, u.planQ2, u.planQ3, u.planQ4, u.actual, currentQuarter, isLastMonthOfQuarter);
                         return st.includes("ล่าช้า") || st.includes("เสี่ยง") || st.includes("ยังไม่ดำเนินการ");
                     });
 
