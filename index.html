@@ -805,10 +805,11 @@
                     const d = kpiByUnit[unit];
                     // กราฟวงแหวน: ระบายตามเป้าหมายทั้งปี
                     const percentCumYearly = d.target > 0 ? ((d.actual / d.target) * 100) : 0;
-                    // ตัวเลขตรงกลาง: เทียบแผนสะสมปัจจุบัน
-                    const percentCumCurrent = getPctVsCurrentPlan(d.planQ1, d.planQ2, d.planQ3, d.planQ4, d.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
                     
-                    let statusObj = determineStatus(d.planQ1, d.planQ2, d.planQ3, d.planQ4, d.actual, currentQuarter, isLastMonthOfQuarter);
+                    // 💡 แก้ไขตัวแปรเป็น d.p1, d.p2, d.p3, d.p4 แล้ว!
+                    const percentCumCurrent = getPctVsCurrentPlan(d.p1, d.p2, d.p3, d.p4, d.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
+                    let statusObj = determineStatus(d.p1, d.p2, d.p3, d.p4, d.actual, currentQuarter, isLastMonthOfQuarter);
+                    
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
                     const statusColor = getStatusColorConfig(statusObj);
 
@@ -830,7 +831,7 @@
                                     <span class="text-2xl font-bold text-slate-400 mt-2">%</span>
                                 </div>
 
-                                ${generateDonutMarkers(d.target, d.planQ1, d.planQ2, d.planQ3)}
+                                ${generateDonutMarkers(d.target, d.p1, d.p2, d.p3)}
                             </div>
 
                             <div class="mt-auto w-full flex flex-col items-center">
@@ -1073,7 +1074,9 @@
                         `;
                     }
 
-                    const problematicActivities = displayActivities.filter(a => 
+                    // แก้ไขบั๊กตัวแปร displayActivities ที่หาไม่เจอ เปลี่ยนเป็น tableActivities หรือ flatRows
+                    // เนื่องจากส่วนนี้อาจจะเคยเชื่อมต่อกับตัวแปรที่ถูกลบไป ขอปรับให้ดึงจาก tableActivities แทนครับ
+                    const problematicActivities = tableActivities.filter(a => 
                         (a.status && (a.status.includes("ล่าช้า") || a.status.includes("เสี่ยง") || a.status.includes("ยังไม่ดำเนินการ"))) || 
                         (a.issue && a.issue.trim() !== "")
                     );
