@@ -21,7 +21,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
 
     <style>
-        /* 1. สีพื้นหลังเว็บ Executive Platinum: ขุ่น สว่าง สบายตา */
+        /* 1. สีพื้นหลังเว็บ Executive Platinum */
         body { 
             font-family: 'Sarabun', sans-serif; 
             background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
@@ -41,32 +41,17 @@
         .delay-400 { animation-delay: 400ms; }
         .delay-500 { animation-delay: 500ms; }
 
+        /* อนิเมชันกราฟโดนัท */
         .conic-chart { transition: background 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
         .bar-chart-col { transition: height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); width: 100%; }
         .bar-chart-col-text { transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .progress-bar-fill { transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
         
-        /* ระบบไฟกระพริบอัจฉริยะ */
-        @keyframes pulse-success {
-            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3); }
-            70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-        }
-        @keyframes pulse-warning {
-            0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
-        }
-        @keyframes pulse-danger {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
-            50% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-        @keyframes pulse-critical {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(153, 27, 27, 0.6); }
-            50% { transform: scale(1.03); box-shadow: 0 0 0 16px rgba(153, 27, 27, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(153, 27, 27, 0); }
-        }
+        /* ระบบไฟกระพริบอัจฉริยะ (5 สถานะ) */
+        @keyframes pulse-success { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        @keyframes pulse-warning { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
+        @keyframes pulse-danger { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); } 50% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        @keyframes pulse-critical { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(71, 85, 105, 0.6); } 50% { transform: scale(1.03); box-shadow: 0 0 0 16px rgba(71, 85, 105, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(71, 85, 105, 0); } }
         
         .anim-success { animation: pulse-success 3.5s infinite ease-in-out; }
         .anim-warning { animation: pulse-warning 3s infinite ease-in-out; }
@@ -77,6 +62,42 @@
         .hide-scroll::-webkit-scrollbar-track { background: rgba(226, 232, 240, 0.6); border-radius: 10px; margin: 0 15px; }
         .hide-scroll::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.6); border-radius: 10px; background-clip: padding-box; transition: all 0.3s; }
         .hide-scroll::-webkit-scrollbar-thumb:hover { background-color: rgba(16, 185, 129, 0.8); border: 1px solid transparent; }
+
+        /* สไตล์สำหรับเส้น Marker ขอบโดนัท */
+        .donut-marker {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            height: 100%;
+            width: 2px;
+            pointer-events: none;
+            transform-origin: center;
+        }
+        .donut-marker-tick {
+            width: 4px;
+            height: 14px;
+            background-color: #1E293B;
+            border-radius: 2px;
+            transform: translateX(-50%);
+            box-shadow: 0 0 4px rgba(255,255,255,0.8);
+        }
+        .donut-marker-label-container {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .donut-marker-label {
+            background-color: #F8FAFC;
+            color: #334155;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+            border: 1px solid #CBD5E1;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-8 text-slate-800">
@@ -126,10 +147,13 @@
         <div id="kpi-cards-container" class="flex flex-col gap-4 mb-12 relative z-10 fade-in-up delay-200">
         </div>
 
-        <div id="pie-charts-container" class="hidden"></div>
+        <div id="pie-charts-container" class="hidden grid gap-6 mb-12 fade-in-up delay-300">
+            </div>
+
+
         <div id="budget-section" class="hidden"></div>
 
-        <div id="bar-chart-main-container" class="hidden fade-in-up delay-300 bg-white rounded-[2rem] shadow-sm border border-slate-200 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 hover:shadow-md overflow-hidden relative">
+        <div id="bar-chart-main-container" class="hidden fade-in-up delay-400 bg-white rounded-[2rem] shadow-sm border border-slate-200 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 hover:shadow-md overflow-hidden relative">
             <h3 class="text-xl md:text-2xl font-extrabold mb-2 flex items-center text-slate-800 border-b border-slate-200 pb-4 relative z-10">
                 <svg class="w-7 h-7 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 ผลการดำเนินงานรวม สะสมรายไตรมาส
@@ -140,10 +164,10 @@
             </div>
         </div>
 
-        <div id="summary-main-container" class="hidden fade-in-up delay-400 bg-white border border-slate-200 rounded-[2rem] shadow-sm p-6 md:p-8 mb-10 transform transition-all duration-500 hover:shadow-md">
+        <div id="summary-main-container" class="hidden fade-in-up delay-500 bg-white border border-slate-200 rounded-[2rem] shadow-sm p-6 md:p-8 mb-10 transform transition-all duration-500 hover:shadow-md">
             <h3 class="text-xl md:text-2xl font-extrabold mb-6 flex items-center border-b border-slate-200 pb-4 text-slate-800" id="dynamic-summary-title">
                 <svg class="w-7 h-7 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-                ภาพรวมสถานะ...
+                สรุปข้อมูลรายการ (พักไว้ก่อน)
             </h3>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 transition-all" id="summary-cards"></div>
         </div>
@@ -201,14 +225,15 @@
             currentQuarter = 4; isLastMonthOfQuarter = (currentMonth === 9); 
         }
 
+        // Theme 
         const kpiColorThemes = [
-            { planBg: 'bg-emerald-300', planBorder: 'border-emerald-400', planText: 'text-emerald-700', actBg: 'bg-emerald-500', actBorder: 'border-emerald-600', actText: 'text-emerald-600', legendPlanBg: 'bg-emerald-300', legendActBg: 'bg-emerald-500', cardPlanBg: 'bg-gradient-to-br from-emerald-200 to-emerald-300', cardPlanText: 'text-emerald-900', cardActBg: 'bg-gradient-to-br from-emerald-500 to-emerald-600', cardActText: 'text-white', cardPctBg: 'bg-emerald-50', cardPctText: 'text-emerald-800' },
-            { planBg: 'bg-blue-300', planBorder: 'border-blue-400', planText: 'text-blue-700', actBg: 'bg-blue-500', actBorder: 'border-blue-600', actText: 'text-blue-600', legendPlanBg: 'bg-blue-300', legendActBg: 'bg-blue-500', cardPlanBg: 'bg-gradient-to-br from-blue-200 to-blue-300', cardPlanText: 'text-blue-900', cardActBg: 'bg-gradient-to-br from-blue-500 to-blue-600', cardActText: 'text-white', cardPctBg: 'bg-blue-50', cardPctText: 'text-blue-800' },
-            { planBg: 'bg-purple-300', planBorder: 'border-purple-400', planText: 'text-purple-700', actBg: 'bg-purple-500', actBorder: 'border-purple-600', actText: 'text-purple-600', legendPlanBg: 'bg-purple-300', legendActBg: 'bg-purple-500', cardPlanBg: 'bg-gradient-to-br from-purple-200 to-purple-300', cardPlanText: 'text-purple-900', cardActBg: 'bg-gradient-to-br from-purple-500 to-purple-600', cardActText: 'text-white', cardPctBg: 'bg-purple-50', cardPctText: 'text-purple-800' },
-            { planBg: 'bg-pink-300', planBorder: 'border-pink-400', planText: 'text-pink-700', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-600', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500', cardPlanBg: 'bg-gradient-to-br from-pink-200 to-pink-300', cardPlanText: 'text-pink-900', cardActBg: 'bg-gradient-to-br from-pink-500 to-pink-600', cardActText: 'text-white', cardPctBg: 'bg-pink-50', cardPctText: 'text-pink-800' },
-            { planBg: 'bg-cyan-300', planBorder: 'border-cyan-400', planText: 'text-cyan-700', actBg: 'bg-cyan-500', actBorder: 'border-cyan-600', actText: 'text-cyan-600', legendPlanBg: 'bg-cyan-300', legendActBg: 'bg-cyan-500', cardPlanBg: 'bg-gradient-to-br from-cyan-200 to-cyan-300', cardPlanText: 'text-cyan-900', cardActBg: 'bg-gradient-to-br from-cyan-500 to-cyan-600', cardActText: 'text-white', cardPctBg: 'bg-cyan-50', cardPctText: 'text-cyan-800' },
-            { planBg: 'bg-rose-300', planBorder: 'border-rose-400', planText: 'text-rose-700', actBg: 'bg-rose-500', actBorder: 'border-rose-600', actText: 'text-rose-600', legendPlanBg: 'bg-rose-300', legendActBg: 'bg-rose-500', cardPlanBg: 'bg-gradient-to-br from-rose-200 to-rose-300', cardPlanText: 'text-rose-900', cardActBg: 'bg-gradient-to-br from-rose-500 to-rose-600', cardActText: 'text-white', cardPctBg: 'bg-rose-50', cardPctText: 'text-rose-800' },
-            { planBg: 'bg-teal-300', planBorder: 'border-teal-400', planText: 'text-teal-700', actBg: 'bg-teal-500', actBorder: 'border-teal-600', actText: 'text-teal-600', legendPlanBg: 'bg-teal-300', legendActBg: 'bg-teal-500', cardPlanBg: 'bg-gradient-to-br from-teal-200 to-teal-300', cardPlanText: 'text-teal-900', cardActBg: 'bg-gradient-to-br from-teal-500 to-teal-600', cardActText: 'text-white', cardPctBg: 'bg-teal-50', cardPctText: 'text-teal-800' }
+            { planBg: 'bg-emerald-300', planBorder: 'border-emerald-400', planText: 'text-emerald-700', actBg: 'bg-emerald-500', actBorder: 'border-emerald-600', actText: 'text-emerald-600', legendPlanBg: 'bg-emerald-300', legendActBg: 'bg-emerald-500', cardPlanBg: 'bg-gradient-to-br from-emerald-200 to-emerald-300', cardPlanText: 'text-emerald-900', cardActBg: 'bg-gradient-to-br from-emerald-500 to-emerald-600', cardActText: 'text-white', cardPctBg: 'bg-emerald-50', cardPctText: 'text-emerald-800', pieRing: '#10b981' },
+            { planBg: 'bg-blue-300', planBorder: 'border-blue-400', planText: 'text-blue-700', actBg: 'bg-blue-500', actBorder: 'border-blue-600', actText: 'text-blue-600', legendPlanBg: 'bg-blue-300', legendActBg: 'bg-blue-500', cardPlanBg: 'bg-gradient-to-br from-blue-200 to-blue-300', cardPlanText: 'text-blue-900', cardActBg: 'bg-gradient-to-br from-blue-500 to-blue-600', cardActText: 'text-white', cardPctBg: 'bg-blue-50', cardPctText: 'text-blue-800', pieRing: '#3b82f6' },
+            { planBg: 'bg-purple-300', planBorder: 'border-purple-400', planText: 'text-purple-700', actBg: 'bg-purple-500', actBorder: 'border-purple-600', actText: 'text-purple-600', legendPlanBg: 'bg-purple-300', legendActBg: 'bg-purple-500', cardPlanBg: 'bg-gradient-to-br from-purple-200 to-purple-300', cardPlanText: 'text-purple-900', cardActBg: 'bg-gradient-to-br from-purple-500 to-purple-600', cardActText: 'text-white', cardPctBg: 'bg-purple-50', cardPctText: 'text-purple-800', pieRing: '#8b5cf6' },
+            { planBg: 'bg-pink-300', planBorder: 'border-pink-400', planText: 'text-pink-700', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-600', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500', cardPlanBg: 'bg-gradient-to-br from-pink-200 to-pink-300', cardPlanText: 'text-pink-900', cardActBg: 'bg-gradient-to-br from-pink-500 to-pink-600', cardActText: 'text-white', cardPctBg: 'bg-pink-50', cardPctText: 'text-pink-800', pieRing: '#ec4899' },
+            { planBg: 'bg-cyan-300', planBorder: 'border-cyan-400', planText: 'text-cyan-700', actBg: 'bg-cyan-500', actBorder: 'border-cyan-600', actText: 'text-cyan-600', legendPlanBg: 'bg-cyan-300', legendActBg: 'bg-cyan-500', cardPlanBg: 'bg-gradient-to-br from-cyan-200 to-cyan-300', cardPlanText: 'text-cyan-900', cardActBg: 'bg-gradient-to-br from-cyan-500 to-cyan-600', cardActText: 'text-white', cardPctBg: 'bg-cyan-50', cardPctText: 'text-cyan-800', pieRing: '#06b6d4' },
+            { planBg: 'bg-rose-300', planBorder: 'border-rose-400', planText: 'text-rose-700', actBg: 'bg-rose-500', actBorder: 'border-rose-600', actText: 'text-rose-600', legendPlanBg: 'bg-rose-300', legendActBg: 'bg-rose-500', cardPlanBg: 'bg-gradient-to-br from-rose-200 to-rose-300', cardPlanText: 'text-rose-900', cardActBg: 'bg-gradient-to-br from-rose-500 to-rose-600', cardActText: 'text-white', cardPctBg: 'bg-rose-50', cardPctText: 'text-rose-800', pieRing: '#f43f5e' },
+            { planBg: 'bg-teal-300', planBorder: 'border-teal-400', planText: 'text-teal-700', actBg: 'bg-teal-500', actBorder: 'border-teal-600', actText: 'text-teal-600', legendPlanBg: 'bg-teal-300', legendActBg: 'bg-teal-500', cardPlanBg: 'bg-gradient-to-br from-teal-200 to-teal-300', cardPlanText: 'text-teal-900', cardActBg: 'bg-gradient-to-br from-teal-500 to-teal-600', cardActText: 'text-white', cardPctBg: 'bg-teal-50', cardPctText: 'text-teal-800', pieRing: '#14b8a6' }
         ];
 
         const formatMoney = (num) => new Intl.NumberFormat('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
@@ -217,12 +242,14 @@
             return new Intl.NumberFormat('th-TH').format(num); 
         };
 
+        // ฟังก์ชันคืนค่าสีป้ายสถานะ (ครบทั้ง 5 สถานะ)
         const getStatusStyles = (status) => {
             if (!status) return "bg-slate-100 text-slate-500 border-slate-200";
             if (status.includes("เป็นไปตามแผน")) return "bg-[#D1FAE5] text-[#065F46] border-[#34D399] shadow-sm anim-success";
             if (status.includes("ล่าช้า")) return "bg-[#FEF3C7] text-[#92400E] border-[#FBBF24] shadow-sm anim-warning";
             if (status.includes("เสี่ยง")) return "bg-[#FEE2E2] text-[#991B1B] border-[#F87171] shadow-md anim-danger font-bold";
-            if (status.includes("ยังไม่ดำเนินการ") || status.includes("ไม่มี")) return "bg-[#991B1B] text-white border-[#7F1D1D] shadow-md anim-critical font-bold tracking-wide";
+            if (status.includes("ยังไม่ดำเนินการ") || status.includes("ไม่มี")) return "bg-[#1E293B] text-white border-[#0F172A] shadow-md anim-critical font-bold tracking-wide";
+            if (status.includes("มีแผนอยู่ใน")) return "bg-[#F1F5F9] text-[#475569] border-[#CBD5E1] shadow-sm border font-bold";
             return "bg-slate-100 text-slate-600 border-slate-200";
         };
 
@@ -244,7 +271,7 @@
                 let s = row["สถานะไตรมาส " + i] || row["สถานะไตรมาส " + i + " "];
                 if (s && s.trim() !== "") return s;
             }
-            return "❌ ยังไม่ดำเนินการ";
+            return "⚫ ยังไม่ดำเนินการ";
         }
 
         const calcSafePct = (actual, plan) => {
@@ -253,6 +280,7 @@
             return "0.00";
         };
 
+        // ระบบสมองกลคำนวณสถานะ 5 ระดับ (แก้บั๊กต้นไตรมาสแล้ว)
         function determineStatus(p1, p2, p3, p4, actual, q, isLast) {
             let pCum = 0; let prevCum = 0;
             if (q >= 1) { pCum += p1; prevCum = 0; }
@@ -264,7 +292,7 @@
                 if (q === 1) return "⚪ มีแผนอยู่ในไตรมาสถัดไป";
                 else if (q === 2) return "⚪ มีแผนอยู่ใน Q3/Q4";
                 else if (q === 3) return "⚪ มีแผนอยู่ใน Q4";
-                else return "❌ ยังไม่ดำเนินการ";
+                else return "⚫ ยังไม่ดำเนินการ";
             }
             if (actual >= pCum) return "🟢 เป็นไปตามแผน";
             
@@ -274,6 +302,7 @@
                 return pct >= 50 ? "🟡 ล่าช้า" : "🔴 เสี่ยง";
             } else {
                 let pct = pCum > 0 ? (actual / pCum) * 100 : 0;
+                if (actual === 0) return "⚫ ยังไม่ดำเนินการ";
                 return pct >= 50 ? "🟡 ล่าช้า" : "🔴 เสี่ยง";
             }
         }
@@ -399,6 +428,7 @@
             document.getElementById('summary-main-container').classList.add('hidden');
             document.getElementById('table-main-container').classList.add('hidden');
             document.getElementById('issues-main-container').classList.add('hidden');
+            document.getElementById('pie-charts-container').classList.add('hidden');
 
             const prefix = (selectedItem.seq && String(selectedItem.seq) !== "0") ? `${selectedItem.seq} ` : '';
             const fullDisplayName = `${prefix}${selectedItem.name.replace(/^- /, '')}`;
@@ -537,7 +567,7 @@
                 }
                 
                 document.getElementById('bar-chart-main-container').classList.remove('hidden');
-                document.getElementById('summary-main-container').classList.remove('hidden');
+                // document.getElementById('summary-main-container').classList.remove('hidden'); พักไว้ก่อนตามสั่ง
                 document.getElementById('table-main-container').classList.remove('hidden');
                 if (viewLevel === 'SINGLE') document.getElementById('issues-main-container').classList.remove('hidden');
 
@@ -547,6 +577,37 @@
                 console.error("Critical error in loadProject:", error);
             }
         }
+
+        // ฟังก์ชันช่วยวาดขีด Q1, Q2, Q3 บนโดนัท
+        function generateDonutMarkers(target, q1, q2, q3) {
+            if (target <= 0) return '';
+            let html = '';
+            const q1Pct = (q1 / target) * 100;
+            const q2Pct = ((q1 + q2) / target) * 100;
+            const q3Pct = ((q1 + q2 + q3) / target) * 100;
+
+            const makeMarker = (pct, label) => {
+                if (pct > 0 && pct < 100) {
+                    // การหมุน (rotate) เริ่มจาก 0 องศา (ทิศ 12 นาฬิกา)
+                    const degree = pct * 3.6;
+                    return `
+                        <div class="donut-marker" style="transform: rotate(${degree}deg)">
+                            <div class="donut-marker-tick"></div>
+                            <div class="donut-marker-label-container" style="transform: translateX(-50%) rotate(-${degree}deg)">
+                                <div class="donut-marker-label">${label}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+                return '';
+            };
+
+            html += makeMarker(q1Pct, 'Q1');
+            html += makeMarker(q2Pct, 'Q2');
+            html += makeMarker(q3Pct, 'Q3');
+            return html;
+        }
+
 
         // =====================================
         // ฟังก์ชันวาด UI (การจัดวางตัวเลข 3D & Responsive Number Size)
@@ -586,7 +647,7 @@
                 }
 
                 // =====================================
-                // 1. วาดการ์ด Budget (Premium Gold 3D Frame + White Cards + Resize Numbers)
+                // 1. วาดการ์ด Budget (Premium Gold 3D Frame)
                 // =====================================
                 const budgetContainer = document.getElementById('budget-cards-container');
                 budgetContainer.innerHTML = '';
@@ -647,7 +708,7 @@
                 }
 
                 // =====================================
-                // 2. วาดการ์ด KPI (ตามหน่วยนับ สีพื้นตรงตามกราฟแท่ง + ตัวเลขกลาง หน่วยชิดขวา ขนาดใหญ่ขึ้น)
+                // 2. วาดการ์ด KPI
                 // =====================================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
@@ -656,7 +717,6 @@
                 unitKeys.forEach((unit, idx) => {
                     const d = kpiByUnit[unit];
                     const pct = d.target > 0 ? (d.actual / d.target) * 100 : (d.actual > 0 ? 100 : 0);
-                    // ดึงชุดสีมาใช้ให้ตรงกับกราฟ
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
                     
                     kpiContainer.innerHTML += `
@@ -673,7 +733,7 @@
                                     </div>
                                     <div class="mt-auto relative flex items-baseline justify-center w-full pt-4 min-h-[50px]">
                                         <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black ${theme.cardPlanText} tracking-tight drop-shadow-md truncate z-10 px-14">${formatAutoDecimal(d.target)}</h2>
-                                        <p class="absolute right-0 bottom-1.5 text-xl lg:text-2xl font-bold ${theme.cardPlanText} opacity-80 uppercase tracking-widest z-20">${unit}</p>
+                                        <p class="absolute right-0 bottom-[4px] text-xl lg:text-2xl font-bold ${theme.cardPlanText} opacity-90 uppercase tracking-widest z-20">${unit}</p>
                                     </div>
                                 </div>
 
@@ -684,7 +744,7 @@
                                     </div>
                                     <div class="mt-auto relative flex items-baseline justify-center w-full pt-4 min-h-[50px]">
                                         <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black text-white tracking-tight drop-shadow-md truncate z-10 px-14">${formatAutoDecimal(d.actual)}</h2>
-                                        <p class="absolute right-0 bottom-1.5 text-xl lg:text-2xl font-bold text-white/80 uppercase tracking-widest z-20">${unit}</p>
+                                        <p class="absolute right-0 bottom-[4px] text-xl lg:text-2xl font-bold text-white/90 uppercase tracking-widest z-20">${unit}</p>
                                     </div>
                                 </div>
 
@@ -707,14 +767,106 @@
                     `;
                 });
 
+
+                // =====================================
+                // STEP 3: วาดกราฟโดนัทสถานะ (Donut Charts) พร้อมขีด Q1, Q2, Q3
+                // =====================================
+                const pieChartsContainer = document.getElementById('pie-charts-container');
+                pieChartsContainer.innerHTML = '';
+                const pieAnimations = [];
+
+                // จำนวนวงกลมทั้งหมด = จำนวนหน่วยนับ + 1 (ถ้ามีงบประมาณ)
+                const numPieCharts = unitKeys.length + (budgetRows.length > 0 ? 1 : 0);
+                
+                // จัดคอลัมน์ให้อัตโนมัติ ( Responsive)
+                pieChartsContainer.className = 'grid gap-6 mb-12 fade-in-up delay-300';
+                if (numPieCharts === 1) pieChartsContainer.classList.add('grid-cols-1', 'max-w-md', 'mx-auto');
+                else if (numPieCharts === 2) pieChartsContainer.classList.add('grid-cols-1', 'md:grid-cols-2', 'max-w-4xl', 'mx-auto');
+                else if (numPieCharts === 3) pieChartsContainer.classList.add('grid-cols-1', 'md:grid-cols-3');
+                else pieChartsContainer.classList.add('grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'xl:grid-cols-4');
+                
+                pieChartsContainer.classList.remove('hidden');
+
+                // 3.1 โดนัทงบประมาณ (ถ้ามี)
+                if (budgetRows.length > 0) {
+                    const bObj = budgetRows[0];
+                    const bPct = bObj.target > 0 ? ((bObj.actual / bObj.target) * 100).toFixed(2) : "0.00";
+                    let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
+                    
+                    pieChartsContainer.innerHTML += `
+                        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 flex flex-col items-center relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                            <h4 class="text-lg font-extrabold text-[#9A3412] mb-8 w-full text-center border-b border-orange-100 pb-3 flex justify-center items-center">
+                                <svg class="w-6 h-6 mr-2 text-[#F97316]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                สถานะการใช้จ่ายงบประมาณ
+                            </h4>
+
+                            <div class="relative w-52 h-52 mb-8">
+                                <div id="pie-chart-budget" class="w-full h-full rounded-full conic-chart shadow-[inset_0_2px_15px_rgba(0,0,0,0.05)]" style="background: conic-gradient(#f1f5f9 0% 100%);"></div>
+                                
+                                <div class="absolute inset-4 bg-white rounded-full flex flex-col items-center justify-center shadow-sm border-[4px] border-slate-50 z-10">
+                                    <span class="text-3xl font-black text-[#D97706] tracking-tight">${bPct}<span class="text-base ml-0.5">%</span></span>
+                                    <span class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">เบิกจ่ายสะสม</span>
+                                </div>
+
+                                ${generateDonutMarkers(bObj.target, bObj.planQ1, bObj.planQ2, bObj.planQ3)}
+                            </div>
+
+                            <div class="mt-auto w-full flex justify-center">
+                                <span class="px-5 py-2.5 rounded-full text-[15px] font-bold shadow-sm text-center ${getStatusStyles(bStatus)} w-[85%] truncate">${bStatus}</span>
+                            </div>
+                        </div>
+                    `;
+                    pieAnimations.push({ id: `pie-chart-budget`, color: '#F59E0B', pct: bPct }); 
+                }
+
+                // 3.2 โดนัท KPI แต่ละหน่วยนับ
+                unitKeys.forEach((unit, idx) => {
+                    const theme = kpiColorThemes[idx % kpiColorThemes.length];
+                    const d = kpiByUnit[unit];
+                    const percentCum = d.target > 0 ? ((d.actual / d.target) * 100).toFixed(2) : "0.00";
+                    let statusObj = determineStatus(d.planQ1, d.planQ2, d.planQ3, d.planQ4, d.actual, currentQuarter, isLastMonthOfQuarter);
+
+                    pieChartsContainer.innerHTML += `
+                        <div class="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 flex flex-col items-center relative transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                            <h4 class="text-lg font-extrabold ${theme.cardPlanText} mb-8 w-full text-center border-b border-slate-100 pb-3 flex justify-center items-center">
+                                <svg class="w-6 h-6 mr-2 opacity-80" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>
+                                สถานะผลการดำเนินงาน (${unit})
+                            </h4>
+
+                            <div class="relative w-52 h-52 mb-8">
+                                <div id="pie-chart-kpi-${idx}" class="w-full h-full rounded-full conic-chart shadow-[inset_0_2px_15px_rgba(0,0,0,0.05)]" style="background: conic-gradient(#f1f5f9 0% 100%);"></div>
+                                
+                                <div class="absolute inset-4 bg-white rounded-full flex flex-col items-center justify-center shadow-sm border-[4px] border-slate-50 z-10">
+                                    <span class="text-3xl font-black ${theme.cardPlanText} tracking-tight">${percentCum}<span class="text-base ml-0.5">%</span></span>
+                                    <span class="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">ผลงานสะสม</span>
+                                </div>
+
+                                ${generateDonutMarkers(d.target, d.planQ1, d.planQ2, d.planQ3)}
+                            </div>
+
+                            <div class="mt-auto w-full flex justify-center">
+                                <span class="px-5 py-2.5 rounded-full text-[15px] font-bold shadow-sm text-center ${getStatusStyles(statusObj)} w-[85%] truncate">${statusObj}</span>
+                            </div>
+                        </div>
+                    `;
+                    pieAnimations.push({ id: `pie-chart-kpi-${idx}`, color: theme.pieRing, pct: percentCum });
+                });
+
+                // สั่ง Animate กราฟโดนัทให้สีวิ่ง
+                setTimeout(() => {
+                    pieAnimations.forEach(anim => {
+                        const el = document.getElementById(anim.id);
+                        if(el) el.style.background = `conic-gradient(${anim.color} 0% ${anim.pct}%, #f1f5f9 ${anim.pct}% 100%)`;
+                    });
+                }, 100);
+
                 // =====================================
                 // ล็อกส่วนกราฟแท่งและตารางไว้เหมือนเดิม
                 // =====================================
                 const barLegend = document.getElementById('bar-legend-container');
                 let legendHtml = '';
-                const units = Object.keys(kpiByUnit);
                 
-                units.forEach((unit, idx) => {
+                unitKeys.forEach((unit, idx) => {
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
                     legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200 text-slate-700 font-medium"><div class="w-3 h-3 ${theme.legendPlanBg} border ${theme.planBorder} mr-2 rounded-sm"></div> แผนงาน (${unit})</div>`;
                     legendHtml += `<div class="flex items-center px-3 py-1 bg-white rounded-full shadow-sm border border-slate-200 text-slate-700 font-medium"><div class="w-3 h-3 ${theme.legendActBg} border ${theme.actBorder} mr-2 rounded-sm"></div> ผลงาน (${unit})</div>`;
@@ -730,7 +882,7 @@
                 barContainer.innerHTML = '';
                 
                 const qData = [1, 2, 3, 4].map(q => {
-                    let kpis = units.map(unit => {
+                    let kpis = unitKeys.map(unit => {
                         let pPlan = 0, pAct = 0;
                         for(let i=1; i<=q; i++) { pPlan += kpiByUnit[unit][`planQ${i}`]; pAct += kpiByUnit[unit][`actualQ${i}`]; }
                         return { unit: unit, plan: pPlan, act: pAct, pct: calcSafePct(pAct, pPlan) };
@@ -743,7 +895,7 @@
                     return { q: q, name: `ไตรมาสที่ ${q}`, showActual: currentQuarter >= q, kpis: kpis, bPlan: bPlan, bAct: bAct, bPct: calcSafePct(bAct, bPlan) };
                 });
 
-                const numUnits = units.length;
+                const numUnits = unitKeys.length;
                 const hasBudget = budgetRows.length > 0 ? 1 : 0;
                 const minWidth = Math.max(1200, (numUnits + hasBudget) * 300); 
                 barContainer.style.minWidth = `${minWidth}px`;
@@ -831,57 +983,6 @@
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => { text.classList.remove('opacity-0'); });
                 }, 50);
 
-                const displayActivities = viewLevel === 'SINGLE' ? tableActivities : kpiActivities;
-                
-                const uniqueCount = new Set(displayActivities.map(a => a.name)).size;
-                const totalMetrics = displayActivities.length;
-                
-                const titleText = viewLevel === 'ALL' ? 'โครงการทั้งหมด' : (viewLevel === 'GROUP' ? 'กิจกรรมหลักทั้งหมด' : 'กิจกรรมทั้งหมด');
-                const isKPIView = viewLevel !== 'SINGLE';
-                
-                const summary = {
-                    total: viewLevel === 'ALL' ? uniqueCount : totalMetrics, 
-                    onTrack: displayActivities.filter(a => a.status.includes("เป็นไปตามแผน")).length,
-                    delayed: displayActivities.filter(a => a.status.includes("ล่าช้า")).length,
-                    atRisk: displayActivities.filter(a => a.status.includes("เสี่ยง")).length,
-                    notStartedSevere: displayActivities.filter(a => a.status.includes("ยังไม่ดำเนินการ") || a.status.includes("ไม่มี")).length,
-                    notStarted: displayActivities.filter(a => a.status.includes("มีแผนอยู่ใน")).length,
-                };
-
-                document.getElementById('summary-cards').innerHTML = `
-                    <div class="col-span-2 md:col-span-1 bg-white border border-slate-200 rounded-[1.2rem] p-5 flex flex-col text-center shadow-sm transform transition-all duration-300 hover:-translate-y-1">
-                        <p class="text-sm font-bold mb-1 break-words text-slate-500">${titleText}</p>
-                        <p class="text-5xl font-black mb-4 break-words text-slate-800">${summary.total}</p>
-                        <div class="mt-auto"><div class="w-full flex flex-col font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-xl border border-slate-200 shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">รวมทุกสถานะ</span></div></div>
-                    </div>
-                    <div class="bg-white border border-slate-200 rounded-[1.2rem] p-5 flex flex-col text-center shadow-sm transform transition-all duration-300 hover:-translate-y-1">
-                        <p class="text-sm font-bold mb-1 break-words text-emerald-600">เป็นไปตามแผน</p>
-                        <p class="text-5xl font-black mb-4 break-words text-emerald-600">${summary.onTrack}</p>
-                        <div class="mt-auto"><div class="w-full flex flex-col font-bold text-emerald-700 bg-emerald-50 px-2 py-1 rounded-xl border border-emerald-100 shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">ร้อยละผลงาน &ge; 100</span></div></div>
-                    </div>
-                    <div class="bg-white border border-slate-200 rounded-[1.2rem] p-5 flex flex-col text-center shadow-sm transform transition-all duration-300 hover:-translate-y-1">
-                        <p class="text-sm font-bold mb-1 break-words text-amber-500">ล่าช้า</p>
-                        <p class="text-5xl font-black mb-4 break-words text-amber-500">${summary.delayed}</p>
-                        <div class="mt-auto"><div class="w-full flex flex-col font-bold text-amber-700 bg-amber-50 px-2 py-1 rounded-xl border border-amber-100 shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">ร้อยละ 50 - 99</span></div></div>
-                    </div>
-                    <div class="bg-white border border-slate-200 rounded-[1.2rem] p-5 flex flex-col text-center shadow-sm transform transition-all duration-300 hover:-translate-y-1">
-                        <p class="text-sm font-bold mb-1 break-words text-red-500">เสี่ยง</p>
-                        <p class="text-5xl font-black mb-4 break-words text-red-500">${summary.atRisk}</p>
-                        <div class="mt-auto"><div class="w-full flex flex-col font-bold text-red-700 bg-red-50 px-2 py-1 rounded-xl border border-red-100 shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">ต่ำกว่าร้อยละ 50</span></div></div>
-                    </div>
-                    <div class="bg-white border border-slate-200 rounded-[1.2rem] p-5 flex flex-col text-center shadow-sm relative overflow-hidden transform transition-all duration-300 hover:-translate-y-1">
-                        <div class="absolute inset-0 bg-red-50 opacity-50 animate-pulse"></div>
-                        <p class="text-sm font-bold mb-1 break-words relative z-10 text-rose-600">ยังไม่ดำเนินการ</p>
-                        <p class="text-5xl font-black mb-4 break-words relative z-10 text-rose-600">${summary.notStartedSevere}</p>
-                        <div class="mt-auto relative z-10"><div class="w-full flex flex-col font-bold text-rose-700 bg-rose-50 px-2 py-1 rounded-xl border border-rose-100 shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">ผลงาน = 0</span></div></div>
-                    </div>
-                    <div class="col-span-2 md:col-span-1 bg-slate-50 border-2 border-slate-200 border-dashed rounded-[1.2rem] p-5 flex flex-col text-center shadow-sm transform transition-all duration-300 hover:-translate-y-1">
-                        <p class="text-sm font-bold text-slate-400 mb-1 break-words">มีแผนในไตรมาสถัดไป</p>
-                        <p class="text-5xl font-black mb-4 break-words text-slate-500">${summary.notStarted}</p>
-                        <div class="mt-auto"><div class="w-full flex flex-col font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-xl border border-slate-200 shadow-inner min-h-[44px]"><span>${isKPIView ? '(KPI)' : ''}</span><span class="text-[11px] leading-tight break-words">ยังไม่ถึงช่วงแผนงาน</span></div></div>
-                    </div>
-                `;
-
                 const tbody = document.getElementById('table-body');
                 tbody.innerHTML = '';
                 tableActivities.forEach((act, index) => {
@@ -895,7 +996,8 @@
                     if (act.status.includes("เป็นไปตามแผน")) barColor = "bg-[#10B981]"; 
                     if (act.status.includes("ล่าช้า")) barColor = "bg-[#F59E0B]"; 
                     if (act.status.includes("เสี่ยง")) barColor = "bg-[#EF4444]"; 
-                    if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) barColor = "bg-[#991B1B]"; 
+                    if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) barColor = "bg-[#1E293B]"; 
+                    if (act.status.includes("มีแผนอยู่ใน")) barColor = "bg-[#94A3B8]";
 
                     let markersHtml = '';
                     if(q1Pos > 0) markersHtml += `<div class="absolute top-[16px] z-10 flex flex-col items-center -translate-x-1/2" style="left: ${q1Pos}%"><div class="h-3 w-px bg-slate-300"></div></div>`;
@@ -958,7 +1060,6 @@
 
                 if (viewLevel === 'SINGLE') {
                     let issuesHtml = '';
-                    
                     const isAnyRisk = Object.values(kpiByUnit).some(u => {
                         let st = determineStatus(u.planQ1, u.planQ2, u.planQ3, u.planQ4, u.actual, currentQuarter, isLastMonthOfQuarter);
                         return st.includes("ล่าช้า") || st.includes("เสี่ยง") || st.includes("ยังไม่ดำเนินการ");
@@ -986,7 +1087,7 @@
                             let statusColor = "text-slate-600 bg-slate-50 border-slate-200";
                             if (act.status.includes("เสี่ยง")) statusColor = "text-[#991B1B] bg-[#FEE2E2] border-[#F87171] anim-danger";
                             else if (act.status.includes("ล่าช้า")) statusColor = "text-[#92400E] bg-[#FEF3C7] border-[#FBBF24] anim-warning";
-                            else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) statusColor = "text-white bg-[#991B1B] border-[#7F1D1D] shadow-md anim-critical";
+                            else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) statusColor = "text-white bg-[#1E293B] border-[#0F172A] shadow-md anim-critical";
                             
                             let displayName = act.name;
                             if (act.isKPI && viewLevel === 'SINGLE') {
