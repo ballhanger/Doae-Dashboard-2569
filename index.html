@@ -46,7 +46,7 @@
         .bar-chart-col-text { transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .progress-bar-fill { transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
         
-        /* ระบบไฟกระพริบอัจฉริยะ (จังหวะนุ่มนวล ซ่อมบั๊กแล้ว 100%) */
+        /* ระบบไฟกระพริบอัจฉริยะ (จังหวะนุ่มนวล) */
         @keyframes pulse-success {
             0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3); }
             70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
@@ -86,7 +86,7 @@
             
             <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4 mb-6">
                 
-                <div class="text-center md:text-left">
+                <div class="text-center md:text-left flex-1 min-w-0">
                     <h1 class="text-2xl md:text-3xl lg:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#059669] to-[#0D9488] drop-shadow-md leading-tight tracking-tight mb-2">
                         Dashboard รายงานความก้าวหน้าการดำเนินงานโครงการ
                     </h1>
@@ -100,10 +100,10 @@
                     </h2>
                 </div>
 
-                <div id="custom-dropdown-container" class="w-full md:w-auto md:min-w-[280px] relative z-50 flex-shrink-0 mt-2 md:mt-1">
+                <div id="custom-dropdown-container" class="w-full md:w-auto md:max-w-[320px] lg:max-w-[400px] relative z-50 flex-shrink-0 mt-2 md:mt-1">
                     <div class="absolute -inset-1 bg-gradient-to-r from-[#34D399] to-[#2DD4BF] rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200"></div>
-                    <button id="dropdown-btn" onclick="toggleDropdown()" class="relative w-full bg-white/95 backdrop-blur-xl border border-white text-slate-800 font-extrabold text-sm sm:text-base py-4 px-5 rounded-2xl shadow-lg focus:outline-none hover:border-[#6EE7B7] hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)] transition-all cursor-pointer flex justify-between items-center text-left">
-                        <span id="dropdown-text" class="truncate mr-4">กำลังโหลดสารบัญ...</span>
+                    <button id="dropdown-btn" onclick="toggleDropdown()" class="relative w-full bg-white/95 backdrop-blur-xl border border-white text-slate-800 font-extrabold text-sm sm:text-base py-4 px-5 rounded-2xl shadow-lg focus:outline-none hover:border-[#6EE7B7] hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)] transition-all cursor-pointer flex justify-between items-center text-left" title="กำลังโหลดสารบัญ...">
+                        <span id="dropdown-text" class="truncate mr-4 block w-full text-left">กำลังโหลดสารบัญ...</span>
                         <svg id="dropdown-icon" class="w-6 h-6 text-[#059669] flex-shrink-0 transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div id="dropdown-menu" class="hidden absolute z-[999] w-full mt-2 bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden transform opacity-0 scale-95 transition-all duration-200 origin-top-right">
@@ -377,6 +377,7 @@
                     const prefix = (item.seq && String(item.seq) !== "0") ? `${item.seq} ` : '';
                     const displayName = `${prefix}${item.name.replace(/^- /, '')}`;
 
+                    // แอตทริบิวต์ title นี้ทำให้เอาเมาส์ชี้ในลิสต์แล้วเห็นชื่อเต็ม
                     li.title = displayName; 
 
                     let classes = "px-5 py-3.5 cursor-pointer transition-colors flex items-center ";
@@ -413,6 +414,8 @@
         async function loadProject(index) {
             const displayTitle = document.getElementById('display-project-name');
             const dropdownText = document.getElementById('dropdown-text');
+            const dropdownBtn = document.getElementById('dropdown-btn'); // เพิ่มเพื่อเปลี่ยน tooltip ปุ่ม
+            
             const selectedItem = MASTER_INDEX[index];
             const viewLevel = selectedItem.url === "AUTO_ALL" ? "ALL" : (selectedItem.url === "AUTO_GROUP" ? "GROUP" : "SINGLE");
 
@@ -422,7 +425,11 @@
             document.getElementById('issues-main-container').classList.add('hidden');
 
             const prefix = (selectedItem.seq && String(selectedItem.seq) !== "0") ? `${selectedItem.seq} ` : '';
-            dropdownText.textContent = `${prefix}${selectedItem.name.replace(/^- /, '')}`;
+            const fullDisplayName = `${prefix}${selectedItem.name.replace(/^- /, '')}`;
+            
+            dropdownText.textContent = fullDisplayName;
+            // เพิ่มคำสั่งให้อัปเดต tooltip ของปุ่ม Dropdown ด้วย
+            dropdownBtn.title = fullDisplayName; 
 
             const cleanName = selectedItem.name.replace(/^- /, '');
             
@@ -518,8 +525,8 @@
                                 kpiAgg[key] = { name: r.groupName, unit: r.unit, target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0, issues: [] };
                             }
                             kpiAgg[key].target += r.target; kpiAgg[key].actual += r.actual;
-                            kpiAgg[key].p1 += r.p1; kpiAgg[key].p2 += r.p2; kpiAgg[key].p3 += r.p3; kpiAgg[key].p4 += r.p4;
-                            kpiAgg[key].a1 += r.a1; kpiAgg[key].a2 += r.a2; kpiAgg[key].a3 += r.a3; kpiAgg[key].a4 += r.a4;
+                            kpiAgg[key].p1 += r.planQ1; kpiAgg[key].p2 += r.planQ2; kpiAgg[key].p3 += r.planQ3; kpiAgg[key].p4 += r.planQ4;
+                            kpiAgg[key].a1 += r.actualQ1; kpiAgg[key].a2 += r.actualQ2; kpiAgg[key].a3 += r.actualQ3; kpiAgg[key].a4 += r.actualQ4;
                             if (r.issue && r.issue.trim() !== "") kpiAgg[key].issues.push(`- ${r.issue}`);
                         }
                     });
@@ -579,7 +586,7 @@
                 }
 
                 // =====================================
-                // โค้ดด้านล่างนี้รอทำใน Step ต่อไป
+                // (พื้นที่ล็อกไว้ รอปรับในสเตปต่อไป)
                 // =====================================
                 const kpiCardsContainer = document.getElementById('kpi-cards-container');
                 kpiCardsContainer.innerHTML = '';
@@ -931,7 +938,7 @@
                     if (isRowKPI && viewLevel === 'SINGLE') {
                         if (act.name.includes("(KPI)")) {
                             displayName = act.name.replace("(KPI)", '');
-                            namePrefix = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-black bg-blue-500 text-white mr-3 shadow-sm transform -skew-x-6 tracking-widest">(KPI)</span>';
+                            namePrefix = '<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-black bg-[#3B82F6] text-white mr-3 shadow-md transform -skew-x-6 tracking-widest">(KPI)</span>';
                         }
                     } else {
                         displayName = act.name.replace("(KPI)", ''); 
@@ -939,19 +946,19 @@
 
                     let rowBgClass = '';
                     if (isRowKPI && viewLevel === 'SINGLE') {
-                        rowBgClass = 'bg-blue-50/50 hover:bg-blue-100/50 border-l-[4px] border-l-blue-400 relative z-10';
+                        rowBgClass = 'bg-[#EFF6FF] hover:bg-[#DBEAFE] border-l-[5px] border-l-[#3B82F6] relative z-10 shadow-sm';
                     } else {
-                        rowBgClass = (index % 2 === 0) ? 'bg-white hover:bg-slate-50' : 'bg-slate-50/50 hover:bg-slate-100/50';
+                        rowBgClass = (index % 2 === 0) ? 'bg-white hover:bg-slate-50' : 'bg-slate-50 hover:bg-slate-100';
                     }
                     
-                    const nameStyle = (isRowKPI && viewLevel === 'SINGLE') ? "text-blue-900 font-extrabold text-[15px]" : "text-slate-800 font-medium";
+                    const nameStyle = (isRowKPI && viewLevel === 'SINGLE') ? "text-[#1E3A8A] font-extrabold text-[15px]" : "text-slate-800 font-medium";
 
                     tbody.innerHTML += `
                         <tr class="group/row border-b border-slate-200 ${rowBgClass} transition-colors duration-300">
                             <td class="px-6 py-5 align-middle"><div class="leading-relaxed ${nameStyle} group-hover/row:translate-x-1 transition-transform duration-300 flex items-center break-words">${namePrefix}${displayName}</div></td>
                             <td class="px-4 py-5 align-middle text-center text-slate-500 font-bold break-words">${act.unit}</td>
                             <td class="px-4 py-5 align-middle text-center font-bold text-slate-700 break-words">${formatAutoDecimal(act.target)}</td>
-                            <td class="px-4 py-5 align-middle text-center font-extrabold text-blue-600 break-words">${formatAutoDecimal(act.actual)}</td>
+                            <td class="px-4 py-5 align-middle text-center font-extrabold text-[#2563EB] break-words">${formatAutoDecimal(act.actual)}</td>
                             <td class="px-6 py-5 align-middle">${progressHtml}</td>
                             <td class="px-6 py-5 align-middle text-center">
                                 <span class="inline-flex items-center px-4 py-2 rounded-full text-[13px] font-bold whitespace-nowrap shadow-sm break-words ${getStatusStyles(act.status)}">${act.status}</span>
