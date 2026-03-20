@@ -45,8 +45,7 @@
         .bar-chart-col-text { transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .progress-bar-fill { transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
         
-        /* ไฟกระพริบในตาราง */
-        @keyframes pulse-success { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
+        @keyframes pulse-success { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
         @keyframes pulse-warning { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
         @keyframes pulse-danger { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); } 50% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
         @keyframes pulse-critical { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.6); } 50% { transform: scale(1.03); box-shadow: 0 0 0 16px rgba(15, 23, 42, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(15, 23, 42, 0); } }
@@ -108,7 +107,6 @@
 
         <div id="pie-charts-container" class="hidden flex flex-wrap justify-center gap-8 mb-16 fade-in-up delay-300 w-full max-w-[1400px] mx-auto"></div>
 
-
         <div id="bar-chart-main-container" class="hidden fade-in-up delay-400 bg-white rounded-[2rem] shadow-sm border border-slate-200 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 hover:shadow-md overflow-hidden relative">
             <h3 class="text-xl md:text-2xl font-extrabold mb-2 flex items-center text-slate-800 border-b border-slate-200 pb-4 relative z-10">
                 <svg class="w-7 h-7 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
@@ -118,6 +116,14 @@
             <div class="w-full overflow-x-auto hide-scroll pb-6 pt-4 relative z-10">
                 <div class="relative h-[400px] sm:h-[450px] flex justify-between items-end px-2 sm:px-4 pb-2 transition-all duration-500" id="combined-bar-chart-container"></div>
             </div>
+        </div>
+
+        <div id="summary-main-container" class="hidden fade-in-up delay-400 bg-white border border-slate-200 rounded-[2rem] shadow-sm p-6 md:p-8 mb-10 transform transition-all duration-500 hover:shadow-md">
+            <h3 class="text-xl md:text-2xl font-extrabold mb-6 flex items-center border-b border-slate-200 pb-4 text-slate-800" id="dynamic-summary-title">
+                <svg class="w-7 h-7 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                สรุปข้อมูลรายการ
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 transition-all" id="summary-cards"></div>
         </div>
 
         <div id="table-main-container" class="hidden fade-in-up delay-500 bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden mb-10 transform transition-all duration-500 hover:shadow-md relative">
@@ -174,7 +180,7 @@
             currentQuarter = 4; isLastMonthOfQuarter = (currentMonth === 9); 
         }
 
-        // Theme ของ KPI (ใช้กับพื้นหลังการ์ดด้านบน และการ์ดโดนัท)
+        // Theme ของ KPI 
         const kpiColorThemes = [
             { planBg: 'bg-emerald-300', planBorder: 'border-emerald-400', planText: 'text-emerald-700', actBg: 'bg-emerald-500', actBorder: 'border-emerald-600', actText: 'text-emerald-600', legendPlanBg: 'bg-emerald-300', legendActBg: 'bg-emerald-500', cardPlanBg: 'bg-gradient-to-br from-emerald-200 to-emerald-300', cardPlanText: 'text-emerald-900', cardActBg: 'bg-gradient-to-br from-emerald-500 to-emerald-600', cardActText: 'text-white', cardPctBg: 'bg-emerald-50', cardPctText: 'text-emerald-800' },
             { planBg: 'bg-blue-300', planBorder: 'border-blue-400', planText: 'text-blue-700', actBg: 'bg-blue-500', actBorder: 'border-blue-600', actText: 'text-blue-600', legendPlanBg: 'bg-blue-300', legendActBg: 'bg-blue-500', cardPlanBg: 'bg-gradient-to-br from-blue-200 to-blue-300', cardPlanText: 'text-blue-900', cardActBg: 'bg-gradient-to-br from-blue-500 to-blue-600', cardActText: 'text-white', cardPctBg: 'bg-blue-50', cardPctText: 'text-blue-800' },
@@ -185,12 +191,12 @@
             { planBg: 'bg-teal-300', planBorder: 'border-teal-400', planText: 'text-teal-700', actBg: 'bg-teal-500', actBorder: 'border-teal-600', actText: 'text-teal-600', legendPlanBg: 'bg-teal-300', legendActBg: 'bg-teal-500', cardPlanBg: 'bg-gradient-to-br from-teal-200 to-teal-300', cardPlanText: 'text-teal-900', cardActBg: 'bg-gradient-to-br from-teal-500 to-teal-600', cardActText: 'text-white', cardPctBg: 'bg-teal-50', cardPctText: 'text-teal-800' }
         ];
 
-        // 🎨 ชุดสีสำหรับ 5 สถานะ (ใช้ตกแต่งวงแหวนโดนัท และป้ายกำกับ)
+        // 🎨 ชุดสีของ "ป้ายสถานะ" (พรีเมียม ถอด Emoji ออกแล้ว 100%)
         const getStatusColorConfig = (status) => {
-            if (status.includes("เป็นไปตามแผน")) return { ring: '#10B981', badgeBg: 'bg-[#064E3B]', badgeText: 'text-white', border: 'border-[#047857]', subtext: 'ร้อยละผลงาน ≥ 100' };
-            if (status.includes("ล่าช้า")) return { ring: '#EAB308', badgeBg: 'bg-[#CA8A04]', badgeText: 'text-white', border: 'border-[#A16207]', subtext: 'ร้อยละ 50 - 99' }; // ใช้สีเหลืองสดสำหรับความล่าช้า
-            if (status.includes("เสี่ยง")) return { ring: '#EF4444', badgeBg: 'bg-[#7F1D1D]', badgeText: 'text-white', border: 'border-[#991B1B]', subtext: 'ต่ำกว่าร้อยละ 50' };
-            if (status.includes("ยังไม่ดำเนินการ") || status.includes("ไม่มี")) return { ring: '#1E293B', badgeBg: 'bg-[#0F172A]', badgeText: 'text-white', border: 'border-[#1E293B]', subtext: 'ผลงาน = 0' };
+            if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-[#064E3B]', badgeText: 'text-white', border: 'border-[#047857]', subtext: 'ร้อยละผลงาน ≥ 100' };
+            if (status === "ล่าช้า") return { ring: '#EAB308', badgeBg: 'bg-[#CA8A04]', badgeText: 'text-white', border: 'border-[#A16207]', subtext: 'ร้อยละ 50 - 99' }; // เหลืองสด
+            if (status === "เสี่ยง") return { ring: '#EF4444', badgeBg: 'bg-[#7F1D1D]', badgeText: 'text-white', border: 'border-[#991B1B]', subtext: 'ต่ำกว่าร้อยละ 50' };
+            if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return { ring: '#1E293B', badgeBg: 'bg-[#0F172A]', badgeText: 'text-white', border: 'border-[#1E293B]', subtext: 'ผลงาน = 0' };
             if (status.includes("มีแผนอยู่ใน")) return { ring: '#94A3B8', badgeBg: 'bg-[#334155]', badgeText: 'text-white', border: 'border-[#475569]', subtext: 'ยังไม่ถึงช่วงแผนงาน' };
             return { ring: '#CBD5E1', badgeBg: 'bg-slate-700', badgeText: 'text-white', border: 'border-slate-800', subtext: '-' };
         };
@@ -201,13 +207,13 @@
             return new Intl.NumberFormat('th-TH').format(num); 
         };
 
-        // สไตล์สถานะในตารางด้านล่าง
+        // สไตล์สถานะในตารางด้านล่าง (ถอด Emoji ออกจากเงื่อนไข)
         const getStatusStyles = (status) => {
             if (!status) return "bg-slate-100 text-slate-500 border-slate-200";
-            if (status.includes("เป็นไปตามแผน")) return "bg-[#D1FAE5] text-[#065F46] border-[#34D399] shadow-sm anim-success";
-            if (status.includes("ล่าช้า")) return "bg-[#FEF08A] text-[#854D0E] border-[#FACC15] shadow-sm anim-warning"; 
-            if (status.includes("เสี่ยง")) return "bg-[#FEE2E2] text-[#991B1B] border-[#F87171] shadow-md anim-danger font-bold";
-            if (status.includes("ยังไม่ดำเนินการ") || status.includes("ไม่มี")) return "bg-[#1E293B] text-white border-[#0F172A] shadow-md anim-critical font-bold tracking-wide";
+            if (status === "เป็นไปตามแผน") return "bg-[#D1FAE5] text-[#065F46] border-[#34D399] shadow-sm anim-success";
+            if (status === "ล่าช้า") return "bg-[#FEF08A] text-[#854D0E] border-[#FACC15] shadow-sm anim-warning"; 
+            if (status === "เสี่ยง") return "bg-[#FEE2E2] text-[#991B1B] border-[#F87171] shadow-md anim-danger font-bold";
+            if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return "bg-[#1E293B] text-white border-[#0F172A] shadow-md anim-critical font-bold tracking-wide";
             if (status.includes("มีแผนอยู่ใน")) return "bg-[#F1F5F9] text-[#475569] border-[#CBD5E1] shadow-sm border font-bold";
             return "bg-slate-100 text-slate-600 border-slate-200";
         };
@@ -228,9 +234,12 @@
         function getDynamicStatus(row, quarter) {
             for (let i = quarter; i >= 1; i--) {
                 let s = row["สถานะไตรมาส " + i] || row["สถานะไตรมาส " + i + " "];
-                if (s && s.trim() !== "") return s;
+                if (s && s.trim() !== "") {
+                    // ถอด Emoji ออกจากข้อมูลดิบ ถ้ามี
+                    return s.replace(/[🔴🟡🟢⚫⚪❌]/g, '').trim();
+                }
             }
-            return "⚫ ยังไม่ดำเนินการ";
+            return "ยังไม่ดำเนินการ";
         }
 
         const calcSafePct = (actual, plan) => {
@@ -256,7 +265,7 @@
             }
         }
 
-        // ระบบสมองกลคำนวณสถานะ
+        // ระบบสมองกลคำนวณสถานะ (ถอด Emoji ออกทั้งหมด!)
         function determineStatus(p1, p2, p3, p4, actual, q, isLast) {
             let pCum = 0; let prevCum = 0;
             if (q >= 1) { pCum += p1; prevCum = 0; }
@@ -265,21 +274,21 @@
             if (q >= 4) { pCum += p4; prevCum += (p1 + p2 + p3); }
 
             if (pCum === 0) {
-                if (q === 1) return "⚪ มีแผนอยู่ในไตรมาสถัดไป";
-                else if (q === 2) return "⚪ มีแผนอยู่ใน Q3/Q4";
-                else if (q === 3) return "⚪ มีแผนอยู่ใน Q4";
-                else return "⚫ ยังไม่ดำเนินการ";
+                if (q === 1) return "มีแผนอยู่ในไตรมาสถัดไป";
+                else if (q === 2) return "มีแผนอยู่ใน Q3/Q4";
+                else if (q === 3) return "มีแผนอยู่ใน Q4";
+                else return "ยังไม่ดำเนินการ";
             }
-            if (actual >= pCum) return "🟢 เป็นไปตามแผน";
+            if (actual >= pCum) return "เป็นไปตามแผน";
             
             if (!isLast && q > 1) {
-                if (actual >= prevCum) return `🟢 เป็นไปตามแผน`;
+                if (actual >= prevCum) return `เป็นไปตามแผน`;
                 let pct = prevCum > 0 ? (actual / prevCum) * 100 : 0;
-                return pct >= 50 ? "🟡 ล่าช้า" : "🔴 เสี่ยง";
+                return pct >= 50 ? "ล่าช้า" : "เสี่ยง";
             } else {
                 let pct = pCum > 0 ? (actual / pCum) * 100 : 0;
-                if (actual === 0) return "⚫ ยังไม่ดำเนินการ";
-                return pct >= 50 ? "🟡 ล่าช้า" : "🔴 เสี่ยง";
+                if (actual === 0) return "ยังไม่ดำเนินการ";
+                return pct >= 50 ? "ล่าช้า" : "เสี่ยง";
             }
         }
 
@@ -572,12 +581,10 @@
                     }
                 }
                 
-                // ถอดซ่อนคอนเทนเนอร์ที่ใช้
                 document.getElementById('bar-chart-main-container').classList.remove('hidden');
                 document.getElementById('table-main-container').classList.remove('hidden');
                 if (viewLevel === 'SINGLE') document.getElementById('issues-main-container').classList.remove('hidden');
 
-                // เริ่มวาด UI รวมฟังก์ชันเดียวให้จบ
                 renderDashboardUI(synthesizedRows, viewLevel, isActivity);
 
             } catch (error) {
@@ -586,7 +593,7 @@
         }
 
         // =====================================
-        // ฟังก์ชันวาด UI (วาดทุกส่วนให้จบในฟังก์ชันเดียว)
+        // ฟังก์ชันวาด UI (วาดทุกส่วนครบถ้วน)
         // =====================================
         function renderDashboardUI(allRows, viewLevel, isActivity) {
             try {
@@ -607,7 +614,6 @@
                     kpiByUnit["ราย"] = { target: 0, actual: 0, p1: 0, p2: 0, p3: 0, p4: 0, a1: 0, a2: 0, a3: 0, a4: 0 };
                 }
 
-                // --- คำนำหน้า ---
                 let budgetTitleStr = "";
                 let kpiTargetTitlePrefix = "";
 
@@ -623,7 +629,7 @@
                 }
 
                 // =====================================
-                // 1. วาดการ์ด Budget ด้านบน (ฟื้นคืนชีพ 100%)
+                // 1. วาดการ์ด Budget (กู้คืน 100%)
                 // =====================================
                 const budgetContainer = document.getElementById('budget-cards-container');
                 budgetContainer.innerHTML = '';
@@ -683,7 +689,7 @@
                 }
 
                 // =====================================
-                // 2. วาดการ์ด KPI ด้านบน (ฟื้นคืนชีพ 100%)
+                // 2. วาดการ์ด KPI ด้านบน (กู้คืนกลับมา 100%!)
                 // =====================================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
@@ -741,9 +747,11 @@
                         </div>
                     `;
                 });
+                kpiContainer.classList.remove('hidden');
+
 
                 // =====================================
-                // STEP 3: โซนกราฟสถานะ (พระเอกใหม่)
+                // STEP 3: โซนกราฟโดนัทสถานะ (แก้บั๊ก 0% และถอด Emoji)
                 // =====================================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
@@ -770,7 +778,7 @@
                             </div>
 
                             <div class="relative w-[280px] h-[280px] mb-12 mt-2">
-                                <div id="pie-chart-budget" class="w-full h-full rounded-full conic-chart shadow-[inset_0_4px_15px_rgba(0,0,0,0.1)]" style="background: conic-gradient(#f1f5f9 0% 100%);"></div>
+                                <div id="pie-chart-budget" class="w-full h-full rounded-full conic-chart shadow-[inset_0_4px_15px_rgba(0,0,0,0.1)] bg-[#f1f5f9]"></div>
                                 
                                 <div class="absolute inset-[2.2rem] bg-white/95 backdrop-blur-md rounded-full flex flex-col items-center justify-center shadow-[0_4px_15px_rgba(0,0,0,0.05)] border-[4px] border-white/50 z-10">
                                     <span class="text-6xl font-black text-slate-800 tracking-tight leading-none">${bPctCurrent}</span>
@@ -789,8 +797,7 @@
                             </div>
                         </div>
                     `;
-                    // เซ็ตสีโดนัท = สีของสถานะ (capped at 100%)
-                    pieAnimations.push({ id: `pie-chart-budget`, color: bStatusColor.ring, pct: Math.min(bPctYearly, 100).toFixed(2) }); 
+                    pieAnimations.push({ id: `pie-chart-budget`, color: bStatusColor.ring, pct: Math.min(bPctYearly, 100) }); 
                 }
 
                 // 3.2 การ์ดสถานะ KPI แต่ละหน่วยนับ
@@ -816,7 +823,7 @@
                             </div>
 
                             <div class="relative w-[280px] h-[280px] mb-12 mt-2">
-                                <div id="pie-chart-kpi-${idx}" class="w-full h-full rounded-full conic-chart shadow-[inset_0_4px_15px_rgba(0,0,0,0.1)]" style="background: conic-gradient(#f1f5f9 0% 100%);"></div>
+                                <div id="pie-chart-kpi-${idx}" class="w-full h-full rounded-full conic-chart shadow-[inset_0_4px_15px_rgba(0,0,0,0.1)] bg-[#f1f5f9]"></div>
                                 
                                 <div class="absolute inset-[2.2rem] bg-white/95 backdrop-blur-md rounded-full flex flex-col items-center justify-center shadow-[0_4px_15px_rgba(0,0,0,0.05)] border-[4px] border-white/50 z-10">
                                     <span class="text-6xl font-black text-slate-800 tracking-tight leading-none">${percentCumCurrent}</span>
@@ -835,20 +842,25 @@
                             </div>
                         </div>
                     `;
-                    // สีแหวนกราฟ = สีสถานะ
-                    pieAnimations.push({ id: `pie-chart-kpi-${idx}`, color: statusColor.ring, pct: Math.min(percentCumYearly, 100).toFixed(2) });
+                    pieAnimations.push({ id: `pie-chart-kpi-${idx}`, color: statusColor.ring, pct: Math.min(percentCumYearly, 100) });
                 });
 
-                // วิ่ง Animate กราฟโดนัท
+                // วิ่ง Animate กราฟโดนัท (แก้บั๊ก 0% ให้แสดงผลว่างเปล่าอย่างถูกต้อง)
                 setTimeout(() => {
                     pieAnimations.forEach(anim => {
                         const el = document.getElementById(anim.id);
-                        if(el) el.style.background = `conic-gradient(${anim.color} 0% ${anim.pct}%, #f1f5f9 ${anim.pct}% 100%)`;
+                        if(el) {
+                            if (anim.pct <= 0) {
+                                el.style.background = `#f1f5f9`; // สีเทาว่างเปล่าถ้า 0%
+                            } else {
+                                el.style.background = `conic-gradient(${anim.color} 0% ${anim.pct}%, #f1f5f9 ${anim.pct}% 100%)`;
+                            }
+                        }
                     });
                 }, 100);
 
                 // =====================================
-                // 4. วาดกราฟแท่ง (ล็อกไว้ 100%)
+                // 4. วาดกราฟแท่ง และ ตาราง (ล็อกไว้ 100%)
                 // =====================================
                 const barLegend = document.getElementById('bar-legend-container');
                 let legendHtml = '';
@@ -970,9 +982,6 @@
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => { text.classList.remove('opacity-0'); });
                 }, 50);
 
-                // =====================================
-                // 5. วาดตารางสถานะ (ล็อกไว้ 100%)
-                // =====================================
                 const tbody = document.getElementById('table-body');
                 tbody.innerHTML = '';
                 tableActivities.forEach((act, index) => {
