@@ -45,7 +45,8 @@
         .bar-chart-col-text { transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .progress-bar-fill { transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
         
-        @keyframes pulse-success { 0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); } 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); } }
+        /* ไฟกระพริบในตาราง */
+        @keyframes pulse-success { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.3); } 70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
         @keyframes pulse-warning { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
         @keyframes pulse-danger { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); } 50% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
         @keyframes pulse-critical { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(15, 23, 42, 0.6); } 50% { transform: scale(1.03); box-shadow: 0 0 0 16px rgba(15, 23, 42, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(15, 23, 42, 0); } }
@@ -102,18 +103,13 @@
             <div class="mt-8 h-1.5 w-full bg-gradient-to-r from-[#FDE68A] via-[#F59E0B] to-[#D97706] rounded-full shadow-[0_4px_12px_rgba(217,119,6,0.3)] border-t border-[#FEF3C7]"></div>
         </header>
 
-        <div id="budget-cards-container" class="hidden fade-in-up delay-100 mb-10 relative z-10">
-        </div>
+        <div id="budget-cards-container" class="hidden fade-in-up delay-100 mb-10 relative z-10"></div>
+        <div id="kpi-cards-container" class="flex flex-col gap-4 mb-16 relative z-10 fade-in-up delay-200"></div>
 
-        <div id="kpi-cards-container" class="flex flex-col gap-4 mb-16 relative z-10 fade-in-up delay-200">
-        </div>
+        <div id="pie-charts-container" class="hidden flex flex-wrap justify-center gap-8 mb-16 fade-in-up delay-300 w-full max-w-[1400px] mx-auto"></div>
 
-        <div id="pie-charts-container" class="hidden flex flex-wrap justify-center gap-8 lg:gap-10 mb-16 fade-in-up delay-300 w-full max-w-[1400px] mx-auto">
-            </div>
 
-        <div id="budget-section" class="hidden"></div>
-
-        <div id="bar-chart-main-container" class="hidden fade-in-up delay-300 bg-white rounded-[2rem] shadow-sm border border-slate-200 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 hover:shadow-md overflow-hidden relative">
+        <div id="bar-chart-main-container" class="hidden fade-in-up delay-400 bg-white rounded-[2rem] shadow-sm border border-slate-200 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 hover:shadow-md overflow-hidden relative">
             <h3 class="text-xl md:text-2xl font-extrabold mb-2 flex items-center text-slate-800 border-b border-slate-200 pb-4 relative z-10">
                 <svg class="w-7 h-7 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 ผลการดำเนินงานรวม สะสมรายไตรมาส
@@ -122,14 +118,6 @@
             <div class="w-full overflow-x-auto hide-scroll pb-6 pt-4 relative z-10">
                 <div class="relative h-[400px] sm:h-[450px] flex justify-between items-end px-2 sm:px-4 pb-2 transition-all duration-500" id="combined-bar-chart-container"></div>
             </div>
-        </div>
-
-        <div id="summary-main-container" class="hidden fade-in-up delay-400 bg-white border border-slate-200 rounded-[2rem] shadow-sm p-6 md:p-8 mb-10 transform transition-all duration-500 hover:shadow-md">
-            <h3 class="text-xl md:text-2xl font-extrabold mb-6 flex items-center border-b border-slate-200 pb-4 text-slate-800" id="dynamic-summary-title">
-                <svg class="w-7 h-7 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-                สรุปข้อมูลรายการ
-            </h3>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 transition-all" id="summary-cards"></div>
         </div>
 
         <div id="table-main-container" class="hidden fade-in-up delay-500 bg-white rounded-[2rem] shadow-sm border border-slate-200 overflow-hidden mb-10 transform transition-all duration-500 hover:shadow-md relative">
@@ -175,7 +163,7 @@
         let currentQuarter = 1;
         let isLastMonthOfQuarter = false;
 
-        // เช็คไตรมาสอัตโนมัติ
+        // คำนวณไตรมาส
         if (currentMonth >= 10 && currentMonth <= 12) { 
             currentQuarter = 1; isLastMonthOfQuarter = (currentMonth === 12); 
         } else if (currentMonth >= 1 && currentMonth <= 3) { 
@@ -186,7 +174,7 @@
             currentQuarter = 4; isLastMonthOfQuarter = (currentMonth === 9); 
         }
 
-        // Theme ของ KPI 
+        // Theme ของ KPI (ใช้กับพื้นหลังการ์ดด้านบน และการ์ดโดนัท)
         const kpiColorThemes = [
             { planBg: 'bg-emerald-300', planBorder: 'border-emerald-400', planText: 'text-emerald-700', actBg: 'bg-emerald-500', actBorder: 'border-emerald-600', actText: 'text-emerald-600', legendPlanBg: 'bg-emerald-300', legendActBg: 'bg-emerald-500', cardPlanBg: 'bg-gradient-to-br from-emerald-200 to-emerald-300', cardPlanText: 'text-emerald-900', cardActBg: 'bg-gradient-to-br from-emerald-500 to-emerald-600', cardActText: 'text-white', cardPctBg: 'bg-emerald-50', cardPctText: 'text-emerald-800' },
             { planBg: 'bg-blue-300', planBorder: 'border-blue-400', planText: 'text-blue-700', actBg: 'bg-blue-500', actBorder: 'border-blue-600', actText: 'text-blue-600', legendPlanBg: 'bg-blue-300', legendActBg: 'bg-blue-500', cardPlanBg: 'bg-gradient-to-br from-blue-200 to-blue-300', cardPlanText: 'text-blue-900', cardActBg: 'bg-gradient-to-br from-blue-500 to-blue-600', cardActText: 'text-white', cardPctBg: 'bg-blue-50', cardPctText: 'text-blue-800' },
@@ -197,10 +185,10 @@
             { planBg: 'bg-teal-300', planBorder: 'border-teal-400', planText: 'text-teal-700', actBg: 'bg-teal-500', actBorder: 'border-teal-600', actText: 'text-teal-600', legendPlanBg: 'bg-teal-300', legendActBg: 'bg-teal-500', cardPlanBg: 'bg-gradient-to-br from-teal-200 to-teal-300', cardPlanText: 'text-teal-900', cardActBg: 'bg-gradient-to-br from-teal-500 to-teal-600', cardActText: 'text-white', cardPctBg: 'bg-teal-50', cardPctText: 'text-teal-800' }
         ];
 
-        // 🎨 ชุดสีของ "ป้ายสถานะ" (Premium Dark Colors) พร้อมคำอธิบายย่อย
+        // 🎨 ชุดสีสำหรับ 5 สถานะ (ใช้ตกแต่งวงแหวนโดนัท และป้ายกำกับ)
         const getStatusColorConfig = (status) => {
             if (status.includes("เป็นไปตามแผน")) return { ring: '#10B981', badgeBg: 'bg-[#064E3B]', badgeText: 'text-white', border: 'border-[#047857]', subtext: 'ร้อยละผลงาน ≥ 100' };
-            if (status.includes("ล่าช้า")) return { ring: '#EAB308', badgeBg: 'bg-[#854D0E]', badgeText: 'text-white', border: 'border-[#A16207]', subtext: 'ร้อยละ 50 - 99' }; // ใช้สีเหลืองสด EAB308 (Yellow-500)
+            if (status.includes("ล่าช้า")) return { ring: '#EAB308', badgeBg: 'bg-[#CA8A04]', badgeText: 'text-white', border: 'border-[#A16207]', subtext: 'ร้อยละ 50 - 99' }; // ใช้สีเหลืองสดสำหรับความล่าช้า
             if (status.includes("เสี่ยง")) return { ring: '#EF4444', badgeBg: 'bg-[#7F1D1D]', badgeText: 'text-white', border: 'border-[#991B1B]', subtext: 'ต่ำกว่าร้อยละ 50' };
             if (status.includes("ยังไม่ดำเนินการ") || status.includes("ไม่มี")) return { ring: '#1E293B', badgeBg: 'bg-[#0F172A]', badgeText: 'text-white', border: 'border-[#1E293B]', subtext: 'ผลงาน = 0' };
             if (status.includes("มีแผนอยู่ใน")) return { ring: '#94A3B8', badgeBg: 'bg-[#334155]', badgeText: 'text-white', border: 'border-[#475569]', subtext: 'ยังไม่ถึงช่วงแผนงาน' };
@@ -213,10 +201,11 @@
             return new Intl.NumberFormat('th-TH').format(num); 
         };
 
+        // สไตล์สถานะในตารางด้านล่าง
         const getStatusStyles = (status) => {
             if (!status) return "bg-slate-100 text-slate-500 border-slate-200";
             if (status.includes("เป็นไปตามแผน")) return "bg-[#D1FAE5] text-[#065F46] border-[#34D399] shadow-sm anim-success";
-            if (status.includes("ล่าช้า")) return "bg-[#FEF08A] text-[#854D0E] border-[#FACC15] shadow-sm anim-warning"; // ปรับสีเหลืองในตารางให้สดขึ้น
+            if (status.includes("ล่าช้า")) return "bg-[#FEF08A] text-[#854D0E] border-[#FACC15] shadow-sm anim-warning"; 
             if (status.includes("เสี่ยง")) return "bg-[#FEE2E2] text-[#991B1B] border-[#F87171] shadow-md anim-danger font-bold";
             if (status.includes("ยังไม่ดำเนินการ") || status.includes("ไม่มี")) return "bg-[#1E293B] text-white border-[#0F172A] shadow-md anim-critical font-bold tracking-wide";
             if (status.includes("มีแผนอยู่ใน")) return "bg-[#F1F5F9] text-[#475569] border-[#CBD5E1] shadow-sm border font-bold";
@@ -236,7 +225,21 @@
             return parseFloat(String(val).replace(/,/g, '')) || 0;
         };
 
-        // ฟังก์ชันคำนวณร้อยละ (ผลงาน เทียบกับ แผนปัจจุบัน) สำหรับโชว์ตรงกลางโดนัท
+        function getDynamicStatus(row, quarter) {
+            for (let i = quarter; i >= 1; i--) {
+                let s = row["สถานะไตรมาส " + i] || row["สถานะไตรมาส " + i + " "];
+                if (s && s.trim() !== "") return s;
+            }
+            return "⚫ ยังไม่ดำเนินการ";
+        }
+
+        const calcSafePct = (actual, plan) => {
+            if (plan > 0) return ((actual / plan) * 100).toFixed(2);
+            if (actual > 0) return "100.00";
+            return "0.00";
+        };
+
+        // ฟังก์ชันคำนวณ % ผลงานเทียบแผนสะสม (ตรงกลางโดนัท)
         function getPctVsCurrentPlan(p1, p2, p3, p4, actual, q, isLast) {
             let pCum = 0; let prevCum = 0;
             if (q >= 1) { pCum += p1; prevCum = 0; }
@@ -253,6 +256,7 @@
             }
         }
 
+        // ระบบสมองกลคำนวณสถานะ
         function determineStatus(p1, p2, p3, p4, actual, q, isLast) {
             let pCum = 0; let prevCum = 0;
             if (q >= 1) { pCum += p1; prevCum = 0; }
@@ -279,11 +283,10 @@
             }
         }
 
-        // ฟังก์ชันสร้างเส้น Marker Q1, Q2, Q3 บนขอบโดนัท
+        // ฟังก์ชันวาดเส้น Q บนวงแหวน (องศาอิงตามเป้าหมายทั้งปี)
         function generateDonutMarkers(target, q1, q2, q3) {
             if (target <= 0) return '';
             let html = '';
-            // แปลงร้อยละเทียบกับเป้าหมายทั้งปี เพื่อวางลงบนกราฟ
             const q1Pct = (q1 / target) * 100;
             const q2Pct = ((q1 + q2) / target) * 100;
             const q3Pct = ((q1 + q2 + q3) / target) * 100;
@@ -426,11 +429,12 @@
             const viewLevel = selectedItem.url === "AUTO_ALL" ? "ALL" : (selectedItem.url === "AUTO_GROUP" ? "GROUP" : "SINGLE");
             const isActivity = selectedItem.name.trim().startsWith("-");
 
+            document.getElementById('budget-cards-container').classList.add('hidden');
+            document.getElementById('kpi-cards-container').classList.add('hidden');
+            document.getElementById('pie-charts-container').classList.add('hidden');
             document.getElementById('bar-chart-main-container').classList.add('hidden');
-            document.getElementById('summary-main-container').classList.add('hidden');
             document.getElementById('table-main-container').classList.add('hidden');
             document.getElementById('issues-main-container').classList.add('hidden');
-            document.getElementById('pie-charts-container').classList.add('hidden');
 
             const prefix = (selectedItem.seq && String(selectedItem.seq) !== "0") ? `${selectedItem.seq} ` : '';
             const fullDisplayName = `${prefix}${selectedItem.name.replace(/^- /, '')}`;
@@ -568,10 +572,12 @@
                     }
                 }
                 
+                // ถอดซ่อนคอนเทนเนอร์ที่ใช้
                 document.getElementById('bar-chart-main-container').classList.remove('hidden');
                 document.getElementById('table-main-container').classList.remove('hidden');
                 if (viewLevel === 'SINGLE') document.getElementById('issues-main-container').classList.remove('hidden');
 
+                // เริ่มวาด UI รวมฟังก์ชันเดียวให้จบ
                 renderDashboardUI(synthesizedRows, viewLevel, isActivity);
 
             } catch (error) {
@@ -580,7 +586,7 @@
         }
 
         // =====================================
-        // ฟังก์ชันวาด UI (การ์ด 2 บรรทัด + โดนัทสถานะหนา)
+        // ฟังก์ชันวาด UI (วาดทุกส่วนให้จบในฟังก์ชันเดียว)
         // =====================================
         function renderDashboardUI(allRows, viewLevel, isActivity) {
             try {
@@ -601,7 +607,7 @@
                     kpiByUnit["ราย"] = { target: 0, actual: 0, p1: 0, p2: 0, p3: 0, p4: 0, a1: 0, a2: 0, a3: 0, a4: 0 };
                 }
 
-                // --- จัดการข้อความหัวการ์ด (Wording) ---
+                // --- คำนำหน้า ---
                 let budgetTitleStr = "";
                 let kpiTargetTitlePrefix = "";
 
@@ -617,7 +623,7 @@
                 }
 
                 // =====================================
-                // 1. วาดการ์ด Budget (ล็อกไว้)
+                // 1. วาดการ์ด Budget ด้านบน (ฟื้นคืนชีพ 100%)
                 // =====================================
                 const budgetContainer = document.getElementById('budget-cards-container');
                 budgetContainer.innerHTML = '';
@@ -677,7 +683,7 @@
                 }
 
                 // =====================================
-                // 2. วาดการ์ด KPI (ล็อกไว้)
+                // 2. วาดการ์ด KPI ด้านบน (ฟื้นคืนชีพ 100%)
                 // =====================================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
@@ -736,33 +742,28 @@
                     `;
                 });
 
-
                 // =====================================
-                // STEP 3: โซนสถานะโครงการ Donut Charts (ใหม่ อลังการ!)
+                // STEP 3: โซนกราฟสถานะ (พระเอกใหม่)
                 // =====================================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
                 const pieAnimations = [];
 
-                // จำนวนการ์ดทั้งหมด
-                const numPieCharts = unitKeys.length + (budgetRows.length > 0 ? 1 : 0);
-                
                 pieChartsContainer.classList.remove('hidden');
                 
-                // 3.1 การ์ดสถานะงบประมาณ (ถ้ามี)
+                // 3.1 การ์ดสถานะงบประมาณ
                 if (budgetRows.length > 0) {
                     const bObj = budgetRows[0];
-                    // การระบายสีโดนัท: ผลงาน เทียบกับ เป้าหมายรวม (เพื่อโชว์สัดส่วนเป้าทั้งปี)
-                    const bPctYearly = bObj.target > 0 ? ((bObj.actual / bObj.target) * 100).toFixed(2) : "0.00";
-                    // การโชว์ตัวเลขตรงกลาง: ผลงาน เทียบกับ แผนปัจจุบัน
+                    // กราฟวงแหวน: ระบายตามเป้าหมายทั้งปี
+                    const bPctYearly = bObj.target > 0 ? ((bObj.actual / bObj.target) * 100) : 0;
+                    // ตัวเลขตรงกลาง: เทียบแผนสะสมปัจจุบัน
                     const bPctCurrent = getPctVsCurrentPlan(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
                     let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
                     const bStatusColor = getStatusColorConfig(bStatus);
                     
                     pieChartsContainer.innerHTML += `
                         <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-gradient-to-br from-[#FDFBF7] via-[#F3E7D3] to-[#E8D0A5] rounded-[2.5rem] shadow-[0_10px_30px_rgba(212,175,55,0.15)] border-t-2 border-l-2 border-white/80 border-b border-r border-[#D4AF37]/30 p-8 flex flex-col items-center relative transition-transform duration-500 hover:-translate-y-2">
-                            <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/40 to-transparent opacity-50 pointer-events-none"></div>
-
+                            
                             <div class="mb-8 w-full text-center border-b border-[#D4AF37]/30 pb-4 relative z-10">
                                 <h4 class="text-xl xl:text-2xl font-black text-[#8B6508] drop-shadow-sm leading-tight">สถานะการใช้จ่ายงบประมาณ</h4>
                                 <p class="text-sm font-bold text-[#8B6508] opacity-70 mt-1.5 uppercase tracking-widest">ณ ไตรมาสที่ ${currentQuarter}</p>
@@ -788,14 +789,16 @@
                             </div>
                         </div>
                     `;
-                    // สีแหวนกราฟ = สีสถานะ
-                    pieAnimations.push({ id: `pie-chart-budget`, color: bStatusColor.ring, pct: bPctYearly }); 
+                    // เซ็ตสีโดนัท = สีของสถานะ (capped at 100%)
+                    pieAnimations.push({ id: `pie-chart-budget`, color: bStatusColor.ring, pct: Math.min(bPctYearly, 100).toFixed(2) }); 
                 }
 
                 // 3.2 การ์ดสถานะ KPI แต่ละหน่วยนับ
                 unitKeys.forEach((unit, idx) => {
                     const d = kpiByUnit[unit];
-                    const percentCumYearly = d.target > 0 ? ((d.actual / d.target) * 100).toFixed(2) : "0.00";
+                    // กราฟวงแหวน: ระบายตามเป้าหมายทั้งปี
+                    const percentCumYearly = d.target > 0 ? ((d.actual / d.target) * 100) : 0;
+                    // ตัวเลขตรงกลาง: เทียบแผนสะสมปัจจุบัน
                     const percentCumCurrent = getPctVsCurrentPlan(d.planQ1, d.planQ2, d.planQ3, d.planQ4, d.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
                     
                     let statusObj = determineStatus(d.planQ1, d.planQ2, d.planQ3, d.planQ4, d.actual, currentQuarter, isLastMonthOfQuarter);
@@ -807,7 +810,7 @@
                             
                             <div class="mb-8 w-full text-center border-b border-slate-200/60 pb-4">
                                 <h4 class="text-xl xl:text-2xl font-black ${theme.cardPlanText} drop-shadow-sm leading-tight">
-                                    สถานะผลการดำเนินงาน (${unit})
+                                    สถานะผลการดำเนินงาน<br><span class="text-lg opacity-80 font-bold mt-1 block">(${unit})</span>
                                 </h4>
                                 <p class="text-sm font-bold ${theme.cardPlanText} opacity-70 mt-1.5 uppercase tracking-widest">ณ ไตรมาสที่ ${currentQuarter}</p>
                             </div>
@@ -833,10 +836,10 @@
                         </div>
                     `;
                     // สีแหวนกราฟ = สีสถานะ
-                    pieAnimations.push({ id: `pie-chart-kpi-${idx}`, color: statusColor.ring, pct: percentCumYearly });
+                    pieAnimations.push({ id: `pie-chart-kpi-${idx}`, color: statusColor.ring, pct: Math.min(percentCumYearly, 100).toFixed(2) });
                 });
 
-                // สั่ง Animate กราฟโดนัทให้สีวิ่ง
+                // วิ่ง Animate กราฟโดนัท
                 setTimeout(() => {
                     pieAnimations.forEach(anim => {
                         const el = document.getElementById(anim.id);
@@ -845,7 +848,7 @@
                 }, 100);
 
                 // =====================================
-                // ล็อกส่วนกราฟแท่งและตารางไว้เหมือนเดิม
+                // 4. วาดกราฟแท่ง (ล็อกไว้ 100%)
                 // =====================================
                 const barLegend = document.getElementById('bar-legend-container');
                 let legendHtml = '';
@@ -967,6 +970,9 @@
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => { text.classList.remove('opacity-0'); });
                 }, 50);
 
+                // =====================================
+                // 5. วาดตารางสถานะ (ล็อกไว้ 100%)
+                // =====================================
                 const tbody = document.getElementById('table-body');
                 tbody.innerHTML = '';
                 tableActivities.forEach((act, index) => {
