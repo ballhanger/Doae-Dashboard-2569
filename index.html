@@ -104,7 +104,6 @@
 
         <div id="budget-cards-container" class="hidden fade-in-up delay-100 mb-10 relative z-10"></div>
         <div id="kpi-cards-container" class="flex flex-col gap-4 mb-16 relative z-10 fade-in-up delay-200"></div>
-        
         <div id="pie-charts-container" class="hidden flex flex-wrap justify-center gap-8 mb-16 fade-in-up delay-300 w-full max-w-[1400px] mx-auto"></div>
 
         <div id="bar-chart-main-container" class="hidden fade-in-up delay-400 bg-[#FFEDD5] rounded-[2rem] shadow-sm border border-orange-200 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 relative overflow-hidden">
@@ -172,6 +171,16 @@
             return { ring: '#CBD5E1', badgeBg: 'bg-slate-300', badgeText: 'text-slate-800', border: 'border-slate-300', subBg: 'bg-[#F8FAFC]', subText: 'text-slate-600', subBorder: 'border-slate-200', animClass: '', subtext: '-' };
         };
 
+        const getStatusStyles = (status) => {
+            if (!status) return "bg-slate-100 text-slate-500 border-slate-200";
+            if (status === "เป็นไปตามแผน") return "bg-[#D1FAE5] text-[#065F46] border-[#34D399] shadow-sm anim-success";
+            if (status === "ล่าช้า") return "bg-[#FEF08A] text-[#854D0E] border-[#FACC15] shadow-sm anim-warning"; 
+            if (status === "เสี่ยง") return "bg-[#FEE2E2] text-[#991B1B] border-[#F87171] shadow-md anim-danger font-bold";
+            if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return "bg-[#1E293B] text-white border-[#0F172A] shadow-md anim-critical font-bold tracking-wide";
+            if (status.includes("มีแผนอยู่ใน")) return "bg-[#F1F5F9] text-[#475569] border-[#CBD5E1] shadow-sm border font-bold";
+            return "bg-slate-100 text-slate-600 border-slate-200";
+        };
+
         const getStatusEmoji = (status) => {
             if (status === "เป็นไปตามแผน") return "🟢";
             if (status === "ล่าช้า") return "🟡";
@@ -207,6 +216,12 @@
             }
             return "ยังไม่ดำเนินการ";
         }
+
+        const calcSafePct = (actual, plan) => {
+            if (plan > 0) return ((actual / plan) * 100).toFixed(2);
+            if (actual > 0) return "100.00";
+            return "0.00";
+        };
 
         function getPctVsCurrentPlan(p1, p2, p3, p4, actual, q, isLast) {
             let pCum = 0; let prevCum = 0;
@@ -331,7 +346,10 @@
                     const isAll = item.url === "AUTO_ALL";
                     const isGroup = item.url === "AUTO_GROUP";
                     const isSub = item.name.trim().startsWith("-"); 
-                    const prefix = (item.seq && String(item.seq) !== "0") ? `${item.seq}. ` : '';
+                    
+                    // 🚀 เช็คตัวเลขนำหน้า ถ้ามีจุดอยู่แล้วให้เว้นวรรคเฉยๆ ถ้าไม่มีจุดให้เติมจุด
+                    const seqStr = String(item.seq);
+                    const prefix = (item.seq && seqStr !== "0") ? (seqStr.includes('.') ? `${seqStr} ` : `${seqStr}. `) : '';
                     const displayName = `${prefix}${item.name.replace(/^- /, '')}`;
 
                     li.title = displayName; 
@@ -376,7 +394,9 @@
             document.getElementById('table-main-container').classList.add('hidden');
             document.getElementById('issues-main-container').classList.add('hidden');
 
-            const prefix = (selectedItem.seq && String(selectedItem.seq) !== "0") ? `${selectedItem.seq}. ` : '';
+            // 🚀 เช็คตัวเลขนำหน้าสำหรับ Display Name
+            const seqStr = String(selectedItem.seq);
+            const prefix = (selectedItem.seq && seqStr !== "0") ? (seqStr.includes('.') ? `${seqStr} ` : `${seqStr}. `) : '';
             const fullDisplayName = `${prefix}${selectedItem.name.replace(/^- /, '')}`;
             
             dropdownText.textContent = fullDisplayName;
@@ -938,7 +958,7 @@
                     const q3Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3) / safeTarget) * 100, 100);
                     const q4Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3 + act.planQ4) / safeTarget) * 100, 100);
 
-                    // 🎨 จัดการป้ายสถานะ & แถบ Progress ให้เป็นสีเดียวกัน
+                    // สี Progress Bar และป้ายสถานะ แบบใหม่
                     let barColor = "bg-slate-400"; 
                     let badgeStyle = "bg-slate-100 text-slate-600 border-slate-200";
                     let displayStatus = act.status;
@@ -961,10 +981,12 @@
                         badgeStyle = "bg-[#F8FAFC] text-slate-900 border-slate-300 shadow-sm font-bold";
                     }
 
-                    // 🎨 สร้างเส้น Q มาร์กเกอร์สีดำ และตัวหนังสืออยู่ล่างหลอด
+                    // 🚀 สร้างเส้นมาร์กเกอร์ Q สีดำ ซ่อนเส้นที่ซ้อนทับ 100%
                     let markersHtml = '';
+                    let seenPositions = new Set();
                     [ {p: q1Pos, l: 'Q1'}, {p: q2Pos, l: 'Q2'}, {p: q3Pos, l: 'Q3'}, {p: q4Pos, l: 'Q4'} ].forEach(q => {
-                        if (q.p > 0) {
+                        if (q.p > 0 && !seenPositions.has(q.p)) {
+                            seenPositions.add(q.p);
                             markersHtml += `
                                 <div class="absolute top-0 h-full w-[2px] bg-slate-900 z-10 shadow-sm" style="left: ${q.p}%"></div>
                                 <div class="absolute -bottom-5 text-[12px] font-black text-slate-900 -translate-x-1/2" style="left: ${q.p}%">${q.l}</div>
@@ -972,7 +994,6 @@
                         }
                     });
 
-                    // 🚀 ปรับ Layout Progress Bar ให้รับกับตัวหนังสือด้านล่าง
                     const progressHtml = `
                         <div class="w-full relative mt-7 mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
                             <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pct, 100)}">
@@ -988,26 +1009,36 @@
                         </div>
                     `;
 
-                    // สีแถวสลับกัน
+                    // 🚀 ลดความซ้ำซ้อนของชื่อในตาราง (GROUP BY PROJECT NAME)
+                    let isFirstInGroup = false;
                     if (viewLevel === 'ALL' || viewLevel === 'GROUP') {
                         if (act.name !== previousProjectName) {
                             currentRowBgIsDark = !currentRowBgIsDark;
                             previousProjectName = act.name;
+                            isFirstInGroup = true;
                         }
-                    } else { currentRowBgIsDark = index % 2 === 0; }
+                    } else {
+                        currentRowBgIsDark = index % 2 === 0;
+                        isFirstInGroup = true;
+                    }
 
                     const isRowKPI = act.name.includes("(KPI)") || act.isAggregatedKPI;
                     let displayName = act.name.replace("(KPI)", ''); 
                     let namePrefix = isRowKPI && viewLevel === 'SINGLE' && act.name.includes("(KPI)") ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-black bg-[#3B82F6] text-white mr-3 shadow-md transform -skew-x-6 pt-1">(KPI)</span>' : '';
                     
-                    // 🚀 ใส่ตัวเลขนำหน้า และสร้าง LInk ให้คลิกเจาะลึกได้ (ALL & GROUP View)
-                    let linkStart = "";
-                    let linkEnd = "";
-                    if ((viewLevel === 'ALL' || viewLevel === 'GROUP') && act.dropdownIndex !== undefined && act.dropdownIndex !== -1) {
-                        let seqText = act.seq && act.seq !== "0" ? `${act.seq}. ` : '';
-                        displayName = `${seqText}${displayName}`;
-                        linkStart = `<a href="javascript:void(0)" onclick="selectProject(${act.dropdownIndex})" class="hover:text-emerald-700 hover:underline transition-colors decoration-2 underline-offset-4 cursor-pointer block w-full">`;
-                        linkEnd = `</a>`;
+                    // 🚀 สร้าง Link ให้คลิกได้เฉพาะแถวแรกของกลุ่ม
+                    let displayNameHtml = "";
+                    if (isFirstInGroup) {
+                        let linkStart = "";
+                        let linkEnd = "";
+                        if ((viewLevel === 'ALL' || viewLevel === 'GROUP') && act.dropdownIndex !== undefined && act.dropdownIndex !== -1) {
+                            let seqStr = String(act.seq);
+                            let seqText = act.seq && seqStr !== "0" ? (seqStr.includes('.') ? `${seqStr} ` : `${seqStr}. `) : '';
+                            displayName = `${seqText}${displayName}`;
+                            linkStart = `<a href="javascript:void(0)" onclick="selectProject(${act.dropdownIndex})" class="hover:text-emerald-700 hover:underline transition-colors decoration-2 underline-offset-4 cursor-pointer block w-full">`;
+                            linkEnd = `</a>`;
+                        }
+                        displayNameHtml = `${namePrefix}${linkStart}${displayName}${linkEnd}`;
                     }
 
                     let rowBgClass = isRowKPI && viewLevel === 'SINGLE' 
@@ -1018,7 +1049,7 @@
 
                     tbody.innerHTML += `
                         <tr class="group/row border-b border-emerald-100 ${rowBgClass} transition-colors duration-300">
-                            <td class="px-6 py-5 align-middle"><div class="leading-relaxed ${nameStyle} group-hover/row:translate-x-1 transition-transform flex items-center pt-1 w-full">${namePrefix}${linkStart}${displayName}${linkEnd}</div></td>
+                            <td class="px-6 py-5 align-middle"><div class="leading-relaxed ${nameStyle} group-hover/row:translate-x-1 transition-transform flex items-center pt-1 w-full">${displayNameHtml}</div></td>
                             <td class="px-4 py-5 align-middle text-center text-slate-600 font-bold pt-1 text-sm sm:text-base">${act.unit}</td>
                             <td class="px-4 py-5 align-middle text-center font-bold text-slate-700 pt-1 text-base">${formatAutoDecimal(act.target)}</td>
                             <td class="px-4 py-5 align-middle text-center font-black text-[#059669] pt-1 text-base">${formatAutoDecimal(act.actual)}</td>
