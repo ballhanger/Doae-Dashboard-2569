@@ -170,7 +170,6 @@
         let currentQuarter = 1;
         let isLastMonthOfQuarter = false;
 
-        // คำนวณไตรมาสปัจจุบันอัตโนมัติ
         if (currentMonth >= 10 && currentMonth <= 12) { 
             currentQuarter = 1; isLastMonthOfQuarter = (currentMonth === 12); 
         } else if (currentMonth >= 1 && currentMonth <= 3) { 
@@ -181,7 +180,6 @@
             currentQuarter = 4; isLastMonthOfQuarter = (currentMonth === 9); 
         }
 
-        // Theme สีของ KPI
         const kpiColorThemes = [
             { planBg: 'bg-emerald-300', planBorder: 'border-emerald-400', planText: 'text-emerald-700', actBg: 'bg-emerald-500', actBorder: 'border-emerald-600', actText: 'text-emerald-600', legendPlanBg: 'bg-emerald-300', legendActBg: 'bg-emerald-500', cardPlanBg: 'bg-gradient-to-br from-emerald-200 to-emerald-300', cardPlanText: 'text-emerald-900', cardActBg: 'bg-gradient-to-br from-emerald-500 to-emerald-600', cardActText: 'text-white', cardPctBg: 'bg-emerald-50', cardPctText: 'text-emerald-800' },
             { planBg: 'bg-blue-300', planBorder: 'border-blue-400', planText: 'text-blue-700', actBg: 'bg-blue-500', actBorder: 'border-blue-600', actText: 'text-blue-600', legendPlanBg: 'bg-blue-300', legendActBg: 'bg-blue-500', cardPlanBg: 'bg-gradient-to-br from-blue-200 to-blue-300', cardPlanText: 'text-blue-900', cardActBg: 'bg-gradient-to-br from-blue-500 to-blue-600', cardActText: 'text-white', cardPctBg: 'bg-blue-50', cardPctText: 'text-blue-800' },
@@ -189,7 +187,6 @@
             { planBg: 'bg-pink-300', planBorder: 'border-pink-400', planText: 'text-pink-700', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-600', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500', cardPlanBg: 'bg-gradient-to-br from-pink-200 to-pink-300', cardPlanText: 'text-pink-900', cardActBg: 'bg-gradient-to-br from-pink-500 to-pink-600', cardActText: 'text-white', cardPctBg: 'bg-pink-50', cardPctText: 'text-pink-800' }
         ];
 
-        // 🎨 ชุดสีการ์ดย่อยโดนัทสถานะ (UI หรูหราใหม่)
         const getDonutStatusColorConfig = (status) => {
             if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-[#D1FAE5]', badgeText: 'text-black', border: 'border-[#34D399]', subtext: 'ร้อยละผลงาน ≥ 100', subtextColor: 'text-[#059669]', animClass: 'anim-success-alt' };
             if (status === "ล่าช้า") return { ring: '#FACC15', badgeBg: 'bg-[#FEF08A]', badgeText: 'text-black', border: 'border-[#FACC15]', subtext: 'ร้อยละ 50 - 99', subtextColor: 'text-[#D97706]', animClass: 'anim-warning-alt' }; 
@@ -199,7 +196,6 @@
             return { ring: '#CBD5E1', badgeBg: 'bg-white', badgeText: 'text-black', border: 'border-slate-200', subtext: '-', subtextColor: 'text-slate-600', animClass: '' };
         };
 
-        // สำหรับตารางด้านล่าง
         const getStatusStyles = (status) => {
             if (!status) return "bg-slate-100 text-slate-500 border-slate-200";
             if (status === "เป็นไปตามแผน") return "bg-[#D1FAE5] text-[#065F46] border-[#34D399] shadow-sm anim-success";
@@ -233,8 +229,6 @@
             return 'bg-[#EF4444] text-white border-[#DC2626]';
         };
 
-        // 💡 อัปเกรดระบบสมองกล (Fuzzy Column Matching)
-        // ตัดช่องว่างซ้ายขวาและตรงกลางออกให้หมด ก่อนจับคู่ชื่อคอลัมน์ ป้องกันสเปซบาร์เจ้าปัญหา!
         const getSafeNum = (row, targetKey) => {
             const cleanTarget = targetKey.replace(/\s+/g, '');
             let foundVal = "0";
@@ -248,7 +242,6 @@
             return parseFloat(String(foundVal).replace(/,/g, '')) || 0;
         };
 
-        // Fuzzy Matching สำหรับคอลัมน์ "สถานะไตรมาส..."
         function getDynamicStatus(row, quarter) {
             for (let i = quarter; i >= 1; i--) {
                 const cleanTarget = `สถานะไตรมาส${i}`;
@@ -306,13 +299,17 @@
             }
         }
 
-        // วาดเส้นมาร์กเกอร์ (แก้บั๊กทศนิยมเพี้ยน)
+        // ==========================================
+        // 🛠️ ส่วนที่แก้ไข: ฟังก์ชันวาดเส้นมาร์กเกอร์ Q 
+        // ==========================================
         function generateDonutMarkers(target, q1, q2, q3) {
             if (target <= 0) return '';
             let html = '';
 
             const makeMarker = (pct, label) => {
-                if (pct > 0 && pct <= 100.1) { 
+                // ปลดล็อกเงื่อนไขที่ทำให้เส้นหายไป (ลบ pct <= 100.1 ออก)
+                if (pct > 0) { 
+                    // ใช้ Math.min เพื่อตอกหมุดไม่ให้เกิน 100% เสมอ (อยู่ที่ตำแหน่งเที่ยงคืน)
                     const finalPct = Math.min(pct, 100); 
                     const degree = finalPct * 3.6; 
                     return `
@@ -335,7 +332,6 @@
             return html;
         }
 
-        // 💡 ระบบทำลายแคช (Real-time Update) หลอกเบราว์เซอร์ไม่ให้จำไฟล์เก่า
         function fetchCSVData(url) {
             return new Promise((resolve, reject) => {
                 const cacheBuster = url.includes('?') ? `&_t=${new Date().getTime()}` : `?_t=${new Date().getTime()}`;
@@ -347,7 +343,6 @@
             });
         }
         async function fetchCSVWithCache(url) {
-            // ไม่แคชข้อมูล เพื่อให้กราฟอัปเดตตลอดเวลาที่แก้ Sheet
             return await fetchCSVData(url);
         }
 
@@ -498,7 +493,6 @@
                         let p3 = getSafeNum(rawRow, "แผนไตรมาส3");
                         let p4 = getSafeNum(rawRow, "แผนไตรมาส4");
                         
-                        // 💡 ระบบสมองกลป้องกันเป้าหมายล่องหน
                         let safeTarget = rawTarget > 0 ? rawTarget : (p1 + p2 + p3 + p4);
 
                         let issueText = "";
@@ -626,7 +620,7 @@
                     budgetContainer.innerHTML = `
                         <div class="bg-gradient-to-br from-[#FDFBF7] via-[#F3E7D3] to-[#E8D0A5] rounded-[2rem] border-t-2 border-l-2 border-white/80 border-b border-r border-[#D4AF37]/30 p-6 sm:p-8 shadow-[0_15px_30px_rgba(212,175,55,0.15)] relative overflow-hidden transition-all duration-300">
                             <h3 class="text-xl md:text-2xl font-extrabold mb-6 flex items-center text-[#8B6508] drop-shadow-sm relative z-10 pt-1">
-                                <svg class="w-8 h-8 mr-3 text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <svg class="w-8 h-8 mr-3 text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08-.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 ${budgetTitleStr}
                             </h3>
                             <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 w-full relative z-10">
@@ -651,7 +645,6 @@
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
                 
-                // 💡 เพิ่มตัวแปรสำคัญที่เผลอลบไป เพื่อให้ระบบสร้างการ์ด KPI ทำงานได้ตามปกติ!
                 const unitKeys = Object.keys(kpiByUnit); 
                 
                 unitKeys.forEach((unit, idx) => {
@@ -782,7 +775,6 @@
                 const qData = [1, 2, 3, 4].map(q => {
                     let kpis = unitKeys.map(unit => {
                         let pPlan = 0, pAct = 0;
-                        // 💡 แก้ไขบั๊กตัวแปรแผนไตรมาส (เปลี่ยนจาก planQ เป็น p ให้ตรงกับอ็อบเจ็กต์ kpiByUnit)
                         for(let i=1; i<=q; i++) { pPlan += kpiByUnit[unit][`p${i}`]; pAct += kpiByUnit[unit][`a${i}`]; }
                         return { unit: unit, plan: pPlan, act: pAct, pct: calcSafePct(pAct, pPlan) };
                     });
