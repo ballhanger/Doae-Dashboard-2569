@@ -104,6 +104,7 @@
 
         <div id="budget-cards-container" class="hidden fade-in-up delay-100 mb-10 relative z-10"></div>
         <div id="kpi-cards-container" class="flex flex-col gap-4 mb-16 relative z-10 fade-in-up delay-200"></div>
+        
         <div id="pie-charts-container" class="hidden flex flex-wrap justify-center gap-8 mb-16 fade-in-up delay-300 w-full max-w-[1400px] mx-auto"></div>
 
         <div id="bar-chart-main-container" class="hidden fade-in-up delay-400 bg-[#FFEDD5] rounded-[2rem] shadow-sm border border-orange-200 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 relative overflow-hidden">
@@ -207,12 +208,6 @@
             return "ยังไม่ดำเนินการ";
         }
 
-        const calcSafePct = (actual, plan) => {
-            if (plan > 0) return ((actual / plan) * 100).toFixed(2);
-            if (actual > 0) return "100.00";
-            return "0.00";
-        };
-
         function getPctVsCurrentPlan(p1, p2, p3, p4, actual, q, isLast) {
             let pCum = 0; let prevCum = 0;
             if (q >= 1) { pCum += p1; prevCum = 0; }
@@ -314,7 +309,6 @@
             if (container && !container.contains(event.target)) closeDropdown();
         });
 
-        // 🚀 ให้คลิกชื่อจากตารางแล้ววิ่งไปหน้านั้นได้
         window.selectProject = function(index) {
             closeDropdown();
             loadProject(index);
@@ -474,7 +468,24 @@
                             budgetAgg.a1 += r.actualQ1; budgetAgg.a2 += r.actualQ2; budgetAgg.a3 += r.actualQ3; budgetAgg.a4 += r.actualQ4;
                         } else if (r.isKPI) {
                             let key = `${r.groupName}_|_${r.unit}`; 
-                            if (!kpiAgg[key]) kpiAgg[key] = { name: r.groupName, unit: r.unit, seq: r.seq, dropdownIndex: r.dropdownIndex, target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0, issues: [] };
+                            if (!kpiAgg[key]) {
+                                let seqToUse = r.seq;
+                                let dropIdxToUse = r.dropdownIndex;
+                                if (viewLevel === "ALL") {
+                                    const parentProj = MASTER_INDEX.find(m => m.name.trim() === r.groupName.trim() && m.url === "AUTO_GROUP");
+                                    if (parentProj) {
+                                        seqToUse = parentProj.seq;
+                                        dropIdxToUse = MASTER_INDEX.indexOf(parentProj);
+                                    } else {
+                                        const parentProj2 = MASTER_INDEX.find(m => m.name.trim() === r.groupName.trim());
+                                        if (parentProj2) {
+                                            seqToUse = parentProj2.seq;
+                                            dropIdxToUse = MASTER_INDEX.indexOf(parentProj2);
+                                        }
+                                    }
+                                }
+                                kpiAgg[key] = { name: r.groupName, unit: r.unit, seq: seqToUse, dropdownIndex: dropIdxToUse, target: 0, actual: 0, p1:0, p2:0, p3:0, p4:0, a1:0, a2:0, a3:0, a4:0, issues: [] };
+                            }
                             kpiAgg[key].target += r.target; kpiAgg[key].actual += r.actual;
                             kpiAgg[key].p1 += r.planQ1; kpiAgg[key].p2 += r.planQ2; kpiAgg[key].p3 += r.planQ3; kpiAgg[key].p4 += r.planQ4;
                             kpiAgg[key].a1 += r.actualQ1; kpiAgg[key].a2 += r.actualQ2; kpiAgg[key].a3 += r.actualQ3; kpiAgg[key].a4 += r.actualQ4;
@@ -843,7 +854,7 @@
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => text.classList.remove('opacity-0'));
                 }, 50);
 
-                // ================== 5. โซนใหม่: 6 การ์ดภาพรวมสถานะ ==================
+                // ================== 5. โซนภาพรวมสถานะ ==================
                 let summaryTitle = "";
                 let tableTitle = "";
                 let col1Title = "";
@@ -909,7 +920,7 @@
                 `;
                 summaryContainer.classList.remove('hidden');
 
-                // ================== 6. โซนตาราง (อัปเกรดสี ลิงก์ และมาร์กเกอร์ Q) ==================
+                // ================== 6. โซนตาราง ==================
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>${tableTitle}`;
                 document.getElementById('table-col-1-header').textContent = col1Title;
 
@@ -927,9 +938,10 @@
                     const q3Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3) / safeTarget) * 100, 100);
                     const q4Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3 + act.planQ4) / safeTarget) * 100, 100);
 
-                    // สี Progress Bar และป้ายสถานะ แบบใหม่
+                    // 🎨 จัดการป้ายสถานะ & แถบ Progress ให้เป็นสีเดียวกัน
                     let barColor = "bg-slate-400"; 
                     let badgeStyle = "bg-slate-100 text-slate-600 border-slate-200";
+                    let displayStatus = act.status;
 
                     if (act.status.includes("เป็นไปตามแผน")) {
                         barColor = "bg-emerald-400";
@@ -943,24 +955,26 @@
                     } else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) {
                         barColor = "bg-slate-800";
                         badgeStyle = "bg-slate-800 text-white border-slate-900 shadow-md anim-critical font-bold tracking-wide";
+                        displayStatus = "ยังไม่<br>ดำเนินการ"; // ดัดให้เหลือ 2 บรรทัด
                     } else if (act.status.includes("มีแผนอยู่ใน")) {
                         barColor = "bg-[#F8FAFC]"; 
                         badgeStyle = "bg-[#F8FAFC] text-slate-900 border-slate-300 shadow-sm font-bold";
                     }
 
-                    // สร้างเส้นมาร์กเกอร์ Q1, Q2, Q3, Q4 บนกราฟ
+                    // 🎨 สร้างเส้น Q มาร์กเกอร์สีดำ และตัวหนังสืออยู่ล่างหลอด
                     let markersHtml = '';
                     [ {p: q1Pos, l: 'Q1'}, {p: q2Pos, l: 'Q2'}, {p: q3Pos, l: 'Q3'}, {p: q4Pos, l: 'Q4'} ].forEach(q => {
                         if (q.p > 0) {
                             markersHtml += `
-                                <div class="absolute top-0 h-full w-[2px] bg-white/60 z-10 shadow-sm" style="left: ${q.p}%"></div>
-                                <div class="absolute -top-5 text-[10px] font-black text-slate-600 -translate-x-1/2" style="left: ${q.p}%">${q.l}</div>
+                                <div class="absolute top-0 h-full w-[2px] bg-slate-900 z-10 shadow-sm" style="left: ${q.p}%"></div>
+                                <div class="absolute -bottom-5 text-[12px] font-black text-slate-900 -translate-x-1/2" style="left: ${q.p}%">${q.l}</div>
                             `;
                         }
                     });
 
+                    // 🚀 ปรับ Layout Progress Bar ให้รับกับตัวหนังสือด้านล่าง
                     const progressHtml = `
-                        <div class="w-full relative mt-6 mb-4 group-hover/row:scale-[1.02] transition-transform duration-300">
+                        <div class="w-full relative mt-7 mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
                             <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pct, 100)}">
                                 <div class="bg-slate-800 text-white px-2 py-0.5 rounded text-xs font-bold shadow-md pt-1">${pct.toFixed(2)}%</div>
                                 <div class="w-0.5 h-1.5 bg-slate-800"></div>
@@ -974,21 +988,19 @@
                         </div>
                     `;
 
-                    // สีแถวสลับกัน โดยกรุ๊ปตามโปรเจกต์
+                    // สีแถวสลับกัน
                     if (viewLevel === 'ALL' || viewLevel === 'GROUP') {
                         if (act.name !== previousProjectName) {
                             currentRowBgIsDark = !currentRowBgIsDark;
                             previousProjectName = act.name;
                         }
-                    } else {
-                        currentRowBgIsDark = index % 2 === 0;
-                    }
+                    } else { currentRowBgIsDark = index % 2 === 0; }
 
                     const isRowKPI = act.name.includes("(KPI)") || act.isAggregatedKPI;
                     let displayName = act.name.replace("(KPI)", ''); 
                     let namePrefix = isRowKPI && viewLevel === 'SINGLE' && act.name.includes("(KPI)") ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-black bg-[#3B82F6] text-white mr-3 shadow-md transform -skew-x-6 pt-1">(KPI)</span>' : '';
                     
-                    // สร้าง Link ให้คลิกได้ในหน้า ALL/GROUP
+                    // 🚀 ใส่ตัวเลขนำหน้า และสร้าง LInk ให้คลิกเจาะลึกได้ (ALL & GROUP View)
                     let linkStart = "";
                     let linkEnd = "";
                     if ((viewLevel === 'ALL' || viewLevel === 'GROUP') && act.dropdownIndex !== undefined && act.dropdownIndex !== -1) {
@@ -1011,7 +1023,7 @@
                             <td class="px-4 py-5 align-middle text-center font-bold text-slate-700 pt-1 text-base">${formatAutoDecimal(act.target)}</td>
                             <td class="px-4 py-5 align-middle text-center font-black text-[#059669] pt-1 text-base">${formatAutoDecimal(act.actual)}</td>
                             <td class="px-6 py-5 align-middle pt-8">${progressHtml}</td>
-                            <td class="px-6 py-5 align-middle text-center"><span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-black shadow-sm ${badgeStyle} pt-2 border">${act.status}</span></td>
+                            <td class="px-6 py-5 align-middle text-center"><span class="inline-flex flex-col items-center justify-center px-4 py-1.5 rounded-xl text-sm font-black shadow-sm ${badgeStyle} border min-w-[100px] leading-tight pt-1">${displayStatus}</span></td>
                         </tr>
                     `;
                 });
