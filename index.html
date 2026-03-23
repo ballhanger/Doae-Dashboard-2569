@@ -217,12 +217,6 @@
             return "ยังไม่ดำเนินการ";
         }
 
-        const calcSafePct = (actual, plan) => {
-            if (plan > 0) return ((actual / plan) * 100).toFixed(2);
-            if (actual > 0) return "100.00";
-            return "0.00";
-        };
-
         function getPctVsCurrentPlan(p1, p2, p3, p4, actual, q, isLast) {
             let pCum = 0; let prevCum = 0;
             if (q >= 1) { pCum += p1; prevCum = 0; }
@@ -347,7 +341,6 @@
                     const isGroup = item.url === "AUTO_GROUP";
                     const isSub = item.name.trim().startsWith("-"); 
                     
-                    // 🚀 เช็คตัวเลขนำหน้า ถ้ามีจุดอยู่แล้วให้เว้นวรรคเฉยๆ ถ้าไม่มีจุดให้เติมจุด
                     const seqStr = String(item.seq);
                     const prefix = (item.seq && seqStr !== "0") ? (seqStr.includes('.') ? `${seqStr} ` : `${seqStr}. `) : '';
                     const displayName = `${prefix}${item.name.replace(/^- /, '')}`;
@@ -394,7 +387,6 @@
             document.getElementById('table-main-container').classList.add('hidden');
             document.getElementById('issues-main-container').classList.add('hidden');
 
-            // 🚀 เช็คตัวเลขนำหน้าสำหรับ Display Name
             const seqStr = String(selectedItem.seq);
             const prefix = (selectedItem.seq && seqStr !== "0") ? (seqStr.includes('.') ? `${seqStr} ` : `${seqStr}. `) : '';
             const fullDisplayName = `${prefix}${selectedItem.name.replace(/^- /, '')}`;
@@ -750,11 +742,15 @@
                     let kpis = unitKeys.map(unit => {
                         let pPlan = 0, pAct = 0;
                         for(let i=1; i<=q; i++) { pPlan += kpiByUnit[unit][`p${i}`]; pAct += kpiByUnit[unit][`a${i}`]; }
+                        if (q === currentQuarter) pAct = kpiByUnit[unit].actual; // 🚀 SYNC ACTUAL WITH DONUT
                         return { unit: unit, plan: pPlan, act: pAct };
                     });
                     let bPlan = 0, bAct = 0;
                     if(budgetRows.length > 0) {
-                        budgetRows.forEach(bRow => { for(let i=1; i<=q; i++) { bPlan += bRow[`planQ${i}`]; bAct += bRow[`actualQ${i}`]; } });
+                        budgetRows.forEach(bRow => { 
+                            for(let i=1; i<=q; i++) { bPlan += bRow[`planQ${i}`]; bAct += bRow[`actualQ${i}`]; } 
+                            if (q === currentQuarter) bAct = bRow.actual; // 🚀 SYNC ACTUAL WITH DONUT
+                        });
                     }
                     return { q: q, name: `ไตรมาสที่ ${q}`, showActual: currentQuarter >= q, kpis: kpis, bPlan: bPlan, bAct: bAct };
                 });
@@ -952,13 +948,15 @@
 
                 tableActivities.forEach((act, index) => {
                     const safeTarget = act.target > 0 ? act.target : 1;
-                    const pct = (act.actual / safeTarget) * 100;
+                    const pctYearly = (act.actual / safeTarget) * 100;
+                    const pctCurrent = getPctVsCurrentPlan(act.planQ1, act.planQ2, act.planQ3, act.planQ4, act.actual, currentQuarter, isLastMonthOfQuarter);
+                    
                     const q1Pos = Math.min((act.planQ1 / safeTarget) * 100, 100);
                     const q2Pos = Math.min(((act.planQ1 + act.planQ2) / safeTarget) * 100, 100);
                     const q3Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3) / safeTarget) * 100, 100);
                     const q4Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3 + act.planQ4) / safeTarget) * 100, 100);
 
-                    // สี Progress Bar และป้ายสถานะ แบบใหม่
+                    // สี Progress Bar และป้ายสถานะ
                     let barColor = "bg-slate-400"; 
                     let badgeStyle = "bg-slate-100 text-slate-600 border-slate-200";
                     let displayStatus = act.status;
@@ -975,13 +973,13 @@
                     } else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) {
                         barColor = "bg-slate-800";
                         badgeStyle = "bg-slate-800 text-white border-slate-900 shadow-md anim-critical font-bold tracking-wide";
-                        displayStatus = "ยังไม่<br>ดำเนินการ"; // ดัดให้เหลือ 2 บรรทัด
+                        displayStatus = "ยังไม่<br>ดำเนินการ"; 
                     } else if (act.status.includes("มีแผนอยู่ใน")) {
                         barColor = "bg-[#F8FAFC]"; 
                         badgeStyle = "bg-[#F8FAFC] text-slate-900 border-slate-300 shadow-sm font-bold";
                     }
 
-                    // 🚀 สร้างเส้นมาร์กเกอร์ Q สีดำ ซ่อนเส้นที่ซ้อนทับ 100%
+                    // 🚀 ซ่อนเส้นที่ซ้อนทับกัน
                     let markersHtml = '';
                     let seenPositions = new Set();
                     [ {p: q1Pos, l: 'Q1'}, {p: q2Pos, l: 'Q2'}, {p: q3Pos, l: 'Q3'}, {p: q4Pos, l: 'Q4'} ].forEach(q => {
@@ -994,22 +992,28 @@
                         }
                     });
 
+                    // 🚀 แทรกป้าย "เทียบแผนสะสม" บน Progress Bar
                     const progressHtml = `
-                        <div class="w-full relative mt-7 mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
-                            <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pct, 100)}">
-                                <div class="bg-slate-800 text-white px-2 py-0.5 rounded text-xs font-bold shadow-md pt-1">${pct.toFixed(2)}%</div>
-                                <div class="w-0.5 h-1.5 bg-slate-800"></div>
+                        <div class="flex flex-col w-full">
+                            <div class="flex justify-between items-end mb-5">
+                                <span class="text-[11px] font-bold text-slate-500 pt-1">ความก้าวหน้าทั้งปี</span>
+                                <span class="text-[11px] font-black px-2 py-0.5 rounded shadow-sm border bg-white ${pctCurrent >= 100 ? 'text-emerald-600 border-emerald-200' : 'text-blue-600 border-blue-200'} pt-1">เทียบแผนสะสม: ${pctCurrent.toFixed(2)}%</span>
                             </div>
-                            <div class="h-5 bg-white rounded-full relative overflow-visible border border-slate-300 shadow-inner">
-                                <div class="h-full ${barColor} progress-bar-fill rounded-full shadow-[inset_0_-2px_4px_rgba(0,0,0,0.15)] relative overflow-hidden" style="width: 0%" data-w="${Math.min(pct, 100)}">
-                                    <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20"></div>
+                            <div class="w-full relative mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
+                                <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pctYearly, 100)}">
+                                    <div class="bg-slate-800 text-white px-2 py-0.5 rounded text-[11px] font-bold shadow-md pt-1">${pctYearly.toFixed(2)}%</div>
+                                    <div class="w-0.5 h-1.5 bg-slate-800"></div>
                                 </div>
-                                ${markersHtml}
+                                <div class="h-5 bg-white rounded-full relative overflow-visible border border-slate-300 shadow-inner">
+                                    <div class="h-full ${barColor} progress-bar-fill rounded-full shadow-[inset_0_-2px_4px_rgba(0,0,0,0.15)] relative overflow-hidden" style="width: 0%" data-w="${Math.min(pctYearly, 100)}">
+                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20"></div>
+                                    </div>
+                                    ${markersHtml}
+                                </div>
                             </div>
                         </div>
                     `;
 
-                    // 🚀 ลดความซ้ำซ้อนของชื่อในตาราง (GROUP BY PROJECT NAME)
                     let isFirstInGroup = false;
                     if (viewLevel === 'ALL' || viewLevel === 'GROUP') {
                         if (act.name !== previousProjectName) {
@@ -1026,9 +1030,8 @@
                     let displayName = act.name.replace("(KPI)", ''); 
                     let namePrefix = isRowKPI && viewLevel === 'SINGLE' && act.name.includes("(KPI)") ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-black bg-[#3B82F6] text-white mr-3 shadow-md transform -skew-x-6 pt-1">(KPI)</span>' : '';
                     
-                    // 🚀 สร้าง Link ให้คลิกได้เฉพาะแถวแรกของกลุ่ม
                     let displayNameHtml = "";
-                    if (isFirstInGroup) {
+                    if (isFirstInGroup || viewLevel === 'SINGLE') {
                         let linkStart = "";
                         let linkEnd = "";
                         if ((viewLevel === 'ALL' || viewLevel === 'GROUP') && act.dropdownIndex !== undefined && act.dropdownIndex !== -1) {
@@ -1053,7 +1056,7 @@
                             <td class="px-4 py-5 align-middle text-center text-slate-600 font-bold pt-1 text-sm sm:text-base">${act.unit}</td>
                             <td class="px-4 py-5 align-middle text-center font-bold text-slate-700 pt-1 text-base">${formatAutoDecimal(act.target)}</td>
                             <td class="px-4 py-5 align-middle text-center font-black text-[#059669] pt-1 text-base">${formatAutoDecimal(act.actual)}</td>
-                            <td class="px-6 py-5 align-middle pt-8">${progressHtml}</td>
+                            <td class="px-6 py-2 align-middle">${progressHtml}</td>
                             <td class="px-6 py-5 align-middle text-center"><span class="inline-flex flex-col items-center justify-center px-4 py-1.5 rounded-xl text-sm font-black shadow-sm ${badgeStyle} border min-w-[100px] leading-tight pt-1">${displayStatus}</span></td>
                         </tr>
                     `;
