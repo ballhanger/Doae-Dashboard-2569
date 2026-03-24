@@ -116,9 +116,9 @@
             </div>
             
             <div class="bg-[#FFEDD5] rounded-2xl shadow-md border border-orange-200/50 px-6 py-6 w-full flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 min-h-[90px]">
-                <p id="display-parent-project-name" class="hidden text-lg md:text-xl lg:text-2xl font-black text-orange-700 mb-2 leading-relaxed pt-2 w-full drop-shadow-sm truncate"></p>
+                <p id="display-parent-project-name" class="hidden text-lg md:text-xl lg:text-2xl font-black text-orange-700 mb-2 leading-loose py-1 w-full drop-shadow-sm"></p>
                 <div id="display-project-name-container" class="w-full">
-                    <h3 id="display-project-name" class="text-lg md:text-xl lg:text-2xl font-black text-[#1E3A8A] leading-relaxed tracking-wide drop-shadow-sm w-full pb-2">กำลังเชื่อมต่อข้อมูล...</h3>
+                    <h3 id="display-project-name" class="text-lg md:text-xl lg:text-2xl font-black text-[#1E3A8A] leading-loose tracking-wide drop-shadow-sm w-full pb-2 py-1">กำลังเชื่อมต่อข้อมูล...</h3>
                 </div>
             </div>
             
@@ -533,7 +533,6 @@
             const selectedItem = MASTER_INDEX[index];
             const viewLevel = selectedItem.url === "AUTO_ALL" ? "ALL" : (selectedItem.url === "AUTO_GROUP" ? "GROUP" : "SINGLE");
             
-            // 🚀 ตัวแปรเช็คว่าเป็น "กิจกรรมย่อย" หรือไม่ (มีเครื่องหมายลบนำหน้า)
             const isActivity = selectedItem.name.trim().startsWith("-");
 
             document.getElementById('budget-cards-container').classList.add('hidden');
@@ -560,7 +559,6 @@
                 parentTitle.classList.add('hidden');
             } else {
                 if (isActivity) {
-                    // เป็นกิจกรรม: โชว์โปรเจกต์แม่ด้านบน, แล้วใส่ลูกศรย่อหน้าให้กิจกรรม
                     displayTitle.innerHTML = `<div class="flex items-start ml-4 md:ml-6"><span class="text-emerald-500 mr-2 shrink-0 font-black">↳</span><span class="text-[#1E3A8A]">${cleanName}</span></div>`;
                     if (selectedItem.group && selectedItem.group.trim() !== "") {
                         parentTitle.textContent = selectedItem.group; 
@@ -569,7 +567,6 @@
                         parentTitle.classList.add('hidden');
                     }
                 } else {
-                    // เป็นโปรเจกต์: ซ่อนโปรเจกต์แม่ทิ้งไปเลย ป้องกันชื่อซ้อนกัน
                     displayTitle.innerHTML = cleanName;
                     parentTitle.classList.add('hidden');
                 }
@@ -746,7 +743,7 @@
                 let budgetTitleStr = viewLevel === "ALL" ? "งบประมาณทั้งปี (พรบ.)" : (viewLevel === "GROUP" ? "งบประมาณโครงการ (พรบ.)" : (isActivity ? "งบประมาณกิจกรรมหลัก (พรบ.)" : "งบประมาณโครงการ (พรบ.)"));
                 let kpiTargetTitlePrefix = viewLevel === "ALL" ? "เป้าหมายทั้งหมด (พรบ.)" : (viewLevel === "GROUP" ? "เป้าหมายโครงการ (พรบ.)" : (isActivity ? "เป้าหมายกิจกรรมหลัก (พรบ.)" : "เป้าหมายโครงการ (พรบ.)"));
 
-                // ================== 1. การ์ด KPI ==================
+                // ================== 1. การ์ด KPI (ดันขึ้นบนสุด) ==================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
                 const unitKeys = Object.keys(kpiByUnit); 
