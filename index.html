@@ -67,6 +67,25 @@
         .hide-scroll::-webkit-scrollbar-track { background: rgba(226, 232, 240, 0.6); border-radius: 10px; margin: 0 15px; }
         .hide-scroll::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.6); border-radius: 10px; background-clip: padding-box; transition: all 0.3s; }
         .hide-scroll::-webkit-scrollbar-thumb:hover { background-color: rgba(16, 185, 129, 0.8); border: 1px solid transparent; }
+
+        /* 🚀 Custom CSS บังคับให้ Floating Dock อยู่กึ่งกลางขวา 100% ในจอคอม */
+        @media (min-width: 1024px) {
+            #floating-dock {
+                top: 50% !important;
+                transform: translateY(-50%) !important;
+                right: 1.5rem !important;
+                bottom: auto !important;
+                left: auto !important;
+                flex-direction: column !important;
+                max-height: 85vh !important;
+            }
+            #quick-jump-buttons {
+                flex-direction: column !important;
+                max-height: 50vh !important;
+                overflow-y: auto !important;
+                overflow-x: hidden !important;
+            }
+        }
     </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-8 lg:pr-24 text-slate-800">
@@ -172,8 +191,7 @@
     </div>
 
     <div id="floating-dock" class="fixed z-[999] bg-white/90 backdrop-blur-xl border border-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] transition-all duration-500 fade-in-up delay-500
-        bottom-4 left-1/2 transform -translate-x-1/2 translate-y-0 flex flex-row items-center rounded-full px-2 py-2 gap-1
-        lg:bottom-auto lg:left-auto lg:right-6 lg:top-1/2 lg:translate-x-0 lg:-translate-y-1/2 lg:flex-col lg:px-2 lg:py-4 lg:gap-2 lg:max-h-[85vh]">
+        bottom-4 left-1/2 transform -translate-x-1/2 flex flex-row items-center rounded-full px-2 py-2 gap-1 lg:rounded-[2rem]">
 
         <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="p-2 lg:p-2.5 rounded-full hover:bg-slate-100/80 text-slate-600 transition-all hover:scale-110 hover:text-emerald-600 focus:outline-none flex-shrink-0" title="ขึ้นบนสุด">
             <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
@@ -191,7 +209,7 @@
             <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
         </button>
 
-        <div id="quick-jump-buttons" class="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-hidden lg:overflow-y-auto hide-scroll max-w-[45vw] lg:max-w-none lg:max-h-[50vh] px-1 py-1 scroll-smooth"></div>
+        <div id="quick-jump-buttons" class="flex flex-row gap-1.5 overflow-x-auto hide-scroll max-w-[45vw] px-1 py-1 scroll-smooth"></div>
 
         <button id="dock-btn-next" onclick="navigateNext()" class="p-2 lg:p-2.5 rounded-full hover:bg-slate-100/80 text-slate-600 transition-all hover:scale-110 hover:text-emerald-600 disabled:opacity-30 disabled:hover:scale-100 disabled:hover:bg-transparent focus:outline-none flex-shrink-0" title="โครงการถัดไป">
             <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
@@ -457,7 +475,7 @@
                     }
                 });
 
-                const urlParams = new URLSearchParams(window.location.search);
+                const urlParams = newSearchParams(window.location.search);
                 const idParam = urlParams.get('id');
                 let startIndex = 0;
                 if (idParam !== null && !isNaN(idParam) && parseInt(idParam) >= 0 && parseInt(idParam) < MASTER_INDEX.length) {
@@ -504,7 +522,7 @@
             }
 
             const displayTitle = document.getElementById('display-project-name');
-            const parentTitle = document.getElementById('display-parent-project-name'); // ตัวแปรชื่อโครงการแม่
+            const parentTitle = document.getElementById('display-parent-project-name'); 
             const dropdownText = document.getElementById('dropdown-text');
             const dropdownBtn = document.getElementById('dropdown-btn');
             
@@ -528,7 +546,7 @@
             dropdownText.textContent = fullDisplayName;
             dropdownBtn.title = fullDisplayName; 
 
-            // 🚀 อัปเดตโซนหัว โชว์ชื่อโครงการแม่เฉพาะระดับ "กิจกรรมหลัก" (GROUP)
+            // 🚀 อัปเดตโซนหัว โชว์ชื่อโครงการแม่เฉพาะระดับ "กิจกรรมหลัก" (GROUP) ฟอนต์ใหญ่เท่ากันเป๊ะ
             const cleanName = selectedItem.name.replace(/^- /, '');
             if (viewLevel === "ALL") {
                 displayTitle.textContent = "ภาพรวมกรมส่งเสริมการเกษตร";
@@ -536,7 +554,7 @@
             } else if (viewLevel === "GROUP") {
                 displayTitle.textContent = cleanName;
                 if (selectedItem.group && selectedItem.group.trim() !== "") {
-                    parentTitle.textContent = selectedItem.group; // ถอดคำว่า "ภายใต้โครงการ" ออก
+                    parentTitle.textContent = selectedItem.group; // 🚀 ถอดคำว่า "ภายใต้โครงการ" ออก
                     parentTitle.classList.remove('hidden');
                 } else {
                     parentTitle.classList.add('hidden');
@@ -717,7 +735,7 @@
                 let budgetTitleStr = viewLevel === "ALL" ? "งบประมาณทั้งปี (พรบ.)" : (viewLevel === "GROUP" ? "งบประมาณโครงการ (พรบ.)" : (isActivity ? "งบประมาณกิจกรรมหลัก (พรบ.)" : "งบประมาณโครงการ (พรบ.)"));
                 let kpiTargetTitlePrefix = viewLevel === "ALL" ? "เป้าหมายทั้งหมด (พรบ.)" : (viewLevel === "GROUP" ? "เป้าหมายโครงการ (พรบ.)" : (isActivity ? "เป้าหมายกิจกรรมหลัก (พรบ.)" : "เป้าหมายโครงการ (พรบ.)"));
 
-                // ================== 1. การ์ด KPI (ดันขึ้นบนสุด) ==================
+                // ================== 1. การ์ด KPI ==================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
                 const unitKeys = Object.keys(kpiByUnit); 
