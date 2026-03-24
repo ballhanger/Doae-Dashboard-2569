@@ -68,7 +68,7 @@
         .hide-scroll::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.6); border-radius: 10px; background-clip: padding-box; transition: all 0.3s; }
         .hide-scroll::-webkit-scrollbar-thumb:hover { background-color: rgba(16, 185, 129, 0.8); border: 1px solid transparent; }
 
-        /* 🚀 Custom CSS บังคับให้ Floating Dock อยู่กึ่งกลางขวา 100% ในจอคอม */
+        /* Custom CSS บังคับให้ Floating Dock อยู่กึ่งกลางขวา 100% ในจอคอม */
         @media (min-width: 1024px) {
             #floating-dock {
                 top: 50% !important;
@@ -115,9 +115,11 @@
                 </div>
             </div>
             
-            <div class="bg-[#FFEDD5] rounded-2xl shadow-md border border-orange-200/50 px-6 py-5 w-full flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 min-h-[80px]">
-                <p id="display-parent-project-name" class="hidden text-lg md:text-xl lg:text-2xl font-black text-orange-700 mb-1 leading-tight pt-1 w-full drop-shadow-sm truncate"></p>
-                <h3 id="display-project-name" class="text-lg md:text-xl lg:text-2xl font-black text-[#1E3A8A] leading-relaxed tracking-wide drop-shadow-sm w-full pt-1">กำลังเชื่อมต่อข้อมูล...</h3>
+            <div class="bg-[#FFEDD5] rounded-2xl shadow-md border border-orange-200/50 px-6 py-6 w-full flex flex-col justify-center transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 min-h-[90px]">
+                <p id="display-parent-project-name" class="hidden text-lg md:text-xl lg:text-2xl font-black text-orange-700 mb-2 leading-relaxed pt-2 w-full drop-shadow-sm truncate"></p>
+                <div id="display-project-name-container" class="w-full">
+                    <h3 id="display-project-name" class="text-lg md:text-xl lg:text-2xl font-black text-[#1E3A8A] leading-relaxed tracking-wide drop-shadow-sm w-full pb-2">กำลังเชื่อมต่อข้อมูล...</h3>
+                </div>
             </div>
             
             <div class="mt-8 h-1.5 w-full bg-gradient-to-r from-[#FDE68A] via-[#F59E0B] to-[#D97706] rounded-full shadow-[0_4px_12px_rgba(217,119,6,0.3)] border-t border-[#FEF3C7]"></div>
@@ -182,7 +184,7 @@
             <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-red-500 to-rose-600"></div>
             <h3 class="text-xl sm:text-2xl font-black mb-6 flex items-center border-b border-red-100 pb-4 text-red-700 drop-shadow-md relative z-10 pt-1">
                 <svg class="w-7 h-7 mr-3 text-red-600 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                <span class="break-words drop-shadow-sm">กิจกรรมที่ต้องเร่งรัดและติดตาม</span>
+                <span class="break-words drop-shadow-sm">ปัญหาและอุปสรรคในการดำเนินงาน</span>
             </h3>
             <div id="issues-container" class="relative z-10"></div>
         </div>
@@ -191,7 +193,8 @@
     </div>
 
     <div id="floating-dock" class="fixed z-[999] bg-white/90 backdrop-blur-xl border border-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] transition-all duration-500 fade-in-up delay-500
-        bottom-4 left-1/2 transform -translate-x-1/2 flex flex-row items-center rounded-full px-2 py-2 gap-1 lg:rounded-[2rem]">
+        bottom-4 left-1/2 transform -translate-x-1/2 translate-y-0 flex flex-row items-center rounded-full px-2 py-2 gap-1
+        lg:bottom-auto lg:left-auto lg:right-6 lg:top-1/2 lg:translate-x-0 lg:-translate-y-1/2 lg:flex-col lg:px-2 lg:py-4 lg:gap-2 lg:max-h-[85vh]">
 
         <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="p-2 lg:p-2.5 rounded-full hover:bg-slate-100/80 text-slate-600 transition-all hover:scale-110 hover:text-emerald-600 focus:outline-none flex-shrink-0" title="ขึ้นบนสุด">
             <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
@@ -209,7 +212,7 @@
             <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
         </button>
 
-        <div id="quick-jump-buttons" class="flex flex-row lg:flex-col gap-1.5 overflow-x-auto hide-scroll max-w-[45vw] px-1 py-1 scroll-smooth"></div>
+        <div id="quick-jump-buttons" class="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-hidden lg:overflow-y-auto hide-scroll max-w-[45vw] lg:max-w-none lg:max-h-[50vh] px-1 py-1 scroll-smooth"></div>
 
         <button id="dock-btn-next" onclick="navigateNext()" class="p-2 lg:p-2.5 rounded-full hover:bg-slate-100/80 text-slate-600 transition-all hover:scale-110 hover:text-emerald-600 disabled:opacity-30 disabled:hover:scale-100 disabled:hover:bg-transparent focus:outline-none flex-shrink-0" title="โครงการถัดไป">
             <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
@@ -523,6 +526,7 @@
 
             const displayTitle = document.getElementById('display-project-name');
             const parentTitle = document.getElementById('display-parent-project-name'); 
+            const displayTitleContainer = document.getElementById('display-project-name-container'); 
             const dropdownText = document.getElementById('dropdown-text');
             const dropdownBtn = document.getElementById('dropdown-btn');
             
@@ -550,18 +554,23 @@
 
             const cleanName = selectedItem.name.replace(/^- /, '');
             
-            // 🚀 อัปเดตโซนหัว (ใช้ isActivity เป็นตัวตัดสินใจ)
+            // 🚀 อัปเดตโซนหัว (ใช้ isActivity ตัดสินใจ เพื่อกันโปรเจกต์ซ้อนทับ และทำย่อหน้าสำหรับกิจกรรม)
             if (viewLevel === "ALL") {
-                displayTitle.textContent = "ภาพรวมกรมส่งเสริมการเกษตร";
+                displayTitle.innerHTML = "ภาพรวมกรมส่งเสริมการเกษตร";
                 parentTitle.classList.add('hidden');
             } else {
-                displayTitle.textContent = cleanName;
-                // ถ้าเป็น กิจกรรม (isActivity = true) ให้โชว์ชื่อโครงการแม่ด้านบน
-                if (isActivity && selectedItem.group && selectedItem.group.trim() !== "") {
-                    parentTitle.textContent = selectedItem.group;
-                    parentTitle.classList.remove('hidden');
+                if (isActivity) {
+                    // เป็นกิจกรรม: โชว์โปรเจกต์แม่ด้านบน, แล้วใส่ลูกศรย่อหน้าให้กิจกรรม
+                    displayTitle.innerHTML = `<div class="flex items-start ml-4 md:ml-6"><span class="text-emerald-500 mr-2 shrink-0 font-black">↳</span><span class="text-[#1E3A8A]">${cleanName}</span></div>`;
+                    if (selectedItem.group && selectedItem.group.trim() !== "") {
+                        parentTitle.textContent = selectedItem.group; 
+                        parentTitle.classList.remove('hidden');
+                    } else {
+                        parentTitle.classList.add('hidden');
+                    }
                 } else {
-                    // ถ้าเป็นตัว โครงการหลัก เอง ให้ซ่อนบรรทัดบนไปเลย จะได้ไม่ซ้อนกัน
+                    // เป็นโปรเจกต์: ซ่อนโปรเจกต์แม่ทิ้งไปเลย ป้องกันชื่อซ้อนกัน
+                    displayTitle.innerHTML = cleanName;
                     parentTitle.classList.add('hidden');
                 }
             }
