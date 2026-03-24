@@ -209,7 +209,7 @@
             <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
         </button>
 
-        <div id="quick-jump-buttons" class="flex flex-row gap-1.5 overflow-x-auto hide-scroll max-w-[45vw] px-1 py-1 scroll-smooth"></div>
+        <div id="quick-jump-buttons" class="flex flex-row lg:flex-col gap-1.5 overflow-x-auto hide-scroll max-w-[45vw] px-1 py-1 scroll-smooth"></div>
 
         <button id="dock-btn-next" onclick="navigateNext()" class="p-2 lg:p-2.5 rounded-full hover:bg-slate-100/80 text-slate-600 transition-all hover:scale-110 hover:text-emerald-600 disabled:opacity-30 disabled:hover:scale-100 disabled:hover:bg-transparent focus:outline-none flex-shrink-0" title="โครงการถัดไป">
             <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
@@ -475,7 +475,7 @@
                     }
                 });
 
-                const urlParams = newSearchParams(window.location.search);
+                const urlParams = new URLSearchParams(window.location.search);
                 const idParam = urlParams.get('id');
                 let startIndex = 0;
                 if (idParam !== null && !isNaN(idParam) && parseInt(idParam) >= 0 && parseInt(idParam) < MASTER_INDEX.length) {
@@ -528,6 +528,8 @@
             
             const selectedItem = MASTER_INDEX[index];
             const viewLevel = selectedItem.url === "AUTO_ALL" ? "ALL" : (selectedItem.url === "AUTO_GROUP" ? "GROUP" : "SINGLE");
+            
+            // 🚀 ตัวแปรเช็คว่าเป็น "กิจกรรมย่อย" หรือไม่ (มีเครื่องหมายลบนำหน้า)
             const isActivity = selectedItem.name.trim().startsWith("-");
 
             document.getElementById('budget-cards-container').classList.add('hidden');
@@ -546,22 +548,22 @@
             dropdownText.textContent = fullDisplayName;
             dropdownBtn.title = fullDisplayName; 
 
-            // 🚀 อัปเดตโซนหัว โชว์ชื่อโครงการแม่เฉพาะระดับ "กิจกรรมหลัก" (GROUP) ฟอนต์ใหญ่เท่ากันเป๊ะ
             const cleanName = selectedItem.name.replace(/^- /, '');
+            
+            // 🚀 อัปเดตโซนหัว (ใช้ isActivity เป็นตัวตัดสินใจ)
             if (viewLevel === "ALL") {
                 displayTitle.textContent = "ภาพรวมกรมส่งเสริมการเกษตร";
                 parentTitle.classList.add('hidden');
-            } else if (viewLevel === "GROUP") {
-                displayTitle.textContent = cleanName;
-                if (selectedItem.group && selectedItem.group.trim() !== "") {
-                    parentTitle.textContent = selectedItem.group; // 🚀 ถอดคำว่า "ภายใต้โครงการ" ออก
-                    parentTitle.classList.remove('hidden');
-                } else {
-                    parentTitle.classList.add('hidden');
-                }
             } else {
                 displayTitle.textContent = cleanName;
-                parentTitle.classList.add('hidden');
+                // ถ้าเป็น กิจกรรม (isActivity = true) ให้โชว์ชื่อโครงการแม่ด้านบน
+                if (isActivity && selectedItem.group && selectedItem.group.trim() !== "") {
+                    parentTitle.textContent = selectedItem.group;
+                    parentTitle.classList.remove('hidden');
+                } else {
+                    // ถ้าเป็นตัว โครงการหลัก เอง ให้ซ่อนบรรทัดบนไปเลย จะได้ไม่ซ้อนกัน
+                    parentTitle.classList.add('hidden');
+                }
             }
 
             let itemsToFetch = [];
