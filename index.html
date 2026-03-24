@@ -102,8 +102,9 @@
             <div class="mt-8 h-1.5 w-full bg-gradient-to-r from-[#FDE68A] via-[#F59E0B] to-[#D97706] rounded-full shadow-[0_4px_12px_rgba(217,119,6,0.3)] border-t border-[#FEF3C7]"></div>
         </header>
 
-        <div id="budget-cards-container" class="hidden fade-in-up delay-100 mb-10 relative z-10"></div>
-        <div id="kpi-cards-container" class="flex flex-col gap-4 mb-16 relative z-10 fade-in-up delay-200"></div>
+        <div id="kpi-cards-container" class="flex flex-col gap-4 mb-6 relative z-10 fade-in-up delay-100"></div>
+        <div id="budget-cards-container" class="hidden fade-in-up delay-200 mb-16 relative z-10"></div>
+        
         <div id="pie-charts-container" class="hidden flex flex-wrap justify-center gap-8 mb-16 fade-in-up delay-300 w-full max-w-[1400px] mx-auto"></div>
 
         <div id="bar-chart-main-container" class="hidden fade-in-up delay-400 bg-[#FFEDD5] rounded-[2rem] shadow-sm border border-orange-200 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 relative overflow-hidden">
@@ -586,41 +587,7 @@
                 let budgetTitleStr = viewLevel === "ALL" ? "งบประมาณทั้งปี (พรบ.)" : (viewLevel === "GROUP" ? "งบประมาณโครงการ (พรบ.)" : (isActivity ? "งบประมาณกิจกรรมหลัก (พรบ.)" : "งบประมาณโครงการ (พรบ.)"));
                 let kpiTargetTitlePrefix = viewLevel === "ALL" ? "เป้าหมายทั้งหมด (พรบ.)" : (viewLevel === "GROUP" ? "เป้าหมายโครงการ (พรบ.)" : (isActivity ? "เป้าหมายกิจกรรมหลัก (พรบ.)" : "เป้าหมายโครงการ (พรบ.)"));
 
-                // ================== 1. การ์ดงบประมาณ ==================
-                const budgetContainer = document.getElementById('budget-cards-container');
-                budgetContainer.innerHTML = '';
-                if (budgetRows.length > 0) {
-                    const bObj = budgetRows[0];
-                    const pct = bObj.target > 0 ? (bObj.actual / bObj.target) * 100 : (bObj.actual > 0 ? 100 : 0);
-                    budgetContainer.innerHTML = `
-                        <div class="bg-gradient-to-br from-[#FDFBF7] via-[#F3E7D3] to-[#E8D0A5] rounded-[2rem] border-t-2 border-l-2 border-white/80 border-b border-r border-[#D4AF37]/30 p-6 sm:p-8 shadow-[0_15px_30px_rgba(212,175,55,0.15)] relative overflow-hidden transition-all duration-300">
-                            <h3 class="text-xl md:text-2xl font-extrabold mb-6 flex items-center text-[#8B6508] drop-shadow-sm relative z-10 pt-1">
-                                <svg class="w-8 h-8 mr-3 text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08-.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                ${budgetTitleStr}
-                            </h3>
-                            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 w-full relative z-10">
-                                <div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 flex flex-col hover:-translate-y-1.5 shadow-[0_8px_20px_rgba(0,0,0,0.04)] transition-all duration-300">
-                                    <div class="flex items-center mb-2"><div class="p-3 bg-blue-50 rounded-xl mr-3 text-[#2563EB]"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div><p class="text-base sm:text-lg font-extrabold text-slate-600 pt-1">งบประมาณที่ได้รับจัดสรร</p></div>
-                                    <div class="mt-auto text-right w-full pt-4"><h2 class="text-3xl lg:text-4xl xl:text-5xl font-black text-[#1E3A8A] truncate">${formatMoney(bObj.target)} <span class="text-base lg:text-lg font-bold text-slate-400">บาท</span></h2></div>
-                                </div>
-                                <div class="lg:col-span-2 bg-white rounded-[1.5rem] p-6 flex flex-col hover:-translate-y-1.5 shadow-[0_8px_20px_rgba(0,0,0,0.04)] transition-all duration-300">
-                                    <div class="flex items-center mb-2"><div class="p-3 bg-emerald-50 rounded-xl mr-3 text-[#10B981]"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg></div><p class="text-base sm:text-lg font-extrabold text-[#064E3B] pt-1">ผลการเบิกจ่ายสะสม</p></div>
-                                    <div class="mt-auto text-right w-full pt-4"><h2 class="text-3xl lg:text-4xl xl:text-5xl font-black text-[#059669] truncate">${formatMoney(bObj.actual)} <span class="text-base lg:text-lg font-bold text-[#34D399]">บาท</span></h2></div>
-                                </div>
-                                <div class="lg:col-span-1 bg-white rounded-[1.5rem] p-6 flex flex-col items-center justify-center hover:-translate-y-1.5 shadow-[0_8px_20px_rgba(0,0,0,0.04)] transition-all duration-300">
-                                    <div class="flex items-center justify-center mb-3 w-full">
-                                        <div class="p-2 bg-amber-50 rounded-xl mr-2 text-[#D97706]"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg></div>
-                                        <p class="text-sm sm:text-base font-extrabold text-slate-500 leading-tight whitespace-nowrap pt-1">ร้อยละการเบิกจ่าย</p>
-                                    </div>
-                                    <h2 class="text-4xl lg:text-5xl font-black text-[#D97706] text-center w-full">${pct.toFixed(2)}</h2>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    budgetContainer.classList.remove('hidden');
-                } else budgetContainer.classList.add('hidden');
-
-                // ================== 2. การ์ด KPI ==================
+                // ================== 1. การ์ด KPI (ดันขึ้นบนสุด) ==================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
                 const unitKeys = Object.keys(kpiByUnit); 
@@ -652,46 +619,47 @@
                 });
                 kpiContainer.classList.remove('hidden');
 
-                // ================== 3. โซนสถานะ ==================
+                // ================== 2. การ์ดงบประมาณ (ดันลงล่าง และลดความเด่น) ==================
+                const budgetContainer = document.getElementById('budget-cards-container');
+                budgetContainer.innerHTML = '';
+                if (budgetRows.length > 0) {
+                    const bObj = budgetRows[0];
+                    const pct = bObj.target > 0 ? (bObj.actual / bObj.target) * 100 : (bObj.actual > 0 ? 100 : 0);
+                    budgetContainer.innerHTML = `
+                        <div class="bg-gradient-to-br from-[#FDFBF7] via-[#F3E7D3] to-[#E8D0A5] rounded-[1.5rem] border-t-2 border-l-2 border-white/80 border-b border-r border-[#D4AF37]/30 p-5 sm:p-6 shadow-[0_8px_20px_rgba(212,175,55,0.15)] relative overflow-hidden transition-all duration-300">
+                            <h3 class="text-lg md:text-xl font-extrabold mb-4 flex items-center text-[#8B6508] drop-shadow-sm relative z-10 pt-1">
+                                <svg class="w-7 h-7 mr-3 text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08-.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                ${budgetTitleStr}
+                            </h3>
+                            <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 w-full relative z-10">
+                                <div class="lg:col-span-2 bg-white rounded-xl p-4 sm:p-5 flex flex-col hover:-translate-y-1 shadow-sm transition-all duration-300">
+                                    <div class="flex items-center mb-2"><div class="p-2.5 bg-blue-50 rounded-lg mr-3 text-[#2563EB]"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg></div><p class="text-sm sm:text-base font-extrabold text-slate-600 pt-1">งบประมาณที่ได้รับจัดสรร</p></div>
+                                    <div class="mt-auto text-right w-full pt-2"><h2 class="text-2xl lg:text-3xl xl:text-4xl font-black text-[#1E3A8A] truncate">${formatMoney(bObj.target)} <span class="text-sm font-bold text-slate-400">บาท</span></h2></div>
+                                </div>
+                                <div class="lg:col-span-2 bg-white rounded-xl p-4 sm:p-5 flex flex-col hover:-translate-y-1 shadow-sm transition-all duration-300">
+                                    <div class="flex items-center mb-2"><div class="p-2.5 bg-emerald-50 rounded-lg mr-3 text-[#10B981]"><svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg></div><p class="text-sm sm:text-base font-extrabold text-[#064E3B] pt-1">ผลการเบิกจ่ายสะสม</p></div>
+                                    <div class="mt-auto text-right w-full pt-2"><h2 class="text-2xl lg:text-3xl xl:text-4xl font-black text-[#059669] truncate">${formatMoney(bObj.actual)} <span class="text-sm font-bold text-[#34D399]">บาท</span></h2></div>
+                                </div>
+                                <div class="lg:col-span-1 bg-white rounded-xl p-4 sm:p-5 flex flex-col items-center justify-center hover:-translate-y-1 shadow-sm transition-all duration-300">
+                                    <div class="flex items-center justify-center mb-2 w-full">
+                                        <div class="p-1.5 bg-amber-50 rounded-lg mr-2 text-[#D97706]"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg></div>
+                                        <p class="text-xs sm:text-sm font-extrabold text-slate-500 leading-tight whitespace-nowrap pt-1">ร้อยละการเบิกจ่าย</p>
+                                    </div>
+                                    <h2 class="text-3xl lg:text-4xl font-black text-[#D97706] text-center w-full">${pct.toFixed(2)}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    budgetContainer.classList.remove('hidden');
+                } else budgetContainer.classList.add('hidden');
+
+                // ================== 3. โซนสถานะโดนัท (สลับให้ KPI ขึ้นก่อน แล้วงบประมาณตามหลัง) ==================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
                 const pieAnimations = [];
                 pieChartsContainer.classList.remove('hidden');
 
-                if (budgetRows.length > 0) {
-                    const bObj = budgetRows[0];
-                    const bPctYearly = bObj.target > 0 ? ((bObj.actual / bObj.target) * 100) : 0;
-                    const bPctCurrent = getPctVsCurrentPlan(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
-                    let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
-                    const bStatusColor = getDonutStatusColorConfig(bStatus);
-                    
-                    pieChartsContainer.innerHTML += `
-                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-gradient-to-br from-[#FDFBF7] via-[#F3E7D3] to-[#E8D0A5] rounded-[2.5rem] shadow-lg flex flex-col items-center relative hover:-translate-y-2 overflow-hidden transition-all duration-500">
-                            <div class="relative z-10 p-8 flex flex-col items-center w-full h-full">
-                                <div class="mb-8 w-full text-center border-b border-[#D4AF37]/30 pb-4">
-                                    <h4 class="text-xl xl:text-2xl font-black text-[#8B6508] truncate w-full pt-1">สถานะการใช้จ่ายงบประมาณ</h4>
-                                    <p class="text-xl sm:text-2xl font-black text-black mt-2 flex items-center justify-center gap-2"><span class="text-red-600 text-2xl">📍</span> <span class="pt-1">ณ ไตรมาสที่ ${currentQuarter}</span></p>
-                                </div>
-                                <div class="relative w-[280px] h-[280px] mb-12 mt-2">
-                                    <div id="pie-chart-budget" class="w-full h-full rounded-full conic-chart bg-[#f1f5f9]"></div>
-                                    <div class="absolute inset-[2.2rem] bg-white/95 backdrop-blur-md rounded-full flex flex-col items-center justify-center border-[4px] border-white/50 z-10">
-                                        <span class="text-6xl font-black text-slate-800 pt-2">${bPctCurrent}</span><span class="text-2xl font-bold text-slate-400 mt-2">%</span>
-                                    </div>
-                                    ${generateDonutMarkers(bObj.target, bObj.planQ1, bObj.planQ2, bObj.planQ3)}
-                                </div>
-                                <div class="mt-auto w-full flex flex-col items-center">
-                                    <div class="w-full ${bStatusColor.badgeBg} border-2 ${bStatusColor.border} rounded-2xl p-4 shadow-md text-center relative overflow-hidden flex flex-col items-center justify-center ${bStatusColor.animClass}">
-                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
-                                        <div class="flex items-center justify-center gap-3 relative z-10 w-full mb-3 mt-1"><span class="text-2xl">${getStatusEmoji(bStatus)}</span><span class="text-xl xl:text-2xl font-black ${bStatusColor.badgeText} pt-1">${bStatus}</span></div>
-                                        <div class="w-full ${bStatusColor.subBg} px-4 py-2.5 rounded-xl border ${bStatusColor.subBorder} shadow-sm relative z-10"><p class="text-sm sm:text-base font-bold ${bStatusColor.subText} pt-1">${bStatusColor.subtext}</p></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    pieAnimations.push({ id: `pie-chart-budget`, color: bStatusColor.ring, pct: Math.min(bPctYearly, 100) }); 
-                }
-
+                // วนลูปสร้างโดนัท KPI ก่อน
                 unitKeys.forEach((unit, idx) => {
                     const d = kpiByUnit[unit];
                     const percentCumYearly = d.target > 0 ? ((d.actual / d.target) * 100) : 0;
@@ -727,6 +695,41 @@
                     `;
                     pieAnimations.push({ id: `pie-chart-kpi-${idx}`, color: statusColor.ring, pct: Math.min(percentCumYearly, 100) });
                 });
+
+                // สร้างโดนัทงบประมาณ ไว้ลำดับสุดท้าย
+                if (budgetRows.length > 0) {
+                    const bObj = budgetRows[0];
+                    const bPctYearly = bObj.target > 0 ? ((bObj.actual / bObj.target) * 100) : 0;
+                    const bPctCurrent = getPctVsCurrentPlan(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
+                    let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
+                    const bStatusColor = getDonutStatusColorConfig(bStatus);
+                    
+                    pieChartsContainer.innerHTML += `
+                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-gradient-to-br from-[#FDFBF7] via-[#F3E7D3] to-[#E8D0A5] rounded-[2.5rem] shadow-lg flex flex-col items-center relative hover:-translate-y-2 overflow-hidden transition-all duration-500">
+                            <div class="relative z-10 p-8 flex flex-col items-center w-full h-full">
+                                <div class="mb-8 w-full text-center border-b border-[#D4AF37]/30 pb-4">
+                                    <h4 class="text-xl xl:text-2xl font-black text-[#8B6508] truncate w-full pt-1">สถานะการใช้จ่ายงบประมาณ</h4>
+                                    <p class="text-xl sm:text-2xl font-black text-black mt-2 flex items-center justify-center gap-2"><span class="text-red-600 text-2xl">📍</span> <span class="pt-1">ณ ไตรมาสที่ ${currentQuarter}</span></p>
+                                </div>
+                                <div class="relative w-[280px] h-[280px] mb-12 mt-2">
+                                    <div id="pie-chart-budget" class="w-full h-full rounded-full conic-chart bg-[#f1f5f9]"></div>
+                                    <div class="absolute inset-[2.2rem] bg-white/95 backdrop-blur-md rounded-full flex flex-col items-center justify-center border-[4px] border-white/50 z-10">
+                                        <span class="text-6xl font-black text-slate-800 pt-2">${bPctCurrent}</span><span class="text-2xl font-bold text-slate-400 mt-2">%</span>
+                                    </div>
+                                    ${generateDonutMarkers(bObj.target, bObj.planQ1, bObj.planQ2, bObj.planQ3)}
+                                </div>
+                                <div class="mt-auto w-full flex flex-col items-center">
+                                    <div class="w-full ${bStatusColor.badgeBg} border-2 ${bStatusColor.border} rounded-2xl p-4 shadow-md text-center relative overflow-hidden flex flex-col items-center justify-center ${bStatusColor.animClass}">
+                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
+                                        <div class="flex items-center justify-center gap-3 relative z-10 w-full mb-3 mt-1"><span class="text-2xl">${getStatusEmoji(bStatus)}</span><span class="text-xl xl:text-2xl font-black ${bStatusColor.badgeText} pt-1">${bStatus}</span></div>
+                                        <div class="w-full ${bStatusColor.subBg} px-4 py-2.5 rounded-xl border ${bStatusColor.subBorder} shadow-sm relative z-10"><p class="text-sm sm:text-base font-bold ${bStatusColor.subText} pt-1">${bStatusColor.subtext}</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    pieAnimations.push({ id: `pie-chart-budget`, color: bStatusColor.ring, pct: Math.min(bPctYearly, 100) }); 
+                }
 
                 setTimeout(() => {
                     pieAnimations.forEach(anim => {
@@ -886,7 +889,7 @@
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => text.classList.remove('opacity-0'));
                 }, 50);
 
-                // ================== 5. โซนภาพรวมสถานะ (6 การ์ด) ==================
+                // ================== 5. โซนภาพรวมสถานะ ==================
                 let summaryTitle = "";
                 let firstCardTitle = "";
                 let tableTitle = "";
@@ -908,7 +911,6 @@
                     col1Title = "กิจกรรม";
                 }
 
-                // 🚀 สมองกลคำนวณจำนวนตาม Model 1 (Worst-Case) สำหรับหน้า ALL
                 let cTotal = 0, cSuccess = 0, cWarning = 0, cDanger = 0, cNotStarted = 0, cFuture = 0;
                 if (viewLevel === "ALL") {
                     let projStatuses = {};
@@ -963,43 +965,42 @@
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                             <div class="bg-blue-600 rounded-[1.5rem] p-4 flex flex-col items-center justify-center text-white shadow-md border border-blue-700 hover:-translate-y-1 transition-transform relative overflow-hidden">
                                 <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
-                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 text-center whitespace-nowrap">${firstCardTitle}</p>
-                                <h2 class="text-4xl font-black z-10 leading-none pt-1 mb-3">${cTotal}</h2>
-                                <div class="w-full bg-[#F8FAFC] px-2 py-1.5 rounded-xl border border-blue-200 shadow-sm relative z-10 text-center"><p class="text-[10px] sm:text-xs font-bold text-blue-800 pt-1">นับตามจำนวนรายการ</p></div>
+                                <p class="text-sm sm:text-base font-bold opacity-90 mb-1 z-10 pt-1 text-center whitespace-nowrap">${firstCardTitle}</p>
+                                <h2 class="text-5xl font-black z-10 leading-none pt-1 mb-2">${cTotal}</h2>
                             </div>
                             
                             <div class="w-full ${confSucc.badgeBg} border-2 ${confSucc.border} rounded-[1.5rem] p-4 shadow-md flex flex-col items-center justify-center text-center relative overflow-hidden transition-transform hover:-translate-y-1 ${confSucc.animClass}">
                                 <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
-                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confSucc.badgeText}">เป็นไปตามแผน</p>
-                                <h2 class="text-4xl font-black z-10 leading-none pt-1 mb-3 ${confSucc.badgeText}">${cSuccess}</h2>
+                                <p class="text-sm sm:text-base font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confSucc.badgeText}">เป็นไปตามแผน</p>
+                                <h2 class="text-5xl font-black z-10 leading-none pt-1 mb-3 ${confSucc.badgeText}">${cSuccess}</h2>
                                 <div class="w-full ${confSucc.subBg} px-2 py-1.5 rounded-xl border ${confSucc.subBorder} shadow-sm relative z-10"><p class="text-[10px] sm:text-xs font-bold ${confSucc.subText} pt-1">${confSucc.subtext}</p></div>
                             </div>
 
                             <div class="w-full ${confWarn.badgeBg} border-2 ${confWarn.border} rounded-[1.5rem] p-4 shadow-md flex flex-col items-center justify-center text-center relative overflow-hidden transition-transform hover:-translate-y-1 ${confWarn.animClass}">
                                 <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
-                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confWarn.badgeText}">ล่าช้า</p>
-                                <h2 class="text-4xl font-black z-10 leading-none pt-1 mb-3 ${confWarn.badgeText}">${cWarning}</h2>
+                                <p class="text-sm sm:text-base font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confWarn.badgeText}">ล่าช้า</p>
+                                <h2 class="text-5xl font-black z-10 leading-none pt-1 mb-3 ${confWarn.badgeText}">${cWarning}</h2>
                                 <div class="w-full ${confWarn.subBg} px-2 py-1.5 rounded-xl border ${confWarn.subBorder} shadow-sm relative z-10"><p class="text-[10px] sm:text-xs font-bold ${confWarn.subText} pt-1">${confWarn.subtext}</p></div>
                             </div>
 
                             <div class="w-full ${confDang.badgeBg} border-2 ${confDang.border} rounded-[1.5rem] p-4 shadow-md flex flex-col items-center justify-center text-center relative overflow-hidden transition-transform hover:-translate-y-1 ${confDang.animClass}">
                                 <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
-                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confDang.badgeText}">เสี่ยง</p>
-                                <h2 class="text-4xl font-black z-10 leading-none pt-1 mb-3 ${confDang.badgeText}">${cDanger}</h2>
+                                <p class="text-sm sm:text-base font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confDang.badgeText}">เสี่ยง</p>
+                                <h2 class="text-5xl font-black z-10 leading-none pt-1 mb-3 ${confDang.badgeText}">${cDanger}</h2>
                                 <div class="w-full ${confDang.subBg} px-2 py-1.5 rounded-xl border ${confDang.subBorder} shadow-sm relative z-10"><p class="text-[10px] sm:text-xs font-bold ${confDang.subText} pt-1">${confDang.subtext}</p></div>
                             </div>
 
                             <div class="w-full ${confNone.badgeBg} border-2 ${confNone.border} rounded-[1.5rem] p-4 shadow-md flex flex-col items-center justify-center text-center relative overflow-hidden transition-transform hover:-translate-y-1 ${confNone.animClass}">
                                 <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
-                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confNone.badgeText}">ยังไม่ดำเนินการ</p>
-                                <h2 class="text-4xl font-black z-10 leading-none pt-1 mb-3 ${confNone.badgeText}">${cNotStarted}</h2>
+                                <p class="text-sm sm:text-base font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confNone.badgeText}">ยังไม่ดำเนินการ</p>
+                                <h2 class="text-5xl font-black z-10 leading-none pt-1 mb-3 ${confNone.badgeText}">${cNotStarted}</h2>
                                 <div class="w-full ${confNone.subBg} px-2 py-1.5 rounded-xl border ${confNone.subBorder} shadow-sm relative z-10"><p class="text-[10px] sm:text-xs font-bold ${confNone.subText} pt-1">${confNone.subtext}</p></div>
                             </div>
 
                             <div class="w-full ${confFutu.badgeBg} border-2 ${confFutu.border} rounded-[1.5rem] p-4 shadow-sm flex flex-col items-center justify-center text-center relative overflow-hidden transition-transform hover:-translate-y-1">
                                 <div class="absolute top-0 left-0 w-full h-1/2 bg-white/50 rounded-t-xl pointer-events-none"></div>
-                                <p class="text-[11px] sm:text-xs font-bold opacity-80 mb-1 z-10 pt-1 text-center leading-tight ${confFutu.badgeText}">มีแผนใน<br>ไตรมาสถัดไป</p>
-                                <h2 class="text-3xl sm:text-4xl font-black z-10 leading-none mt-1 mb-3 ${confFutu.badgeText}">${cFuture}</h2>
+                                <p class="text-xs sm:text-sm font-bold opacity-80 mb-1 z-10 pt-1 text-center leading-tight ${confFutu.badgeText}">มีแผนใน<br>ไตรมาสถัดไป</p>
+                                <h2 class="text-4xl sm:text-5xl font-black z-10 leading-none mt-1 mb-3 ${confFutu.badgeText}">${cFuture}</h2>
                                 <div class="w-full ${confFutu.subBg} px-2 py-1.5 rounded-xl border ${confFutu.subBorder} shadow-sm relative z-10"><p class="text-[10px] sm:text-xs font-bold ${confFutu.subText} pt-1">${confFutu.subtext}</p></div>
                             </div>
                         </div>
@@ -1063,6 +1064,7 @@
                         }
                     });
 
+                    // จับป้าย % มารวมกัน
                     const progressHtml = `
                         <div class="w-full relative mt-8 mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
                             <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pctYearly, 100)}">
@@ -1141,7 +1143,7 @@
                     document.querySelectorAll('#table-body .bar-chart-col-text').forEach(textEl => textEl.style.left = textEl.getAttribute('data-left') + '%');
                 }, 100);
 
-                // ================== 7. โซนปัญหาและอุปสรรค (อัปเกรดคำและขนาดตามบรีฟ) ==================
+                // ================== 7. โซนปัญหาและอุปสรรค ==================
                 if (viewLevel === 'SINGLE' || viewLevel === 'GROUP') {
                     let issuesHtml = '';
                     if (Object.values(kpiByUnit).some(u => ["ล่าช้า", "เสี่ยง", "ยังไม่ดำเนินการ"].some(st => determineStatus(u.planQ1, u.planQ2, u.planQ3, u.planQ4, u.actual, currentQuarter, isLastMonthOfQuarter).includes(st)))) {
