@@ -125,7 +125,7 @@
             </div>
             <div class="overflow-x-auto hide-scroll pb-2 relative z-10">
                 <table class="w-full text-left transition-all">
-                    <thead id="table-header-row" class="text-base sm:text-lg text-[#9A3412] bg-[#FFEDD5] border-b-2 border-orange-200 uppercase tracking-wider shadow-sm font-extrabold">
+                    <thead id="table-header-row" class="text-base sm:text-lg text-blue-900 bg-[#FFEDD5] border-b-2 border-orange-200 uppercase tracking-wider shadow-sm font-extrabold">
                         <tr>
                             <th id="table-col-1-header" class="px-6 py-6 w-1/3 align-middle text-center pt-2">รายการ</th>
                             <th class="px-4 py-6 text-center w-20 align-middle pt-2">หน่วยนับ</th>
@@ -134,9 +134,9 @@
                             <th class="px-6 py-4 min-w-[280px] text-center align-middle pt-2">
                                 <div class="flex flex-col items-center justify-center">
                                     <span class="mb-1">ความก้าวหน้า</span>
-                                    <div class="flex flex-col items-start bg-white/50 px-3 py-1.5 rounded-lg border border-orange-200/50 text-[10px] sm:text-[11px] font-bold text-[#9A3412] normal-case tracking-normal mt-1">
-                                        <div class="flex items-center mb-1"><div class="w-2.5 h-2.5 bg-slate-800 rounded-[2px] mr-2 shadow-sm flex-shrink-0"></div> <span class="pt-0.5">ร้อยละความก้าวหน้าทั้งปี</span></div>
-                                        <div class="flex items-center"><div class="w-2.5 h-2.5 bg-[#F8FAFC] border border-slate-300 rounded-[2px] mr-2 shadow-sm flex-shrink-0"></div> <span class="pt-0.5">ร้อยละความก้าวหน้า ณ ไตรมาสปัจจุบัน</span></div>
+                                    <div class="flex flex-col items-start bg-white/60 px-4 py-2 rounded-xl border border-orange-300 shadow-md text-xs sm:text-sm font-extrabold text-slate-900 normal-case tracking-normal mt-2">
+                                        <div class="flex items-center mb-1.5"><div class="w-3 h-3 bg-slate-800 rounded-[2px] mr-2.5 shadow-sm flex-shrink-0"></div> <span class="pt-0.5">ร้อยละความก้าวหน้าทั้งปี</span></div>
+                                        <div class="flex items-center"><div class="w-3 h-3 bg-[#F8FAFC] border border-slate-300 rounded-[2px] mr-2.5 shadow-sm flex-shrink-0"></div> <span class="pt-0.5">ร้อยละความก้าวหน้า ณ ไตรมาสปัจจุบัน</span></div>
                                     </div>
                                 </div>
                             </th>
@@ -148,8 +148,12 @@
             </div>
         </div>
 
-        <div id="issues-main-container" class="hidden fade-in-up delay-500 bg-white rounded-[2rem] shadow-sm border border-slate-200 p-6 sm:p-8 mb-12 transform transition-all duration-500 hover:-translate-y-1 hover:shadow-md relative overflow-hidden">
-            <h3 class="text-lg sm:text-xl font-bold mb-6 flex items-center border-b border-slate-100 pb-4 text-slate-800 relative z-10 pt-1"><svg class="w-6 h-6 mr-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg><span class="break-words">ปัญหาและอุปสรรคในการดำเนินงาน</span></h3>
+        <div id="issues-main-container" class="hidden fade-in-up delay-500 bg-white rounded-[2rem] shadow-xl border border-red-100 p-6 sm:p-8 mb-12 transform transition-all duration-500 hover:shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-red-500 to-rose-600"></div>
+            <h3 class="text-xl sm:text-2xl font-black mb-6 flex items-center border-b border-red-100 pb-4 text-red-700 drop-shadow-md relative z-10 pt-1">
+                <svg class="w-7 h-7 mr-3 text-red-600 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                <span class="break-words drop-shadow-sm">ปัญหาและอุปสรรคในการดำเนินงาน</span>
+            </h3>
             <div id="issues-container" class="relative z-10"></div>
         </div>
     </div>
@@ -544,8 +548,7 @@
                 
                 document.getElementById('bar-chart-main-container').classList.remove('hidden');
                 document.getElementById('table-main-container').classList.remove('hidden');
-                if (viewLevel === 'SINGLE') document.getElementById('issues-main-container').classList.remove('hidden');
-
+                
                 renderDashboardUI(synthesizedRows, viewLevel, isActivity);
 
             } catch (error) {
@@ -969,20 +972,20 @@
                     const q3Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3) / safeTarget) * 100, 100);
                     const q4Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3 + act.planQ4) / safeTarget) * 100, 100);
 
-                    // 🎨 สี Progress Bar และป้าย % (แยกตามสถานะ)
+                    // 🎨 สี Progress Bar
                     let barColor = "bg-slate-400"; 
                     let statusTextColor = "text-slate-600";
                     let displayStatus = act.status;
 
                     if (act.status.includes("เป็นไปตามแผน")) {
                         barColor = "bg-emerald-400";
-                        statusTextColor = "text-emerald-600";
+                        statusTextColor = "text-emerald-700";
                     } else if (act.status.includes("ล่าช้า")) {
                         barColor = "bg-amber-300";
-                        statusTextColor = "text-amber-600";
+                        statusTextColor = "text-amber-700";
                     } else if (act.status.includes("เสี่ยง")) {
                         barColor = "bg-red-400";
-                        statusTextColor = "text-red-600";
+                        statusTextColor = "text-red-700";
                     } else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) {
                         barColor = "bg-slate-800";
                         statusTextColor = "text-slate-800";
@@ -1005,7 +1008,7 @@
                         }
                     });
 
-                    // 🚀 จับป้าย % มารวมกันไว้บนหลอด
+                    // 🚀 จับป้าย % มารวมกัน
                     const progressHtml = `
                         <div class="w-full relative mt-8 mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
                             <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pctYearly, 100)}">
@@ -1060,7 +1063,7 @@
                     
                     const nameStyle = isRowKPI && viewLevel === 'SINGLE' ? "text-[#1E3A8A] font-extrabold text-base" : "text-slate-800 font-bold text-sm sm:text-base";
                     
-                    // ป้ายสถานะปัจจุบัน (คอลัมน์ขวาสุด)
+                    // ป้ายสถานะปัจจุบัน 
                     let badgeStyle = "bg-slate-100 text-slate-600 border-slate-200";
                     if (act.status.includes("เป็นไปตามแผน")) badgeStyle = "bg-emerald-400 text-slate-900 border-emerald-500 shadow-md anim-success";
                     else if (act.status.includes("ล่าช้า")) badgeStyle = "bg-amber-300 text-slate-900 border-amber-400 shadow-md anim-warning";
@@ -1085,29 +1088,56 @@
                     document.querySelectorAll('#table-body .bar-chart-col-text').forEach(textEl => textEl.style.left = textEl.getAttribute('data-left') + '%');
                 }, 100);
 
-                if (viewLevel === 'SINGLE') {
+                // ================== 7. โซนปัญหาและอุปสรรค ==================
+                if (viewLevel === 'SINGLE' || viewLevel === 'GROUP') {
                     let issuesHtml = '';
                     if (Object.values(kpiByUnit).some(u => ["ล่าช้า", "เสี่ยง", "ยังไม่ดำเนินการ"].some(st => determineStatus(u.planQ1, u.planQ2, u.planQ3, u.planQ4, u.actual, currentQuarter, isLastMonthOfQuarter).includes(st)))) {
-                        issuesHtml += `<div class="bg-red-50 border-l-4 border-red-500 p-5 rounded-r-xl shadow-md mb-6 hover:-translate-y-1 transition-transform anim-danger"><h4 class="font-bold text-red-800 mb-2 pt-1">แจ้งเตือนสถานะภาพรวม</h4><p class="text-sm text-red-700 leading-relaxed font-medium pt-1">ผลการดำเนินงานสะสมยังต่ำกว่าแผนงานสะสม ขอให้เร่งรัดการดำเนินงานและติดตามอย่างใกล้ชิด</p></div>`;
+                        issuesHtml += `<div class="bg-gradient-to-r from-red-50 to-white border-l-4 border-red-500 p-5 rounded-r-xl shadow-md mb-8 hover:-translate-y-1 transition-transform anim-danger"><h4 class="font-extrabold text-red-800 mb-2 pt-1 text-lg">แจ้งเตือนสถานะภาพรวม</h4><p class="text-sm sm:text-base text-red-700 leading-relaxed font-bold pt-1">ผลการดำเนินงานสะสมยังต่ำกว่าแผนงานสะสม ขอให้เร่งรัดการดำเนินงานและติดตามอย่างใกล้ชิด</p></div>`;
                     }
-                    const problematicActivities = tableActivities.filter(a => (a.status && ["ล่าช้า", "เสี่ยง", "ยังไม่ดำเนินการ"].some(st => a.status.includes(st))) || (a.issue && a.issue.trim() !== ""));
+                    
+                    const problematicActivities = tableActivities.filter(a => (a.status && ["ล่าช้า", "เสี่ยง", "ยังไม่ดำเนินการ", "ไม่มี"].some(st => a.status.includes(st))));
+                    
                     if (problematicActivities.length > 0) {
-                        issuesHtml += `<h4 class="font-bold text-[#7F1D1D] mb-4 text-base px-1 pt-1">รายการที่มีความล่าช้า/ปัญหา</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+                        issuesHtml += `<h4 class="font-extrabold text-slate-800 mb-5 text-lg px-1 pt-1 flex items-center"><span class="w-2 h-6 bg-red-500 rounded-full mr-3 shadow-inner"></span>รายการที่ต้องเร่งรัดติดตาม</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
                         problematicActivities.forEach(act => {
                             const issueText = act.issue && act.issue.trim() !== "" ? act.issue : "อยู่ระหว่างตรวจสอบและรวบรวมสาเหตุการดำเนินงาน";
-                            let statusColor = act.status.includes("เสี่ยง") ? "text-slate-900 bg-red-400 border-red-500 anim-danger" : (act.status.includes("ล่าช้า") ? "text-slate-900 bg-amber-300 border-amber-400 anim-warning" : (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี") ? "text-white bg-slate-800 border-slate-900 anim-critical" : "text-slate-600 bg-slate-50 border-slate-200"));
-                            let displayName = act.name.replace("(KPI)", act.isKPI ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-[#3B82F6] text-white mr-2 shadow-sm pt-1">(KPI)</span>' : '');
+                            let statusColor = "text-slate-600 bg-slate-50 border-slate-200";
+                            let borderLeftColor = "bg-slate-300";
+                            
+                            if (act.status.includes("เสี่ยง")) { statusColor = "text-slate-900 bg-red-400 border-red-500 shadow-md"; borderLeftColor = "bg-red-500"; }
+                            else if (act.status.includes("ล่าช้า")) { statusColor = "text-slate-900 bg-amber-300 border-amber-400 shadow-md"; borderLeftColor = "bg-amber-400"; }
+                            else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) { statusColor = "text-white bg-slate-800 border-slate-900 shadow-md"; borderLeftColor = "bg-slate-800"; }
+                            
+                            let displayName = act.name.replace("(KPI)", act.isKPI ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black bg-[#3B82F6] text-white mr-2 shadow-sm pt-1 transform -skew-x-6">(KPI)</span>' : '');
+                            
                             issuesHtml += `
-                                <div class="border border-[#FECACA] rounded-2xl p-5 bg-white shadow-sm flex flex-col hover:-translate-y-1 transition-all">
-                                    <div class="mb-3"><span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold border shadow-sm ${statusColor} pt-2">${act.status}</span></div>
-                                    <h5 class="text-sm font-bold text-[#7F1D1D] mb-3 leading-relaxed pt-1">${displayName}</h5>
-                                    <div class="bg-[#FEF2F2] p-4 rounded-xl border border-[#FECACA] flex-grow"><p class="text-sm text-[#991B1B] leading-relaxed font-medium pt-1"><span class="font-semibold text-[#7F1D1D] opacity-80">สาเหตุ/อุปสรรค:</span> <br> ${issueText}</p></div>
+                                <div class="border border-slate-200 rounded-[1.5rem] p-6 bg-white shadow-lg flex flex-col hover:-translate-y-2 transition-all duration-300 hover:shadow-2xl relative overflow-hidden group/issue">
+                                    <div class="absolute top-0 left-0 w-1.5 h-full ${borderLeftColor} group-hover/issue:w-2 transition-all duration-300 shadow-inner"></div>
+                                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-slate-50 rounded-full opacity-50 pointer-events-none group-hover/issue:scale-150 transition-transform duration-700"></div>
+                                    <div class="mb-4 pl-2 relative z-10"><span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-black border ${statusColor} pt-1.5">${act.status}</span></div>
+                                    <h5 class="text-base sm:text-lg font-extrabold text-blue-900 mb-4 leading-relaxed pt-1 pl-2 drop-shadow-sm relative z-10">${displayName}</h5>
+                                    <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-4 rounded-xl border border-slate-200 flex-grow shadow-inner relative z-10 ml-2">
+                                        <p class="text-sm text-slate-700 leading-relaxed font-medium pt-1">
+                                            <span class="font-extrabold text-slate-800 flex items-center mb-1"><svg class="w-4 h-4 mr-1.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>สาเหตุ/อุปสรรค:</span> 
+                                            <span class="pl-5 block text-slate-600">${issueText}</span>
+                                        </p>
+                                    </div>
                                 </div>
                             `;
                         });
                         issuesHtml += `</div>`;
-                    } else issuesHtml = `<div class="bg-white p-6 rounded-2xl border border-white text-center text-slate-500 font-medium shadow-sm pt-1">ไม่พบปัญหาหรือความเสี่ยงในการดำเนินงาน ณ ปัจจุบัน</div>`;
+                    } else {
+                        issuesHtml = `
+                        <div class="bg-gradient-to-r from-emerald-50 to-white p-8 rounded-3xl border border-emerald-100 text-center shadow-md flex flex-col items-center justify-center hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                            <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mb-5 shadow-inner"><svg class="w-10 h-10 drop-shadow-sm" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg></div>
+                            <h4 class="text-emerald-800 font-extrabold text-xl pt-1 drop-shadow-sm">ไม่พบปัญหาหรือความเสี่ยงในการดำเนินงาน ณ ปัจจุบัน</h4>
+                            <p class="text-emerald-600 font-bold text-base mt-2">โครงการและกิจกรรมต่างๆ ขับเคลื่อนได้ตามแผนที่กำหนดไว้</p>
+                        </div>`;
+                    }
                     document.getElementById('issues-container').innerHTML = issuesHtml;
+                    document.getElementById('issues-main-container').classList.remove('hidden');
+                } else {
+                    document.getElementById('issues-main-container').classList.add('hidden');
                 }
             } catch (error) { console.error("Error in renderDashboard UI:", error); }
         }
