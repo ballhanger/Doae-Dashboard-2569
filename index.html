@@ -886,34 +886,72 @@
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => text.classList.remove('opacity-0'));
                 }, 50);
 
-                // ================== 5. โซนภาพรวมสถานะ ==================
+                // ================== 5. โซนภาพรวมสถานะ (6 การ์ด) ==================
                 let summaryTitle = "";
+                let firstCardTitle = "";
                 let tableTitle = "";
                 let col1Title = "";
                 if (viewLevel === "ALL") {
                     summaryTitle = "ภาพรวมสถานะโครงการทั้งหมด (อ้างอิงไตรมาสปัจจุบัน)";
+                    firstCardTitle = "โครงการทั้งหมด";
                     tableTitle = "ตารางแสดงการติดตามสถานะโครงการ";
                     col1Title = "โครงการ";
                 } else if (viewLevel === "GROUP") {
                     summaryTitle = "ภาพรวมสถานะกิจกรรมหลักทั้งหมด (อ้างอิงไตรมาสปัจจุบัน)";
+                    firstCardTitle = "กิจกรรมทั้งหมด";
                     tableTitle = "ตารางแสดงการติดตามสถานะกิจกรรมหลัก";
                     col1Title = "กิจกรรมหลัก";
                 } else {
                     summaryTitle = "ภาพรวมสถานะกิจกรรมทั้งหมด (อ้างอิงไตรมาสปัจจุบัน)";
+                    firstCardTitle = "กิจกรรมทั้งหมด";
                     tableTitle = "ตารางแสดงการติดตามสถานะกิจกรรม";
                     col1Title = "กิจกรรม";
                 }
 
-                let cTotal = tableActivities.length;
-                let cSuccess = 0, cWarning = 0, cDanger = 0, cNotStarted = 0, cFuture = 0;
-                tableActivities.forEach(act => {
-                    if (act.status.includes("เป็นไปตามแผน")) cSuccess++;
-                    else if (act.status.includes("ล่าช้า")) cWarning++;
-                    else if (act.status.includes("เสี่ยง")) cDanger++;
-                    else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) cNotStarted++;
-                    else if (act.status.includes("มีแผนอยู่ใน")) cFuture++;
-                    else cFuture++; 
-                });
+                // 🚀 สมองกลคำนวณจำนวนตาม Model 1 (Worst-Case) สำหรับหน้า ALL
+                let cTotal = 0, cSuccess = 0, cWarning = 0, cDanger = 0, cNotStarted = 0, cFuture = 0;
+                if (viewLevel === "ALL") {
+                    let projStatuses = {};
+                    tableActivities.forEach(act => {
+                        let rank = 0;
+                        if (act.status.includes("เสี่ยง")) rank = 5;
+                        else if (act.status.includes("ล่าช้า")) rank = 4;
+                        else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) rank = 3;
+                        else if (act.status.includes("เป็นไปตามแผน")) rank = 2;
+                        else if (act.status.includes("มีแผนอยู่ใน")) rank = 1;
+                        else rank = 1;
+
+                        if (!projStatuses[act.name] || rank > projStatuses[act.name].rank) {
+                            projStatuses[act.name] = { rank: rank, status: act.status };
+                        }
+                    });
+                    
+                    const projList = Object.values(projStatuses);
+                    cTotal = projList.length;
+                    projList.forEach(p => {
+                        if (p.rank === 5) cDanger++;
+                        else if (p.rank === 4) cWarning++;
+                        else if (p.rank === 3) cNotStarted++;
+                        else if (p.rank === 2) cSuccess++;
+                        else cFuture++;
+                    });
+                } else {
+                    cTotal = tableActivities.length;
+                    tableActivities.forEach(act => {
+                        if (act.status.includes("เป็นไปตามแผน")) cSuccess++;
+                        else if (act.status.includes("ล่าช้า")) cWarning++;
+                        else if (act.status.includes("เสี่ยง")) cDanger++;
+                        else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) cNotStarted++;
+                        else if (act.status.includes("มีแผนอยู่ใน")) cFuture++;
+                        else cFuture++; 
+                    });
+                }
+
+                const confSucc = getDonutStatusColorConfig("เป็นไปตามแผน");
+                const confWarn = getDonutStatusColorConfig("ล่าช้า");
+                const confDang = getDonutStatusColorConfig("เสี่ยง");
+                const confNone = getDonutStatusColorConfig("ยังไม่ดำเนินการ");
+                const confFutu = getDonutStatusColorConfig("มีแผนอยู่ใน Q4");
 
                 const summaryContainer = document.getElementById('status-summary-container');
                 summaryContainer.innerHTML = `
@@ -924,28 +962,45 @@
                         </h3>
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                             <div class="bg-blue-600 rounded-[1.5rem] p-4 flex flex-col items-center justify-center text-white shadow-md border border-blue-700 hover:-translate-y-1 transition-transform relative overflow-hidden">
-                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 text-center whitespace-nowrap">รวมทั้งหมด</p>
-                                <h2 class="text-4xl font-black z-10 leading-none pt-1">${cTotal}</h2>
+                                <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
+                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 text-center whitespace-nowrap">${firstCardTitle}</p>
+                                <h2 class="text-4xl font-black z-10 leading-none pt-1 mb-3">${cTotal}</h2>
+                                <div class="w-full bg-[#F8FAFC] px-2 py-1.5 rounded-xl border border-blue-200 shadow-sm relative z-10 text-center"><p class="text-[10px] sm:text-xs font-bold text-blue-800 pt-1">นับตามจำนวนรายการ</p></div>
                             </div>
-                            <div class="bg-emerald-400 rounded-[1.5rem] p-4 flex flex-col items-center justify-center text-slate-900 shadow-md border border-emerald-500 hover:-translate-y-1 transition-transform relative overflow-hidden">
-                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 text-center whitespace-nowrap">เป็นไปตามแผน</p>
-                                <h2 class="text-4xl font-black z-10 leading-none pt-1">${cSuccess}</h2>
+                            
+                            <div class="w-full ${confSucc.badgeBg} border-2 ${confSucc.border} rounded-[1.5rem] p-4 shadow-md flex flex-col items-center justify-center text-center relative overflow-hidden transition-transform hover:-translate-y-1 ${confSucc.animClass}">
+                                <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
+                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confSucc.badgeText}">เป็นไปตามแผน</p>
+                                <h2 class="text-4xl font-black z-10 leading-none pt-1 mb-3 ${confSucc.badgeText}">${cSuccess}</h2>
+                                <div class="w-full ${confSucc.subBg} px-2 py-1.5 rounded-xl border ${confSucc.subBorder} shadow-sm relative z-10"><p class="text-[10px] sm:text-xs font-bold ${confSucc.subText} pt-1">${confSucc.subtext}</p></div>
                             </div>
-                            <div class="bg-amber-300 rounded-[1.5rem] p-4 flex flex-col items-center justify-center text-slate-900 shadow-md border border-amber-400 hover:-translate-y-1 transition-transform relative overflow-hidden">
-                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 text-center whitespace-nowrap">ล่าช้า</p>
-                                <h2 class="text-4xl font-black z-10 leading-none pt-1">${cWarning}</h2>
+
+                            <div class="w-full ${confWarn.badgeBg} border-2 ${confWarn.border} rounded-[1.5rem] p-4 shadow-md flex flex-col items-center justify-center text-center relative overflow-hidden transition-transform hover:-translate-y-1 ${confWarn.animClass}">
+                                <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
+                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confWarn.badgeText}">ล่าช้า</p>
+                                <h2 class="text-4xl font-black z-10 leading-none pt-1 mb-3 ${confWarn.badgeText}">${cWarning}</h2>
+                                <div class="w-full ${confWarn.subBg} px-2 py-1.5 rounded-xl border ${confWarn.subBorder} shadow-sm relative z-10"><p class="text-[10px] sm:text-xs font-bold ${confWarn.subText} pt-1">${confWarn.subtext}</p></div>
                             </div>
-                            <div class="bg-red-400 rounded-[1.5rem] p-4 flex flex-col items-center justify-center text-slate-900 shadow-md border border-red-500 hover:-translate-y-1 transition-transform relative overflow-hidden">
-                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 text-center whitespace-nowrap">เสี่ยง</p>
-                                <h2 class="text-4xl font-black z-10 leading-none pt-1">${cDanger}</h2>
+
+                            <div class="w-full ${confDang.badgeBg} border-2 ${confDang.border} rounded-[1.5rem] p-4 shadow-md flex flex-col items-center justify-center text-center relative overflow-hidden transition-transform hover:-translate-y-1 ${confDang.animClass}">
+                                <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
+                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confDang.badgeText}">เสี่ยง</p>
+                                <h2 class="text-4xl font-black z-10 leading-none pt-1 mb-3 ${confDang.badgeText}">${cDanger}</h2>
+                                <div class="w-full ${confDang.subBg} px-2 py-1.5 rounded-xl border ${confDang.subBorder} shadow-sm relative z-10"><p class="text-[10px] sm:text-xs font-bold ${confDang.subText} pt-1">${confDang.subtext}</p></div>
                             </div>
-                            <div class="bg-slate-800 rounded-[1.5rem] p-4 flex flex-col items-center justify-center text-white shadow-md border border-slate-900 hover:-translate-y-1 transition-transform relative overflow-hidden">
-                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 text-center whitespace-nowrap">ยังไม่ดำเนินการ</p>
-                                <h2 class="text-4xl font-black z-10 leading-none pt-1">${cNotStarted}</h2>
+
+                            <div class="w-full ${confNone.badgeBg} border-2 ${confNone.border} rounded-[1.5rem] p-4 shadow-md flex flex-col items-center justify-center text-center relative overflow-hidden transition-transform hover:-translate-y-1 ${confNone.animClass}">
+                                <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
+                                <p class="text-[13px] sm:text-sm font-bold opacity-90 mb-1 z-10 pt-1 whitespace-nowrap ${confNone.badgeText}">ยังไม่ดำเนินการ</p>
+                                <h2 class="text-4xl font-black z-10 leading-none pt-1 mb-3 ${confNone.badgeText}">${cNotStarted}</h2>
+                                <div class="w-full ${confNone.subBg} px-2 py-1.5 rounded-xl border ${confNone.subBorder} shadow-sm relative z-10"><p class="text-[10px] sm:text-xs font-bold ${confNone.subText} pt-1">${confNone.subtext}</p></div>
                             </div>
-                            <div class="bg-[#F8FAFC] rounded-[1.5rem] p-4 flex flex-col items-center justify-center text-slate-900 shadow-sm border border-slate-300 hover:-translate-y-1 transition-transform relative overflow-hidden">
-                                <p class="text-[11px] sm:text-xs font-bold opacity-80 mb-1 z-10 pt-1 text-center leading-tight">มีแผนใน<br>ไตรมาสถัดไป</p>
-                                <h2 class="text-3xl sm:text-4xl font-black z-10 leading-none mt-1">${cFuture}</h2>
+
+                            <div class="w-full ${confFutu.badgeBg} border-2 ${confFutu.border} rounded-[1.5rem] p-4 shadow-sm flex flex-col items-center justify-center text-center relative overflow-hidden transition-transform hover:-translate-y-1">
+                                <div class="absolute top-0 left-0 w-full h-1/2 bg-white/50 rounded-t-xl pointer-events-none"></div>
+                                <p class="text-[11px] sm:text-xs font-bold opacity-80 mb-1 z-10 pt-1 text-center leading-tight ${confFutu.badgeText}">มีแผนใน<br>ไตรมาสถัดไป</p>
+                                <h2 class="text-3xl sm:text-4xl font-black z-10 leading-none mt-1 mb-3 ${confFutu.badgeText}">${cFuture}</h2>
+                                <div class="w-full ${confFutu.subBg} px-2 py-1.5 rounded-xl border ${confFutu.subBorder} shadow-sm relative z-10"><p class="text-[10px] sm:text-xs font-bold ${confFutu.subText} pt-1">${confFutu.subtext}</p></div>
                             </div>
                         </div>
                     </div>
@@ -972,7 +1027,7 @@
                     const q3Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3) / safeTarget) * 100, 100);
                     const q4Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3 + act.planQ4) / safeTarget) * 100, 100);
 
-                    // 🎨 สี Progress Bar
+                    // สี Progress Bar และป้ายสถานะ
                     let barColor = "bg-slate-400"; 
                     let statusTextColor = "text-slate-600";
                     let displayStatus = act.status;
@@ -995,7 +1050,7 @@
                         statusTextColor = "text-slate-500";
                     }
 
-                    // 🚀 ซ่อนเส้นที่ซ้อนทับกัน
+                    // ซ่อนเส้นที่ซ้อนทับกัน
                     let markersHtml = '';
                     let seenPositions = new Set();
                     [ {p: q1Pos, l: 'Q1'}, {p: q2Pos, l: 'Q2'}, {p: q3Pos, l: 'Q3'}, {p: q4Pos, l: 'Q4'} ].forEach(q => {
@@ -1008,7 +1063,6 @@
                         }
                     });
 
-                    // 🚀 จับป้าย % มารวมกัน
                     const progressHtml = `
                         <div class="w-full relative mt-8 mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
                             <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pctYearly, 100)}">
@@ -1063,7 +1117,6 @@
                     
                     const nameStyle = isRowKPI && viewLevel === 'SINGLE' ? "text-[#1E3A8A] font-extrabold text-base" : "text-slate-800 font-bold text-sm sm:text-base";
                     
-                    // ป้ายสถานะปัจจุบัน 
                     let badgeStyle = "bg-slate-100 text-slate-600 border-slate-200";
                     if (act.status.includes("เป็นไปตามแผน")) badgeStyle = "bg-emerald-400 text-slate-900 border-emerald-500 shadow-md anim-success";
                     else if (act.status.includes("ล่าช้า")) badgeStyle = "bg-amber-300 text-slate-900 border-amber-400 shadow-md anim-warning";
@@ -1088,7 +1141,7 @@
                     document.querySelectorAll('#table-body .bar-chart-col-text').forEach(textEl => textEl.style.left = textEl.getAttribute('data-left') + '%');
                 }, 100);
 
-                // ================== 7. โซนปัญหาและอุปสรรค ==================
+                // ================== 7. โซนปัญหาและอุปสรรค (อัปเกรดคำและขนาดตามบรีฟ) ==================
                 if (viewLevel === 'SINGLE' || viewLevel === 'GROUP') {
                     let issuesHtml = '';
                     if (Object.values(kpiByUnit).some(u => ["ล่าช้า", "เสี่ยง", "ยังไม่ดำเนินการ"].some(st => determineStatus(u.planQ1, u.planQ2, u.planQ3, u.planQ4, u.actual, currentQuarter, isLastMonthOfQuarter).includes(st)))) {
@@ -1098,7 +1151,7 @@
                     const problematicActivities = tableActivities.filter(a => (a.status && ["ล่าช้า", "เสี่ยง", "ยังไม่ดำเนินการ", "ไม่มี"].some(st => a.status.includes(st))));
                     
                     if (problematicActivities.length > 0) {
-                        issuesHtml += `<h4 class="font-extrabold text-slate-800 mb-5 text-lg px-1 pt-1 flex items-center"><span class="w-2 h-6 bg-red-500 rounded-full mr-3 shadow-inner"></span>รายการที่ต้องเร่งรัดติดตาม</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+                        issuesHtml += `<h4 class="font-extrabold text-slate-800 mb-5 text-lg px-1 pt-1 flex items-center"><span class="w-2 h-6 bg-red-500 rounded-full mr-3 shadow-inner"></span>กิจกรรมที่ต้องเร่งรัดและติดตาม</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
                         problematicActivities.forEach(act => {
                             const issueText = act.issue && act.issue.trim() !== "" ? act.issue : "อยู่ระหว่างตรวจสอบและรวบรวมสาเหตุการดำเนินงาน";
                             let statusColor = "text-slate-600 bg-slate-50 border-slate-200";
@@ -1115,10 +1168,10 @@
                                     <div class="absolute top-0 left-0 w-1.5 h-full ${borderLeftColor} group-hover/issue:w-2 transition-all duration-300 shadow-inner"></div>
                                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-slate-50 rounded-full opacity-50 pointer-events-none group-hover/issue:scale-150 transition-transform duration-700"></div>
                                     <div class="mb-4 pl-2 relative z-10"><span class="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-black border ${statusColor} pt-1.5">${act.status}</span></div>
-                                    <h5 class="text-base sm:text-lg font-extrabold text-blue-900 mb-4 leading-relaxed pt-1 pl-2 drop-shadow-sm relative z-10">${displayName}</h5>
+                                    <h5 class="text-sm sm:text-base font-extrabold text-blue-900 mb-3 leading-relaxed pt-1 pl-2 drop-shadow-sm relative z-10">${displayName}</h5>
                                     <div class="bg-gradient-to-br from-slate-50 to-slate-100 p-4 rounded-xl border border-slate-200 flex-grow shadow-inner relative z-10 ml-2">
                                         <p class="text-sm text-slate-700 leading-relaxed font-medium pt-1">
-                                            <span class="font-extrabold text-slate-800 flex items-center mb-1"><svg class="w-4 h-4 mr-1.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>สาเหตุ/อุปสรรค:</span> 
+                                            <span class="font-black text-red-600 text-base flex items-center mb-1 drop-shadow-sm"><svg class="w-4 h-4 mr-1.5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>สาเหตุ/อุปสรรค:</span> 
                                             <span class="pl-5 block text-slate-600">${issueText}</span>
                                         </p>
                                     </div>
