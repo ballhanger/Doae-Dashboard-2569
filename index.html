@@ -127,7 +127,20 @@
                 <table class="w-full text-left transition-all">
                     <thead id="table-header-row" class="text-base sm:text-lg text-[#9A3412] bg-[#FFEDD5] border-b-2 border-orange-200 uppercase tracking-wider shadow-sm font-extrabold">
                         <tr>
-                            <th id="table-col-1-header" class="px-6 py-6 w-1/3 align-middle text-center pt-2">รายการ</th><th class="px-4 py-6 text-center w-20 align-middle pt-2">หน่วยนับ</th><th class="px-4 py-6 text-center w-24 align-middle pt-2">เป้าหมาย</th><th class="px-4 py-6 text-center w-24 align-middle pt-2">ผลงานสะสม</th><th class="px-6 py-6 min-w-[250px] text-center align-middle pt-2">ความก้าวหน้า</th><th class="px-6 py-6 text-center w-36 align-middle pt-2">สถานะปัจจุบัน</th>
+                            <th id="table-col-1-header" class="px-6 py-6 w-1/3 align-middle text-center pt-2">รายการ</th>
+                            <th class="px-4 py-6 text-center w-20 align-middle pt-2">หน่วยนับ</th>
+                            <th class="px-4 py-6 text-center w-24 align-middle pt-2">เป้าหมาย</th>
+                            <th class="px-4 py-6 text-center w-24 align-middle pt-2">ผลงานสะสม</th>
+                            <th class="px-6 py-4 min-w-[280px] text-center align-middle pt-2">
+                                <div class="flex flex-col items-center justify-center">
+                                    <span class="mb-1">ความก้าวหน้า</span>
+                                    <div class="flex flex-col items-start bg-white/50 px-3 py-1.5 rounded-lg border border-orange-200/50 text-[10px] sm:text-[11px] font-bold text-[#9A3412] normal-case tracking-normal mt-1">
+                                        <div class="flex items-center mb-1"><div class="w-2.5 h-2.5 bg-slate-800 rounded-[2px] mr-2 shadow-sm flex-shrink-0"></div> <span class="pt-0.5">ร้อยละความก้าวหน้าทั้งปี</span></div>
+                                        <div class="flex items-center"><div class="w-2.5 h-2.5 bg-[#F8FAFC] border border-slate-300 rounded-[2px] mr-2 shadow-sm flex-shrink-0"></div> <span class="pt-0.5">ร้อยละความก้าวหน้า ณ ไตรมาสปัจจุบัน</span></div>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="px-6 py-6 text-center w-36 align-middle pt-2">สถานะปัจจุบัน</th>
                         </tr>
                     </thead>
                     <tbody id="table-body"></tbody>
@@ -742,14 +755,14 @@
                     let kpis = unitKeys.map(unit => {
                         let pPlan = 0, pAct = 0;
                         for(let i=1; i<=q; i++) { pPlan += kpiByUnit[unit][`p${i}`]; pAct += kpiByUnit[unit][`a${i}`]; }
-                        if (q === currentQuarter) pAct = kpiByUnit[unit].actual; // 🚀 SYNC ACTUAL WITH DONUT
+                        if (q === currentQuarter) pAct = kpiByUnit[unit].actual;
                         return { unit: unit, plan: pPlan, act: pAct };
                     });
                     let bPlan = 0, bAct = 0;
                     if(budgetRows.length > 0) {
                         budgetRows.forEach(bRow => { 
                             for(let i=1; i<=q; i++) { bPlan += bRow[`planQ${i}`]; bAct += bRow[`actualQ${i}`]; } 
-                            if (q === currentQuarter) bAct = bRow.actual; // 🚀 SYNC ACTUAL WITH DONUT
+                            if (q === currentQuarter) bAct = bRow.actual;
                         });
                     }
                     return { q: q, name: `ไตรมาสที่ ${q}`, showActual: currentQuarter >= q, kpis: kpis, bPlan: bPlan, bAct: bAct };
@@ -956,27 +969,27 @@
                     const q3Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3) / safeTarget) * 100, 100);
                     const q4Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3 + act.planQ4) / safeTarget) * 100, 100);
 
-                    // สี Progress Bar และป้ายสถานะ
+                    // 🎨 สี Progress Bar และป้าย % (แยกตามสถานะ)
                     let barColor = "bg-slate-400"; 
-                    let badgeStyle = "bg-slate-100 text-slate-600 border-slate-200";
+                    let statusTextColor = "text-slate-600";
                     let displayStatus = act.status;
 
                     if (act.status.includes("เป็นไปตามแผน")) {
                         barColor = "bg-emerald-400";
-                        badgeStyle = "bg-emerald-400 text-slate-900 border-emerald-500 shadow-md anim-success";
+                        statusTextColor = "text-emerald-600";
                     } else if (act.status.includes("ล่าช้า")) {
                         barColor = "bg-amber-300";
-                        badgeStyle = "bg-amber-300 text-slate-900 border-amber-400 shadow-md anim-warning";
+                        statusTextColor = "text-amber-600";
                     } else if (act.status.includes("เสี่ยง")) {
                         barColor = "bg-red-400";
-                        badgeStyle = "bg-red-400 text-slate-900 border-red-500 shadow-md anim-danger font-bold";
+                        statusTextColor = "text-red-600";
                     } else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) {
                         barColor = "bg-slate-800";
-                        badgeStyle = "bg-slate-800 text-white border-slate-900 shadow-md anim-critical font-bold tracking-wide";
+                        statusTextColor = "text-slate-800";
                         displayStatus = "ยังไม่<br>ดำเนินการ"; 
                     } else if (act.status.includes("มีแผนอยู่ใน")) {
                         barColor = "bg-[#F8FAFC]"; 
-                        badgeStyle = "bg-[#F8FAFC] text-slate-900 border-slate-300 shadow-sm font-bold";
+                        statusTextColor = "text-slate-500";
                     }
 
                     // 🚀 ซ่อนเส้นที่ซ้อนทับกัน
@@ -992,24 +1005,21 @@
                         }
                     });
 
-                    // 🚀 แทรกป้าย "เทียบแผนสะสม" บน Progress Bar
+                    // 🚀 จับป้าย % มารวมกันไว้บนหลอด
                     const progressHtml = `
-                        <div class="flex flex-col w-full">
-                            <div class="flex justify-between items-end mb-5">
-                                <span class="text-[11px] font-bold text-slate-500 pt-1">ความก้าวหน้าทั้งปี</span>
-                                <span class="text-[11px] font-black px-2 py-0.5 rounded shadow-sm border bg-white ${pctCurrent >= 100 ? 'text-emerald-600 border-emerald-200' : 'text-blue-600 border-blue-200'} pt-1">เทียบแผนสะสม: ${pctCurrent.toFixed(2)}%</span>
+                        <div class="w-full relative mt-8 mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
+                            <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pctYearly, 100)}">
+                                <div class="flex items-center gap-1 mb-0.5">
+                                    <div class="bg-[#F8FAFC] border border-slate-200 ${statusTextColor} px-1.5 py-0.5 rounded text-[11px] font-black shadow-sm pt-1 whitespace-nowrap">${pctCurrent.toFixed(2)}%</div>
+                                    <div class="bg-slate-800 text-white px-1.5 py-0.5 rounded text-[11px] font-bold shadow-md pt-1 whitespace-nowrap">${pctYearly.toFixed(2)}%</div>
+                                </div>
+                                <div class="w-0.5 h-1.5 bg-slate-800"></div>
                             </div>
-                            <div class="w-full relative mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
-                                <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pctYearly, 100)}">
-                                    <div class="bg-slate-800 text-white px-2 py-0.5 rounded text-[11px] font-bold shadow-md pt-1">${pctYearly.toFixed(2)}%</div>
-                                    <div class="w-0.5 h-1.5 bg-slate-800"></div>
+                            <div class="h-5 bg-white rounded-full relative overflow-visible border border-slate-300 shadow-inner mt-2">
+                                <div class="h-full ${barColor} progress-bar-fill rounded-full shadow-[inset_0_-2px_4px_rgba(0,0,0,0.15)] relative overflow-hidden" style="width: 0%" data-w="${Math.min(pctYearly, 100)}">
+                                    <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20"></div>
                                 </div>
-                                <div class="h-5 bg-white rounded-full relative overflow-visible border border-slate-300 shadow-inner">
-                                    <div class="h-full ${barColor} progress-bar-fill rounded-full shadow-[inset_0_-2px_4px_rgba(0,0,0,0.15)] relative overflow-hidden" style="width: 0%" data-w="${Math.min(pctYearly, 100)}">
-                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20"></div>
-                                    </div>
-                                    ${markersHtml}
-                                </div>
+                                ${markersHtml}
                             </div>
                         </div>
                     `;
@@ -1049,6 +1059,14 @@
                         : (currentRowBgIsDark ? 'bg-[#D1FAE5]/60 hover:bg-[#A7F3D0]/60' : 'bg-white hover:bg-emerald-50');
                     
                     const nameStyle = isRowKPI && viewLevel === 'SINGLE' ? "text-[#1E3A8A] font-extrabold text-base" : "text-slate-800 font-bold text-sm sm:text-base";
+                    
+                    // ป้ายสถานะปัจจุบัน (คอลัมน์ขวาสุด)
+                    let badgeStyle = "bg-slate-100 text-slate-600 border-slate-200";
+                    if (act.status.includes("เป็นไปตามแผน")) badgeStyle = "bg-emerald-400 text-slate-900 border-emerald-500 shadow-md anim-success";
+                    else if (act.status.includes("ล่าช้า")) badgeStyle = "bg-amber-300 text-slate-900 border-amber-400 shadow-md anim-warning";
+                    else if (act.status.includes("เสี่ยง")) badgeStyle = "bg-red-400 text-slate-900 border-red-500 shadow-md anim-danger font-bold";
+                    else if (act.status.includes("ยังไม่ดำเนินการ") || act.status.includes("ไม่มี")) badgeStyle = "bg-slate-800 text-white border-slate-900 shadow-md anim-critical font-bold tracking-wide";
+                    else if (act.status.includes("มีแผนอยู่ใน")) badgeStyle = "bg-[#F8FAFC] text-slate-900 border-slate-300 shadow-sm font-bold";
 
                     tbody.innerHTML += `
                         <tr class="group/row border-b border-emerald-100 ${rowBgClass} transition-colors duration-300">
@@ -1056,7 +1074,7 @@
                             <td class="px-4 py-5 align-middle text-center text-slate-600 font-bold pt-1 text-sm sm:text-base">${act.unit}</td>
                             <td class="px-4 py-5 align-middle text-center font-bold text-slate-700 pt-1 text-base">${formatAutoDecimal(act.target)}</td>
                             <td class="px-4 py-5 align-middle text-center font-black text-[#059669] pt-1 text-base">${formatAutoDecimal(act.actual)}</td>
-                            <td class="px-6 py-2 align-middle">${progressHtml}</td>
+                            <td class="px-6 py-2 align-middle pt-4">${progressHtml}</td>
                             <td class="px-6 py-5 align-middle text-center"><span class="inline-flex flex-col items-center justify-center px-4 py-1.5 rounded-xl text-sm font-black shadow-sm ${badgeStyle} border min-w-[100px] leading-tight pt-1">${displayStatus}</span></td>
                         </tr>
                     `;
