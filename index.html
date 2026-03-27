@@ -36,6 +36,7 @@
         .delay-400 { animation-delay: 400ms; }
         .delay-500 { animation-delay: 500ms; }
 
+        .conic-chart { transition: background 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
         .bar-chart-col { transition: height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); width: 100%; }
         .bar-chart-col-text { transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .progress-bar-fill { transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -85,6 +86,11 @@
                 overflow-x: hidden !important;
             }
         }
+        
+        /* เพิ่ม Transition ให้เข็มหน้าปัด Speedometer เด้งๆ */
+        .needle-transition {
+            transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
     </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-8 lg:pr-24 text-slate-800">
@@ -132,7 +138,7 @@
             <h3 class="text-2xl md:text-3xl lg:text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600 drop-shadow-md tracking-tight mb-3 pt-1 px-4">
                 สถานะความก้าวหน้าผลการดำเนินงาน
             </h3>
-            <p class="text-base sm:text-lg font-bold text-center text-slate-500 mb-4 px-4">ณ ไตรมาสปัจจุบัน (แผนงานสะสม vs ผลงานสะสม)</p>
+            <p class="text-base sm:text-lg font-bold text-center text-slate-500 mb-4 px-4">แผนงานสะสม vs ผลงานสะสม ณ ไตรมาสปัจจุบัน</p>
         </div>
 
         <div id="pie-charts-container" class="hidden flex flex-wrap justify-center gap-8 mb-16 fade-in-up delay-300 w-full max-w-[1400px] mx-auto"></div>
@@ -192,7 +198,7 @@
     </div>
 
     <div id="floating-dock" class="fixed z-[999] bg-white/90 backdrop-blur-xl border border-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] transition-all duration-500 fade-in-up delay-500
-        bottom-4 left-1/2 transform -translate-x-1/2 flex flex-row items-center rounded-full px-2 py-2 gap-1
+        bottom-4 left-1/2 transform -translate-x-1/2 translate-y-0 flex flex-row items-center rounded-full px-2 py-2 gap-1
         lg:bottom-auto lg:left-auto lg:right-6 lg:top-1/2 lg:translate-x-0 lg:-translate-y-1/2 lg:flex-col lg:px-2 lg:py-4 lg:gap-2 lg:max-h-[85vh]">
 
         <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="p-2 lg:p-2.5 rounded-full hover:bg-slate-100/80 text-slate-600 transition-all hover:scale-110 hover:text-emerald-600 focus:outline-none flex-shrink-0" title="ขึ้นบนสุด">
@@ -500,6 +506,7 @@
 
             const displayTitle = document.getElementById('display-project-name');
             const parentTitle = document.getElementById('display-parent-project-name'); 
+            const displayTitleContainer = document.getElementById('display-project-name-container'); 
             const dropdownText = document.getElementById('dropdown-text');
             const dropdownBtn = document.getElementById('dropdown-btn');
             
@@ -715,7 +722,7 @@
                 let budgetTitleStr = viewLevel === "ALL" ? "งบประมาณทั้งปี (พรบ.)" : (viewLevel === "GROUP" ? "งบประมาณโครงการ (พรบ.)" : (isActivity ? "งบประมาณกิจกรรมหลัก (พรบ.)" : "งบประมาณโครงการ (พรบ.)"));
                 let kpiTargetTitlePrefix = viewLevel === "ALL" ? "เป้าหมายทั้งหมด (พรบ.)" : (viewLevel === "GROUP" ? "เป้าหมายโครงการ (พรบ.)" : (isActivity ? "เป้าหมายกิจกรรมหลัก (พรบ.)" : "เป้าหมายโครงการ (พรบ.)"));
 
-                // ================== 1. การ์ด KPI ==================
+                // ================== 1. การ์ด KPI (ดันขึ้นบนสุด) ==================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
                 const unitKeys = Object.keys(kpiByUnit); 
@@ -781,7 +788,7 @@
                     budgetContainer.classList.remove('hidden');
                 } else budgetContainer.classList.add('hidden');
 
-                // ================== 3. โซนสถานะก้าวหน้า (Dual Progress Bar แทนที่ Donut) ==================
+                // ================== 3. โซนสถานะก้าวหน้า (หน้าปัดความเร็ว Speedometer / Gauge) ==================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
                 
@@ -801,52 +808,46 @@
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
                     const statusColor = getDonutStatusColorConfig(statusObj);
 
-                    const maxVal = Math.max(pCum, d.actual) || 1;
-                    const planWidth = (pCum / maxVal) * 100;
-                    const actualWidth = (d.actual / maxVal) * 100;
+                    const pctVal = parseFloat(percentCumCurrent); 
+                    const fillPct = Math.min(pctVal, 100) / 2; // 100% = 50% ของวงกลม (ครึ่งบน)
+                    const needleDeg = (Math.min(pctVal, 100) * 1.8) - 90; // 0% = -90deg, 100% = +90deg
 
                     pieChartsContainer.innerHTML += `
                         <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-white rounded-[2.5rem] shadow-lg border border-slate-100 flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500">
                             <div class="absolute top-0 left-0 w-full h-2 ${statusColor.badgeBg}"></div>
                             
-                            <div class="relative z-10 p-6 sm:p-8 flex flex-col w-full h-full mt-2">
-                                <div class="mb-6 w-full text-center border-b border-slate-100 pb-4">
+                            <div class="relative z-10 p-6 sm:p-8 flex flex-col items-center w-full h-full mt-2">
+                                <div class="mb-4 w-full text-center border-b border-slate-100 pb-4">
                                     <h4 class="text-lg xl:text-xl font-black ${theme.cardPlanText} truncate w-full pt-1">สถานะผลการดำเนินงาน (${unit})</h4>
                                     <p class="text-sm font-bold text-slate-500 mt-1.5 flex items-center justify-center gap-1.5"><span class="text-red-500">📍</span> ณ ไตรมาสที่ ${currentQuarter}</p>
                                 </div>
-                                
-                                <div class="flex flex-col gap-6 w-full mb-8">
-                                    <div class="w-full">
-                                        <div class="flex justify-between items-end mb-2">
-                                            <span class="text-sm font-bold text-slate-500 pt-1">แผนงานสะสม</span>
-                                            <span class="text-lg font-black text-slate-700">${formatAutoDecimal(pCum)}</span>
-                                        </div>
-                                        <div class="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner">
-                                            <div class="h-full bg-slate-300 rounded-full progress-bar-fill transition-all duration-1000 ease-out" style="width: 0%;" data-w="${planWidth}"></div>
-                                        </div>
+
+                                <div class="relative w-[240px] h-[120px] overflow-hidden mx-auto mt-4 mb-6">
+                                    <div id="gauge-chart-kpi-${idx}" class="absolute top-0 left-0 w-[240px] h-[240px] rounded-full conic-chart" style="background: conic-gradient(from 270deg, #f1f5f9 0%, #f1f5f9 50%, transparent 50%);" data-color="${statusColor.ring}" data-fill="${fillPct}"></div>
+                                    <div class="absolute top-[35px] left-[35px] w-[170px] h-[170px] bg-white rounded-full flex flex-col items-center justify-start pt-6 z-10 shadow-[inset_0_2px_8px_rgba(0,0,0,0.04)]">
+                                        <span class="text-4xl font-black text-slate-800 pt-1">${percentCumCurrent}</span>
+                                        <span class="text-xs font-bold text-slate-400 -mt-1">%</span>
                                     </div>
-                                    <div class="w-full">
-                                        <div class="flex justify-between items-end mb-2">
-                                            <span class="text-sm font-extrabold text-slate-800 pt-1">ผลงานสะสม</span>
-                                            <span class="text-xl font-black ${statusColor.subText}">${formatAutoDecimal(d.actual)}</span>
-                                        </div>
-                                        <div class="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner relative">
-                                            <div class="h-full ${statusColor.badgeBg} rounded-full shadow-sm progress-bar-fill relative overflow-hidden transition-all duration-1000 ease-out" style="width: 0%;" data-w="${actualWidth}">
-                                                <div class="absolute top-0 left-0 w-full h-1/2 bg-white/30"></div>
-                                            </div>
-                                            ${actualWidth > planWidth && planWidth > 0 ? `<div class="absolute top-0 h-full w-0.5 bg-slate-400 z-10" style="left: ${planWidth}%;"></div>` : ''}
-                                        </div>
-                                    </div>
+                                    <div class="absolute bottom-[-12px] left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-slate-800 z-30 shadow-md"></div>
+                                    <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-slate-300 z-40"></div>
+                                    <div id="needle-kpi-${idx}" class="absolute bottom-[0px] left-1/2 w-1.5 h-[100px] bg-slate-800 z-20 rounded-t-full needle-transition" style="transform-origin: bottom center; transform: translateX(-50%) rotate(-90deg);" data-deg="${needleDeg}"></div>
                                 </div>
 
-                                <div class="mt-auto w-full flex items-center justify-between bg-slate-50 rounded-2xl p-4 border border-slate-100 shadow-sm">
-                                    <div class="flex flex-col">
-                                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">คิดเป็นร้อยละ</span>
-                                        <span class="text-2xl font-black text-slate-800 pt-0.5">${percentCumCurrent}%</span>
+                                <div class="flex w-full justify-between items-center bg-slate-50 rounded-2xl p-3 border border-slate-100 mb-6 shadow-sm">
+                                    <div class="flex flex-col items-center w-1/2 border-r border-slate-200">
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">แผนงานสะสม</span>
+                                        <span class="text-lg font-black text-slate-700 pt-0.5">${formatAutoDecimal(pCum)}</span>
                                     </div>
-                                    <div class="px-3 py-1.5 rounded-xl border-2 ${statusColor.border} ${statusColor.badgeBg} shadow-sm flex items-center gap-2 ${statusColor.animClass}">
-                                        <span class="text-lg">${getStatusEmoji(statusObj)}</span>
-                                        <span class="text-sm font-black ${statusColor.badgeText} pt-1">${statusObj}</span>
+                                    <div class="flex flex-col items-center w-1/2">
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ผลงานสะสม</span>
+                                        <span class="text-lg font-black ${statusColor.subText} pt-0.5">${formatAutoDecimal(d.actual)}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-auto w-full">
+                                    <div class="w-full ${statusColor.badgeBg} border-2 ${statusColor.border} rounded-2xl p-3 shadow-md text-center relative overflow-hidden flex flex-col items-center justify-center ${statusColor.animClass}">
+                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
+                                        <div class="flex items-center justify-center gap-2 relative z-10 w-full"><span class="text-xl">${getStatusEmoji(statusObj)}</span><span class="text-lg font-black ${statusColor.badgeText} pt-1">${statusObj}</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -866,58 +867,65 @@
                     let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
                     const bStatusColor = getDonutStatusColorConfig(bStatus);
                     
-                    const bMaxVal = Math.max(bPlanCum, bObj.actual) || 1;
-                    const bPlanWidth = (bPlanCum / bMaxVal) * 100;
-                    const bActualWidth = (bObj.actual / bMaxVal) * 100;
+                    const bPctVal = parseFloat(bPctCurrent); 
+                    const bFillPct = Math.min(bPctVal, 100) / 2; 
+                    const bNeedleDeg = (Math.min(bPctVal, 100) * 1.8) - 90; 
 
                     pieChartsContainer.innerHTML += `
                         <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-white rounded-[2.5rem] shadow-lg border border-slate-100 flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500">
                             <div class="absolute top-0 left-0 w-full h-2 ${bStatusColor.badgeBg}"></div>
                             
-                            <div class="relative z-10 p-6 sm:p-8 flex flex-col w-full h-full mt-2">
-                                <div class="mb-6 w-full text-center border-b border-slate-100 pb-4">
+                            <div class="relative z-10 p-6 sm:p-8 flex flex-col items-center w-full h-full mt-2">
+                                <div class="mb-4 w-full text-center border-b border-slate-100 pb-4">
                                     <h4 class="text-lg xl:text-xl font-black text-[#8B6508] truncate w-full pt-1">สถานะการใช้จ่ายงบประมาณ</h4>
                                     <p class="text-sm font-bold text-slate-500 mt-1.5 flex items-center justify-center gap-1.5"><span class="text-red-500">📍</span> ณ ไตรมาสที่ ${currentQuarter}</p>
                                 </div>
-                                
-                                <div class="flex flex-col gap-6 w-full mb-8">
-                                    <div class="w-full">
-                                        <div class="flex justify-between items-end mb-2">
-                                            <span class="text-sm font-bold text-slate-500 pt-1">แผนเบิกจ่ายสะสม</span>
-                                            <span class="text-lg font-black text-slate-700">${formatMoney(bPlanCum)}</span>
-                                        </div>
-                                        <div class="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner">
-                                            <div class="h-full bg-slate-300 rounded-full progress-bar-fill transition-all duration-1000 ease-out" style="width: 0%;" data-w="${bPlanWidth}"></div>
-                                        </div>
+
+                                <div class="relative w-[240px] h-[120px] overflow-hidden mx-auto mt-4 mb-6">
+                                    <div id="gauge-chart-budget" class="absolute top-0 left-0 w-[240px] h-[240px] rounded-full conic-chart" style="background: conic-gradient(from 270deg, #f1f5f9 0%, #f1f5f9 50%, transparent 50%);" data-color="${bStatusColor.ring}" data-fill="${bFillPct}"></div>
+                                    <div class="absolute top-[35px] left-[35px] w-[170px] h-[170px] bg-white rounded-full flex flex-col items-center justify-start pt-6 z-10 shadow-[inset_0_2px_8px_rgba(0,0,0,0.04)]">
+                                        <span class="text-4xl font-black text-slate-800 pt-1">${bPctCurrent}</span>
+                                        <span class="text-xs font-bold text-slate-400 -mt-1">%</span>
                                     </div>
-                                    <div class="w-full">
-                                        <div class="flex justify-between items-end mb-2">
-                                            <span class="text-sm font-extrabold text-slate-800 pt-1">ผลเบิกจ่ายสะสม</span>
-                                            <span class="text-xl font-black ${bStatusColor.subText}">${formatMoney(bObj.actual)}</span>
-                                        </div>
-                                        <div class="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner relative">
-                                            <div class="h-full ${bStatusColor.badgeBg} rounded-full shadow-sm progress-bar-fill relative overflow-hidden transition-all duration-1000 ease-out" style="width: 0%;" data-w="${bActualWidth}">
-                                                <div class="absolute top-0 left-0 w-full h-1/2 bg-white/30"></div>
-                                            </div>
-                                            ${bActualWidth > bPlanWidth && bPlanWidth > 0 ? `<div class="absolute top-0 h-full w-0.5 bg-slate-400 z-10" style="left: ${bPlanWidth}%;"></div>` : ''}
-                                        </div>
-                                    </div>
+                                    <div class="absolute bottom-[-12px] left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-slate-800 z-30 shadow-md"></div>
+                                    <div class="absolute bottom-[-4px] left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-slate-300 z-40"></div>
+                                    <div id="needle-budget" class="absolute bottom-[0px] left-1/2 w-1.5 h-[100px] bg-slate-800 z-20 rounded-t-full needle-transition" style="transform-origin: bottom center; transform: translateX(-50%) rotate(-90deg);" data-deg="${bNeedleDeg}"></div>
                                 </div>
 
-                                <div class="mt-auto w-full flex items-center justify-between bg-slate-50 rounded-2xl p-4 border border-slate-100 shadow-sm">
-                                    <div class="flex flex-col">
-                                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">คิดเป็นร้อยละ</span>
-                                        <span class="text-2xl font-black text-slate-800 pt-0.5">${bPctCurrent}%</span>
+                                <div class="flex w-full justify-between items-center bg-slate-50 rounded-2xl p-3 border border-slate-100 mb-6 shadow-sm">
+                                    <div class="flex flex-col items-center w-1/2 border-r border-slate-200">
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">แผนเบิกจ่ายสะสม</span>
+                                        <span class="text-lg font-black text-slate-700 pt-0.5">${formatMoney(bPlanCum)}</span>
                                     </div>
-                                    <div class="px-3 py-1.5 rounded-xl border-2 ${bStatusColor.border} ${bStatusColor.badgeBg} shadow-sm flex items-center gap-2 ${bStatusColor.animClass}">
-                                        <span class="text-lg">${getStatusEmoji(bStatus)}</span>
-                                        <span class="text-sm font-black ${bStatusColor.badgeText} pt-1">${bStatus}</span>
+                                    <div class="flex flex-col items-center w-1/2">
+                                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ผลเบิกจ่ายสะสม</span>
+                                        <span class="text-lg font-black ${bStatusColor.subText} pt-0.5">${formatMoney(bObj.actual)}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-auto w-full">
+                                    <div class="w-full ${bStatusColor.badgeBg} border-2 ${bStatusColor.border} rounded-2xl p-3 shadow-md text-center relative overflow-hidden flex flex-col items-center justify-center ${bStatusColor.animClass}">
+                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
+                                        <div class="flex items-center justify-center gap-2 relative z-10 w-full"><span class="text-xl">${getStatusEmoji(bStatus)}</span><span class="text-lg font-black ${bStatusColor.badgeText} pt-1">${bStatus}</span></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     `;
                 }
+
+                // 🚀 คำสั่งแอนิเมชันสำหรับ Speedometer Gauge
+                setTimeout(() => {
+                    document.querySelectorAll('[id^="gauge-chart-"]').forEach(el => {
+                        const color = el.getAttribute('data-color');
+                        const fill = el.getAttribute('data-fill');
+                        el.style.background = `conic-gradient(from 270deg, ${color} 0%, ${color} ${fill}%, #f1f5f9 ${fill}%, #f1f5f9 50%, transparent 50%)`;
+                    });
+                    document.querySelectorAll('[id^="needle-"]').forEach(el => {
+                        const deg = el.getAttribute('data-deg');
+                        el.style.transform = `translateX(-50%) rotate(${deg}deg)`;
+                    });
+                }, 150);
 
                 // ================== 4. โซนกราฟแท่ง ==================
                 const barLegend = document.getElementById('bar-legend-container');
@@ -1062,15 +1070,13 @@
                         </div>`;
                 });
 
-                // 🚀 อัปเดตคำสั่ง Animation ของ Progress Bar ทั้งโดนัทใหม่และตาราง
                 setTimeout(() => {
-                    document.querySelectorAll('#pie-charts-container .progress-bar-fill, #table-body .progress-bar-fill').forEach(bar => bar.style.width = bar.getAttribute('data-w') + '%');
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col').forEach(bar => bar.style.height = bar.getAttribute('data-h') + '%');
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text, #table-body .bar-chart-col-text').forEach(text => {
                         text.classList.remove('opacity-0');
                         if (text.hasAttribute('data-left')) text.style.left = text.getAttribute('data-left') + '%';
                     });
-                }, 100);
+                }, 50);
 
                 // ================== 5. โซนภาพรวมสถานะ ==================
                 let summaryTitle = "";
@@ -1321,6 +1327,11 @@
                     `;
                 });
 
+                setTimeout(() => {
+                    document.querySelectorAll('#table-body .progress-bar-fill').forEach(bar => bar.style.width = bar.getAttribute('data-w') + '%');
+                    document.querySelectorAll('#table-body .bar-chart-col-text').forEach(textEl => textEl.style.left = textEl.getAttribute('data-left') + '%');
+                }, 100);
+
                 // ================== 7. โซนปัญหาและอุปสรรค ==================
                 if (viewLevel === 'SINGLE' || viewLevel === 'GROUP') {
                     let issuesHtml = '';
@@ -1331,7 +1342,7 @@
                     const problematicActivities = tableActivities.filter(a => (a.status && ["ล่าช้า", "เสี่ยง", "ยังไม่ดำเนินการ", "ไม่มี"].some(st => a.status.includes(st))));
                     
                     if (problematicActivities.length > 0) {
-                        issuesHtml += `<h4 class="font-extrabold text-slate-800 mb-5 text-lg px-1 pt-1 flex items-center"><span class="w-2 h-6 bg-red-500 rounded-full mr-3 shadow-inner"></span>กิจกรรมที่ต้องเร่งรัดและติดตาม</h4><div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+                        issuesHtml += `<div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
                         problematicActivities.forEach(act => {
                             const issueText = act.issue && act.issue.trim() !== "" ? act.issue : "อยู่ระหว่างตรวจสอบและรวบรวมสาเหตุการดำเนินงาน";
                             let statusColor = "text-slate-600 bg-slate-50 border-slate-200";
