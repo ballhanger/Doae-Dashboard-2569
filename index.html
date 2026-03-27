@@ -36,7 +36,6 @@
         .delay-400 { animation-delay: 400ms; }
         .delay-500 { animation-delay: 500ms; }
 
-        .conic-chart { transition: background 1.2s cubic-bezier(0.22, 1, 0.36, 1); }
         .bar-chart-col { transition: height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); width: 100%; }
         .bar-chart-col-text { transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
         .progress-bar-fill { transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -193,7 +192,7 @@
     </div>
 
     <div id="floating-dock" class="fixed z-[999] bg-white/90 backdrop-blur-xl border border-white shadow-[0_10px_40px_rgba(0,0,0,0.15)] transition-all duration-500 fade-in-up delay-500
-        bottom-4 left-1/2 transform -translate-x-1/2 translate-y-0 flex flex-row items-center rounded-full px-2 py-2 gap-1
+        bottom-4 left-1/2 transform -translate-x-1/2 flex flex-row items-center rounded-full px-2 py-2 gap-1
         lg:bottom-auto lg:left-auto lg:right-6 lg:top-1/2 lg:translate-x-0 lg:-translate-y-1/2 lg:flex-col lg:px-2 lg:py-4 lg:gap-2 lg:max-h-[85vh]">
 
         <button onclick="window.scrollTo({top:0, behavior:'smooth'})" class="p-2 lg:p-2.5 rounded-full hover:bg-slate-100/80 text-slate-600 transition-all hover:scale-110 hover:text-emerald-600 focus:outline-none flex-shrink-0" title="ขึ้นบนสุด">
@@ -337,31 +336,6 @@
                 if (actual === 0) return "ยังไม่ดำเนินการ";
                 return pct >= 50 ? "ล่าช้า" : "เสี่ยง";
             }
-        }
-
-        function generateDonutMarkers(target, q1, q2, q3) {
-            if (target <= 0) return '';
-            let html = '';
-            const makeMarker = (pct, label) => {
-                if (pct > 0) { 
-                    const finalPct = Math.min(pct, 100); 
-                    const degree = finalPct * 3.6; 
-                    return `
-                        <div class="absolute top-0 left-0 w-full h-full pointer-events-none" style="transform: rotate(${degree}deg)">
-                            <div class="absolute top-[-10px] left-1/2 -translate-x-1/2 w-1 h-7 bg-slate-800 rounded-full shadow-md z-20"></div>
-                            <div class="absolute top-[-38px] left-1/2 -translate-x-1/2 z-30" style="transform: rotate(-${degree}deg)">
-                                <div class="bg-slate-800 text-white text-xs font-black px-2 py-0.5 rounded shadow-lg border border-slate-600 pt-1">${label}</div>
-                            </div>
-                        </div>
-                    `;
-                }
-                return '';
-            };
-            let cum = 0;
-            if (q1 > 0) { cum += q1; html += makeMarker((cum / target) * 100, 'Q1'); }
-            if (q2 > 0) { cum += q2; html += makeMarker((cum / target) * 100, 'Q2'); }
-            if (q3 > 0) { cum += q3; html += makeMarker((cum / target) * 100, 'Q3'); }
-            return html;
         }
 
         function fetchCSVData(url) {
@@ -526,7 +500,6 @@
 
             const displayTitle = document.getElementById('display-project-name');
             const parentTitle = document.getElementById('display-parent-project-name'); 
-            const displayTitleContainer = document.getElementById('display-project-name-container'); 
             const dropdownText = document.getElementById('dropdown-text');
             const dropdownBtn = document.getElementById('dropdown-btn');
             
@@ -553,7 +526,6 @@
 
             const cleanName = selectedItem.name.replace(/^- /, '');
             
-            // 🚀 อัปเดตโซนหัว (ใช้ isActivity ตัดสินใจ เพื่อกันโปรเจกต์ซ้อนทับ และทำย่อหน้าสำหรับกิจกรรม)
             if (viewLevel === "ALL") {
                 displayTitle.innerHTML = "ภาพรวมกรมส่งเสริมการเกษตร";
                 parentTitle.classList.add('hidden');
@@ -743,7 +715,7 @@
                 let budgetTitleStr = viewLevel === "ALL" ? "งบประมาณทั้งปี (พรบ.)" : (viewLevel === "GROUP" ? "งบประมาณโครงการ (พรบ.)" : (isActivity ? "งบประมาณกิจกรรมหลัก (พรบ.)" : "งบประมาณโครงการ (พรบ.)"));
                 let kpiTargetTitlePrefix = viewLevel === "ALL" ? "เป้าหมายทั้งหมด (พรบ.)" : (viewLevel === "GROUP" ? "เป้าหมายโครงการ (พรบ.)" : (isActivity ? "เป้าหมายกิจกรรมหลัก (พรบ.)" : "เป้าหมายโครงการ (พรบ.)"));
 
-                // ================== 1. การ์ด KPI (ดันขึ้นบนสุด) ==================
+                // ================== 1. การ์ด KPI ==================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
                 const unitKeys = Object.keys(kpiByUnit); 
@@ -809,93 +781,143 @@
                     budgetContainer.classList.remove('hidden');
                 } else budgetContainer.classList.add('hidden');
 
-                // ================== 3. โซนสถานะโดนัท ==================
+                // ================== 3. โซนสถานะก้าวหน้า (Dual Progress Bar แทนที่ Donut) ==================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
-                const pieAnimations = [];
                 
                 document.getElementById('donut-zone-header').classList.remove('hidden');
                 pieChartsContainer.classList.remove('hidden');
 
                 unitKeys.forEach((unit, idx) => {
                     const d = kpiByUnit[unit];
-                    const percentCumYearly = d.target > 0 ? ((d.actual / d.target) * 100) : 0;
+                    let pCum = 0;
+                    if (currentQuarter >= 1) pCum += d.p1;
+                    if (currentQuarter >= 2) pCum += d.p2;
+                    if (currentQuarter >= 3) pCum += d.p3;
+                    if (currentQuarter >= 4) pCum += d.p4;
+
                     const percentCumCurrent = getPctVsCurrentPlan(d.p1, d.p2, d.p3, d.p4, d.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
                     let statusObj = determineStatus(d.p1, d.p2, d.p3, d.p4, d.actual, currentQuarter, isLastMonthOfQuarter);
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
                     const statusColor = getDonutStatusColorConfig(statusObj);
 
+                    const maxVal = Math.max(pCum, d.actual) || 1;
+                    const planWidth = (pCum / maxVal) * 100;
+                    const actualWidth = (d.actual / maxVal) * 100;
+
                     pieChartsContainer.innerHTML += `
-                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] rounded-[2.5rem] shadow-lg border border-white flex flex-col items-center relative hover:-translate-y-2 overflow-hidden transition-all duration-500">
-                            <div class="absolute inset-0 ${theme.cardPlanBg} opacity-75 z-0"></div>
-                            <div class="relative z-10 p-8 flex flex-col items-center w-full h-full">
-                                <div class="mb-8 w-full text-center border-b border-slate-700/10 pb-4">
-                                    <h4 class="text-xl xl:text-2xl font-black ${theme.cardPlanText} truncate w-full pt-1">สถานะผลการดำเนินงาน (${unit})</h4>
-                                    <p class="text-xl sm:text-2xl font-black text-black mt-2 flex items-center justify-center gap-2"><span class="text-red-600 text-2xl">📍</span> <span class="pt-1">ณ ไตรมาสที่ ${currentQuarter}</span></p>
+                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-white rounded-[2.5rem] shadow-lg border border-slate-100 flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500">
+                            <div class="absolute top-0 left-0 w-full h-2 ${statusColor.badgeBg}"></div>
+                            
+                            <div class="relative z-10 p-6 sm:p-8 flex flex-col w-full h-full mt-2">
+                                <div class="mb-6 w-full text-center border-b border-slate-100 pb-4">
+                                    <h4 class="text-lg xl:text-xl font-black ${theme.cardPlanText} truncate w-full pt-1">สถานะผลการดำเนินงาน (${unit})</h4>
+                                    <p class="text-sm font-bold text-slate-500 mt-1.5 flex items-center justify-center gap-1.5"><span class="text-red-500">📍</span> ณ ไตรมาสที่ ${currentQuarter}</p>
                                 </div>
-                                <div class="relative w-[280px] h-[280px] mb-12 mt-2">
-                                    <div id="pie-chart-kpi-${idx}" class="w-full h-full rounded-full conic-chart bg-[#f1f5f9]"></div>
-                                    <div class="absolute inset-[2.2rem] bg-white/95 backdrop-blur-md rounded-full flex flex-col items-center justify-center border-[4px] border-white/50 z-10">
-                                        <span class="text-6xl font-black text-slate-800 pt-2">${percentCumCurrent}</span><span class="text-2xl font-bold text-slate-400 mt-2">%</span>
+                                
+                                <div class="flex flex-col gap-6 w-full mb-8">
+                                    <div class="w-full">
+                                        <div class="flex justify-between items-end mb-2">
+                                            <span class="text-sm font-bold text-slate-500 pt-1">แผนงานสะสม</span>
+                                            <span class="text-lg font-black text-slate-700">${formatAutoDecimal(pCum)}</span>
+                                        </div>
+                                        <div class="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                                            <div class="h-full bg-slate-300 rounded-full progress-bar-fill transition-all duration-1000 ease-out" style="width: 0%;" data-w="${planWidth}"></div>
+                                        </div>
                                     </div>
-                                    ${generateDonutMarkers(d.target, d.p1, d.p2, d.p3)}
+                                    <div class="w-full">
+                                        <div class="flex justify-between items-end mb-2">
+                                            <span class="text-sm font-extrabold text-slate-800 pt-1">ผลงานสะสม</span>
+                                            <span class="text-xl font-black ${statusColor.subText}">${formatAutoDecimal(d.actual)}</span>
+                                        </div>
+                                        <div class="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner relative">
+                                            <div class="h-full ${statusColor.badgeBg} rounded-full shadow-sm progress-bar-fill relative overflow-hidden transition-all duration-1000 ease-out" style="width: 0%;" data-w="${actualWidth}">
+                                                <div class="absolute top-0 left-0 w-full h-1/2 bg-white/30"></div>
+                                            </div>
+                                            ${actualWidth > planWidth && planWidth > 0 ? `<div class="absolute top-0 h-full w-0.5 bg-slate-400 z-10" style="left: ${planWidth}%;"></div>` : ''}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="mt-auto w-full flex flex-col items-center">
-                                    <div class="w-full ${statusColor.badgeBg} border-2 ${statusColor.border} rounded-2xl p-4 shadow-md text-center relative overflow-hidden flex flex-col items-center justify-center ${statusColor.animClass}">
-                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
-                                        <div class="flex items-center justify-center gap-3 relative z-10 w-full mb-3 mt-1"><span class="text-2xl">${getStatusEmoji(statusObj)}</span><span class="text-xl xl:text-2xl font-black ${statusColor.badgeText} pt-1">${statusObj}</span></div>
-                                        <div class="w-full ${statusColor.subBg} px-4 py-2.5 rounded-xl border ${statusColor.subBorder} shadow-sm relative z-10"><p class="text-sm sm:text-base font-bold ${statusColor.subText} pt-1">${statusColor.subtext}</p></div>
+
+                                <div class="mt-auto w-full flex items-center justify-between bg-slate-50 rounded-2xl p-4 border border-slate-100 shadow-sm">
+                                    <div class="flex flex-col">
+                                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">คิดเป็นร้อยละ</span>
+                                        <span class="text-2xl font-black text-slate-800 pt-0.5">${percentCumCurrent}%</span>
+                                    </div>
+                                    <div class="px-3 py-1.5 rounded-xl border-2 ${statusColor.border} ${statusColor.badgeBg} shadow-sm flex items-center gap-2 ${statusColor.animClass}">
+                                        <span class="text-lg">${getStatusEmoji(statusObj)}</span>
+                                        <span class="text-sm font-black ${statusColor.badgeText} pt-1">${statusObj}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     `;
-                    pieAnimations.push({ id: `pie-chart-kpi-${idx}`, color: statusColor.ring, pct: Math.min(percentCumYearly, 100) });
                 });
 
                 if (budgetRows.length > 0) {
                     const bObj = budgetRows[0];
-                    const bPctYearly = bObj.target > 0 ? ((bObj.actual / bObj.target) * 100) : 0;
+                    let bPlanCum = 0;
+                    if (currentQuarter >= 1) bPlanCum += bObj.planQ1;
+                    if (currentQuarter >= 2) bPlanCum += bObj.planQ2;
+                    if (currentQuarter >= 3) bPlanCum += bObj.planQ3;
+                    if (currentQuarter >= 4) bPlanCum += bObj.planQ4;
+
                     const bPctCurrent = getPctVsCurrentPlan(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
                     let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
                     const bStatusColor = getDonutStatusColorConfig(bStatus);
                     
+                    const bMaxVal = Math.max(bPlanCum, bObj.actual) || 1;
+                    const bPlanWidth = (bPlanCum / bMaxVal) * 100;
+                    const bActualWidth = (bObj.actual / bMaxVal) * 100;
+
                     pieChartsContainer.innerHTML += `
-                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-gradient-to-br from-[#FDFBF7] via-[#F3E7D3] to-[#E8D0A5] rounded-[2.5rem] shadow-lg flex flex-col items-center relative hover:-translate-y-2 overflow-hidden transition-all duration-500">
-                            <div class="relative z-10 p-8 flex flex-col items-center w-full h-full">
-                                <div class="mb-8 w-full text-center border-b border-[#D4AF37]/30 pb-4">
-                                    <h4 class="text-xl xl:text-2xl font-black text-[#8B6508] truncate w-full pt-1">สถานะการใช้จ่ายงบประมาณ</h4>
-                                    <p class="text-xl sm:text-2xl font-black text-black mt-2 flex items-center justify-center gap-2"><span class="text-red-600 text-2xl">📍</span> <span class="pt-1">ณ ไตรมาสที่ ${currentQuarter}</span></p>
+                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-white rounded-[2.5rem] shadow-lg border border-slate-100 flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500">
+                            <div class="absolute top-0 left-0 w-full h-2 ${bStatusColor.badgeBg}"></div>
+                            
+                            <div class="relative z-10 p-6 sm:p-8 flex flex-col w-full h-full mt-2">
+                                <div class="mb-6 w-full text-center border-b border-slate-100 pb-4">
+                                    <h4 class="text-lg xl:text-xl font-black text-[#8B6508] truncate w-full pt-1">สถานะการใช้จ่ายงบประมาณ</h4>
+                                    <p class="text-sm font-bold text-slate-500 mt-1.5 flex items-center justify-center gap-1.5"><span class="text-red-500">📍</span> ณ ไตรมาสที่ ${currentQuarter}</p>
                                 </div>
-                                <div class="relative w-[280px] h-[280px] mb-12 mt-2">
-                                    <div id="pie-chart-budget" class="w-full h-full rounded-full conic-chart bg-[#f1f5f9]"></div>
-                                    <div class="absolute inset-[2.2rem] bg-white/95 backdrop-blur-md rounded-full flex flex-col items-center justify-center border-[4px] border-white/50 z-10">
-                                        <span class="text-6xl font-black text-slate-800 pt-2">${bPctCurrent}</span><span class="text-2xl font-bold text-slate-400 mt-2">%</span>
+                                
+                                <div class="flex flex-col gap-6 w-full mb-8">
+                                    <div class="w-full">
+                                        <div class="flex justify-between items-end mb-2">
+                                            <span class="text-sm font-bold text-slate-500 pt-1">แผนเบิกจ่ายสะสม</span>
+                                            <span class="text-lg font-black text-slate-700">${formatMoney(bPlanCum)}</span>
+                                        </div>
+                                        <div class="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner">
+                                            <div class="h-full bg-slate-300 rounded-full progress-bar-fill transition-all duration-1000 ease-out" style="width: 0%;" data-w="${bPlanWidth}"></div>
+                                        </div>
                                     </div>
-                                    ${generateDonutMarkers(bObj.target, bObj.planQ1, bObj.planQ2, bObj.planQ3)}
+                                    <div class="w-full">
+                                        <div class="flex justify-between items-end mb-2">
+                                            <span class="text-sm font-extrabold text-slate-800 pt-1">ผลเบิกจ่ายสะสม</span>
+                                            <span class="text-xl font-black ${bStatusColor.subText}">${formatMoney(bObj.actual)}</span>
+                                        </div>
+                                        <div class="h-3.5 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner relative">
+                                            <div class="h-full ${bStatusColor.badgeBg} rounded-full shadow-sm progress-bar-fill relative overflow-hidden transition-all duration-1000 ease-out" style="width: 0%;" data-w="${bActualWidth}">
+                                                <div class="absolute top-0 left-0 w-full h-1/2 bg-white/30"></div>
+                                            </div>
+                                            ${bActualWidth > bPlanWidth && bPlanWidth > 0 ? `<div class="absolute top-0 h-full w-0.5 bg-slate-400 z-10" style="left: ${bPlanWidth}%;"></div>` : ''}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="mt-auto w-full flex flex-col items-center">
-                                    <div class="w-full ${bStatusColor.badgeBg} border-2 ${bStatusColor.border} rounded-2xl p-4 shadow-md text-center relative overflow-hidden flex flex-col items-center justify-center ${bStatusColor.animClass}">
-                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
-                                        <div class="flex items-center justify-center gap-3 relative z-10 w-full mb-3 mt-1"><span class="text-2xl">${getStatusEmoji(bStatus)}</span><span class="text-xl xl:text-2xl font-black ${bStatusColor.badgeText} pt-1">${bStatus}</span></div>
-                                        <div class="w-full ${bStatusColor.subBg} px-4 py-2.5 rounded-xl border ${bStatusColor.subBorder} shadow-sm relative z-10"><p class="text-sm sm:text-base font-bold ${bStatusColor.subText} pt-1">${bStatusColor.subtext}</p></div>
+
+                                <div class="mt-auto w-full flex items-center justify-between bg-slate-50 rounded-2xl p-4 border border-slate-100 shadow-sm">
+                                    <div class="flex flex-col">
+                                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">คิดเป็นร้อยละ</span>
+                                        <span class="text-2xl font-black text-slate-800 pt-0.5">${bPctCurrent}%</span>
+                                    </div>
+                                    <div class="px-3 py-1.5 rounded-xl border-2 ${bStatusColor.border} ${bStatusColor.badgeBg} shadow-sm flex items-center gap-2 ${bStatusColor.animClass}">
+                                        <span class="text-lg">${getStatusEmoji(bStatus)}</span>
+                                        <span class="text-sm font-black ${bStatusColor.badgeText} pt-1">${bStatus}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     `;
-                    pieAnimations.push({ id: `pie-chart-budget`, color: bStatusColor.ring, pct: Math.min(bPctYearly, 100) }); 
                 }
-
-                setTimeout(() => {
-                    pieAnimations.forEach(anim => {
-                        const el = document.getElementById(anim.id);
-                        if(el) {
-                            if (anim.pct <= 0) el.style.background = `#f1f5f9`; 
-                            else el.style.background = `conic-gradient(${anim.color} 0% ${anim.pct}%, #f1f5f9 ${anim.pct}% 100%)`;
-                        }
-                    });
-                }, 100);
 
                 // ================== 4. โซนกราฟแท่ง ==================
                 const barLegend = document.getElementById('bar-legend-container');
@@ -1040,10 +1062,15 @@
                         </div>`;
                 });
 
+                // 🚀 อัปเดตคำสั่ง Animation ของ Progress Bar ทั้งโดนัทใหม่และตาราง
                 setTimeout(() => {
+                    document.querySelectorAll('#pie-charts-container .progress-bar-fill, #table-body .progress-bar-fill').forEach(bar => bar.style.width = bar.getAttribute('data-w') + '%');
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col').forEach(bar => bar.style.height = bar.getAttribute('data-h') + '%');
-                    document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => text.classList.remove('opacity-0'));
-                }, 50);
+                    document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text, #table-body .bar-chart-col-text').forEach(text => {
+                        text.classList.remove('opacity-0');
+                        if (text.hasAttribute('data-left')) text.style.left = text.getAttribute('data-left') + '%';
+                    });
+                }, 100);
 
                 // ================== 5. โซนภาพรวมสถานะ ==================
                 let summaryTitle = "";
@@ -1293,11 +1320,6 @@
                         </tr>
                     `;
                 });
-
-                setTimeout(() => {
-                    document.querySelectorAll('#table-body .progress-bar-fill').forEach(bar => bar.style.width = bar.getAttribute('data-w') + '%');
-                    document.querySelectorAll('#table-body .bar-chart-col-text').forEach(textEl => textEl.style.left = textEl.getAttribute('data-left') + '%');
-                }, 100);
 
                 // ================== 7. โซนปัญหาและอุปสรรค ==================
                 if (viewLevel === 'SINGLE' || viewLevel === 'GROUP') {
