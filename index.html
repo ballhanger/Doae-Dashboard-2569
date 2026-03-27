@@ -255,7 +255,6 @@
             { planBg: 'bg-pink-300', planBorder: 'border-pink-400', planText: 'text-pink-700', darkText: 'text-pink-900', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-600', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500', cardPlanBg: 'bg-gradient-to-br from-pink-200 to-pink-300', cardPlanText: 'text-pink-900', cardActBg: 'bg-gradient-to-br from-pink-500 to-pink-600', cardActText: 'text-white', cardPctBg: 'bg-pink-50', cardPctText: 'text-pink-800' }
         ];
 
-        // 🚀 อัปเกรด Config สีของสถานะให้ Solid และมีสีตัวอักษรชัดเจน
         const getDonutStatusColorConfig = (status) => {
             if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-emerald-500', badgeText: 'text-white', pctText: 'text-white', border: 'border-emerald-600', subBg: 'bg-white', subText: 'text-emerald-700', subBorder: 'border-emerald-200', animClass: 'anim-success-alt', subtext: 'ร้อยละ ≥ 100' };
             if (status === "ล่าช้า") return { ring: '#FACC15', badgeBg: 'bg-amber-400', badgeText: 'text-slate-900', pctText: 'text-slate-900', border: 'border-amber-500', subBg: 'bg-white', subText: 'text-amber-800', subBorder: 'border-amber-200', animClass: 'anim-warning-alt', subtext: 'ร้อยละ 50 - 99' }; 
@@ -686,7 +685,6 @@
                     }
                 }
                 
-                // 🚀 อัปเดตข้อความและไตรมาส ในกล่อง Header อัตโนมัติ
                 const qText = document.getElementById('dynamic-quarter-text');
                 if(qText) qText.textContent = `ณ ไตรมาสที่ ${currentQuarter}`;
 
@@ -819,10 +817,11 @@
 
                     pieChartsContainer.innerHTML += `
                         <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] ${theme.cardPctBg} rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500 pb-6">
+                            <div class="absolute top-0 left-0 w-full h-2 ${statusColor.badgeBg}"></div>
                             
                             <div class="relative z-10 px-6 pt-8 pb-0 flex flex-col items-center w-full h-full">
                                 <div class="mb-5 w-full text-center border-b border-black/10 pb-5">
-                                    <h4 class="text-2xl sm:text-3xl font-black ${theme.darkText} drop-shadow-md truncate w-full pt-1 tracking-wide px-2 bg-white/40 py-1.5 rounded-xl border border-white/50 inline-block shadow-sm">หน่วยนับ: ${unit}</h4>
+                                    <h4 class="text-2xl sm:text-3xl font-black ${theme.darkText} drop-shadow-md truncate w-full pt-1 tracking-wide px-2 bg-white/40 py-1.5 rounded-xl border border-white/50 inline-block shadow-sm">${unit}</h4>
                                 </div>
 
                                 <div class="relative w-[320px] h-[170px] mx-auto mt-4 flex justify-center">
@@ -899,10 +898,11 @@
 
                     pieChartsContainer.innerHTML += `
                         <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-[#FEF3C7] rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500 pb-6">
+                            <div class="absolute top-0 left-0 w-full h-2 ${bStatusColor.badgeBg}"></div>
                             
                             <div class="relative z-10 px-6 pt-8 pb-0 flex flex-col items-center w-full h-full">
                                 <div class="mb-5 w-full text-center border-b border-black/10 pb-5">
-                                    <h4 class="text-2xl sm:text-3xl font-black text-amber-900 drop-shadow-md truncate w-full pt-1 tracking-wide px-2 bg-white/40 py-1.5 rounded-xl border border-white/50 inline-block shadow-sm">หน่วยนับ: บาท</h4>
+                                    <h4 class="text-2xl sm:text-3xl font-black text-amber-900 drop-shadow-md truncate w-full pt-1 tracking-wide px-2 bg-white/40 py-1.5 rounded-xl border border-white/50 inline-block shadow-sm">การเบิกจ่าย</h4>
                                 </div>
 
                                 <div class="relative w-[320px] h-[170px] mx-auto mt-4 flex justify-center">
@@ -965,7 +965,6 @@
                     pieAnimations.push({ id: `budget`, offset: dashOffset, deg: needleDeg }); 
                 }
 
-                // 🚀 คำสั่งแอนิเมชันให้เข็มชี้และ SVG Arc วิ่ง (ปรับสปีดเร็วขึ้น)
                 setTimeout(() => {
                     pieAnimations.forEach(anim => {
                         const arc = document.getElementById(`svg-arc-${anim.id}`);
