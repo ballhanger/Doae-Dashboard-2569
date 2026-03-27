@@ -36,9 +36,12 @@
         .delay-400 { animation-delay: 400ms; }
         .delay-500 { animation-delay: 500ms; }
 
-        .bar-chart-col { transition: height 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); width: 100%; }
-        .bar-chart-col-text { transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .progress-bar-fill { transition: width 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        /* 🚀 ปรับความเร็ว Animation ให้เร็วและเด้งสะใจขึ้น (0.8s) */
+        .bar-chart-col { transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); width: 100%; }
+        .bar-chart-col-text { transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .progress-bar-fill { transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .gauge-arc-transition { transition: stroke-dashoffset 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .gauge-needle-transition { transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); }
         
         .bar-3d { box-shadow: inset -4px 0 8px rgba(0,0,0,0.15), inset 2px 0 4px rgba(255,255,255,0.25); }
         
@@ -67,7 +70,6 @@
         .hide-scroll::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.6); border-radius: 10px; background-clip: padding-box; transition: all 0.3s; }
         .hide-scroll::-webkit-scrollbar-thumb:hover { background-color: rgba(16, 185, 129, 0.8); border: 1px solid transparent; }
 
-        /* Floating Dock */
         @media (min-width: 1024px) {
             #floating-dock {
                 top: 50% !important;
@@ -85,10 +87,6 @@
                 overflow-x: hidden !important;
             }
         }
-
-        /* 🚀 SVG Speedometer Animations */
-        .gauge-arc-transition { transition: stroke-dashoffset 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .gauge-needle-transition { transition: transform 1.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
     </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-8 lg:pr-24 text-slate-800">
@@ -251,12 +249,12 @@
         ];
 
         const getDonutStatusColorConfig = (status) => {
-            if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-emerald-400', badgeText: 'text-slate-900', border: 'border-emerald-300', subBg: 'bg-white', subText: 'text-emerald-700', subBorder: 'border-emerald-200', animClass: 'anim-success-alt', subtext: 'ร้อยละ ≥ 100' };
-            if (status === "ล่าช้า") return { ring: '#FACC15', badgeBg: 'bg-amber-300', badgeText: 'text-slate-900', border: 'border-amber-200', subBg: 'bg-white', subText: 'text-amber-700', subBorder: 'border-amber-200', animClass: 'anim-warning-alt', subtext: 'ร้อยละ 50 - 99' }; 
-            if (status === "เสี่ยง") return { ring: '#EF4444', badgeBg: 'bg-red-400', badgeText: 'text-slate-900', border: 'border-red-300', subBg: 'bg-white', subText: 'text-red-700', subBorder: 'border-red-200', animClass: 'anim-danger-alt', subtext: 'ต่ำกว่าร้อยละ 50' };
-            if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return { ring: '#1E293B', badgeBg: 'bg-slate-500', badgeText: 'text-white', border: 'border-slate-400', subBg: 'bg-white', subText: 'text-slate-800', subBorder: 'border-slate-300', animClass: 'anim-critical-alt', subtext: 'ผลงาน = 0' };
-            if (status.includes("มีแผนอยู่ใน")) return { ring: '#94A3B8', badgeBg: 'bg-slate-200', badgeText: 'text-slate-800', border: 'border-slate-300', subBg: 'bg-white', subText: 'text-slate-600', subBorder: 'border-slate-200', animClass: '', subtext: 'ยังไม่ถึงช่วงแผนงาน' };
-            return { ring: '#CBD5E1', badgeBg: 'bg-slate-300', badgeText: 'text-slate-800', border: 'border-slate-300', subBg: 'bg-white', subText: 'text-slate-600', subBorder: 'border-slate-200', animClass: '', subtext: '-' };
+            if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-emerald-400', badgeText: 'text-slate-900', border: 'border-emerald-300', subBg: 'bg-[#F8FAFC]', subText: 'text-emerald-700', subBorder: 'border-emerald-200', animClass: 'anim-success-alt', subtext: 'ร้อยละ ≥ 100' };
+            if (status === "ล่าช้า") return { ring: '#FACC15', badgeBg: 'bg-amber-300', badgeText: 'text-slate-900', border: 'border-amber-200', subBg: 'bg-[#F8FAFC]', subText: 'text-amber-700', subBorder: 'border-amber-200', animClass: 'anim-warning-alt', subtext: 'ร้อยละ 50 - 99' }; 
+            if (status === "เสี่ยง") return { ring: '#EF4444', badgeBg: 'bg-red-400', badgeText: 'text-slate-900', border: 'border-red-300', subBg: 'bg-[#F8FAFC]', subText: 'text-red-700', subBorder: 'border-red-200', animClass: 'anim-danger-alt', subtext: 'ต่ำกว่าร้อยละ 50' };
+            if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return { ring: '#1E293B', badgeBg: 'bg-slate-500', badgeText: 'text-white', border: 'border-slate-400', subBg: 'bg-[#F8FAFC]', subText: 'text-slate-800', subBorder: 'border-slate-300', animClass: 'anim-critical-alt', subtext: 'ผลงาน = 0' };
+            if (status.includes("มีแผนอยู่ใน")) return { ring: '#94A3B8', badgeBg: 'bg-slate-200', badgeText: 'text-slate-800', border: 'border-slate-300', subBg: 'bg-[#F8FAFC]', subText: 'text-slate-600', subBorder: 'border-slate-200', animClass: '', subtext: 'ยังไม่ถึงช่วงแผนงาน' };
+            return { ring: '#CBD5E1', badgeBg: 'bg-slate-300', badgeText: 'text-slate-800', border: 'border-slate-300', subBg: 'bg-[#F8FAFC]', subText: 'text-slate-600', subBorder: 'border-slate-200', animClass: '', subtext: '-' };
         };
 
         const getStatusStyles = (status) => {
@@ -786,10 +784,10 @@
                     budgetContainer.classList.remove('hidden');
                 } else budgetContainer.classList.add('hidden');
 
-                // ================== 3. โซนสถานะความก้าวหน้า (Premium SVG Gauge) ==================
+                // ================== 3. โซนสถานะความก้าวหน้า (SVG Premium Gauge) ==================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
-                const pieAnimations = []; // เก็บค่าไป Animate ตอนหลัง
+                const pieAnimations = []; 
                 
                 document.getElementById('donut-zone-header').classList.remove('hidden');
                 pieChartsContainer.classList.remove('hidden');
@@ -801,55 +799,69 @@
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
                     const statusColor = getDonutStatusColorConfig(statusObj);
 
-                    // คำนวณความยาวเส้นรอบวง (Arc Length)
+                    // คำนวณคณิตศาสตร์สำหรับวาดวงกลม SVG
                     const pctVal = parseFloat(percentCumCurrent);
-                    const arcLength = 109.95; // Math.PI * r(35)
-                    const fillLength = Math.min(pctVal, 100) / 100 * arcLength;
+                    const arcLength = 251.32; // 180 degree arc length for radius=80
+                    const fillLength = (Math.min(pctVal, 100) / 100) * arcLength;
                     const dashOffset = arcLength - fillLength;
-                    const needleDeg = (Math.min(pctVal, 100) * 1.8) - 90; // หมุนจาก -90 ถึง 90 องศา
+                    const needleDeg = (Math.min(pctVal, 100) * 1.8) - 90; // 0% = -90deg, 100% = +90deg
 
                     pieChartsContainer.innerHTML += `
-                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] ${theme.cardPctBg} rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500">
+                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] ${theme.cardPctBg} rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500 pb-8">
                             <div class="absolute top-0 left-0 w-full h-2 ${statusColor.badgeBg}"></div>
                             
-                            <div class="relative z-10 p-6 sm:p-8 flex flex-col items-center w-full h-full mt-2">
+                            <div class="relative z-10 px-6 pt-8 pb-0 flex flex-col items-center w-full h-full">
                                 <div class="mb-4 w-full text-center border-b border-black/5 pb-4">
-                                    <h4 class="text-lg xl:text-xl font-black ${theme.darkText} truncate w-full pt-1">สถานะผลการดำเนินงาน (${unit})</h4>
+                                    <h4 class="text-xl font-black ${theme.darkText} truncate w-full pt-1">สถานะผลการดำเนินงาน (${unit})</h4>
                                     <p class="text-sm font-bold text-slate-500/80 mt-1.5 flex items-center justify-center gap-1.5"><span class="text-red-500">📍</span> ณ ไตรมาสที่ ${currentQuarter}</p>
                                 </div>
 
-                                <div class="relative w-[220px] h-[130px] mx-auto mt-6 mb-2">
-                                    <svg viewBox="0 0 100 55" class="w-full h-full drop-shadow-md overflow-visible">
-                                        <path d="M 10 45 A 35 35 0 0 1 90 45" fill="none" stroke="#E2E8F0" stroke-width="8" stroke-linecap="round" />
-                                        <path d="M 10 45 A 35 35 0 0 1 90 45" fill="none" stroke="${statusColor.ring}" stroke-width="8" stroke-linecap="round"
+                                <div class="relative w-[260px] h-[140px] mx-auto mt-4 mb-2 flex justify-center">
+                                    <svg viewBox="0 0 200 120" class="w-full h-full drop-shadow-xl overflow-visible z-10">
+                                        <defs>
+                                            <filter id="glow-kpi-${idx}" x="-20%" y="-20%" width="140%" height="140%">
+                                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                                <feMerge>
+                                                    <feMergeNode in="blur" />
+                                                    <feMergeNode in="SourceGraphic" />
+                                                </feMerge>
+                                            </filter>
+                                            <linearGradient id="grad-kpi-${idx}" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="${statusColor.ring}" stop-opacity="0.6"/>
+                                                <stop offset="100%" stop-color="${statusColor.ring}" />
+                                            </linearGradient>
+                                        </defs>
+                                        
+                                        <path d="M 30 100 A 70 70 0 0 1 170 100" fill="none" stroke="#CBD5E1" stroke-width="3" stroke-dasharray="2 10.8" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E2E8F0" stroke-width="14" stroke-linecap="round" opacity="0.6"/>
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#grad-kpi-${idx})" stroke-width="14" stroke-linecap="round"
                                               stroke-dasharray="${arcLength}" stroke-dashoffset="${arcLength}"
-                                              id="svg-arc-kpi-${idx}" class="gauge-arc-transition" />
+                                              id="svg-arc-kpi-${idx}" class="gauge-arc-transition" filter="url(#glow-kpi-${idx})" />
+
+                                        <g id="svg-needle-kpi-${idx}" class="gauge-needle-transition" style="transform-origin: 100px 100px; transform: rotate(-90deg);">
+                                            <polygon points="96,100 104,100 100,15" fill="#1E293B" />
+                                            <circle cx="100" cy="100" r="10" fill="#1E293B" />
+                                            <circle cx="100" cy="100" r="4" fill="#F8FAFC" />
+                                        </g>
                                     </svg>
                                     
-                                    <div id="svg-needle-kpi-${idx}" class="absolute bottom-[20px] left-1/2 w-2 h-[85px] z-20 origin-bottom flex flex-col items-center justify-start gauge-needle-transition" style="transform: translateX(-50%) rotate(-90deg);">
-                                        <div class="w-4 h-4 rounded-full border-2 border-white shadow-[0_0_10px_rgba(0,0,0,0.3)] ${statusColor.badgeBg}"></div>
-                                        <div class="w-1 h-full bg-gradient-to-b from-slate-700 to-slate-900 rounded-full -mt-2"></div>
-                                    </div>
-                                    
-                                    <div class="absolute bottom-[10px] left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-slate-800 border-[3px] border-white shadow-lg z-30"></div>
-                                </div>
-
-                                <div class="flex flex-col items-center mb-6 w-full">
-                                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">ความก้าวหน้าผลงาน</span>
-                                    <div class="flex items-baseline gap-1">
+                                    <div class="absolute bottom-[-5px] left-1/2 -translate-x-1/2 flex items-baseline gap-1 z-0">
                                         <span class="text-5xl font-black text-slate-800 tracking-tight">${percentCumCurrent}</span>
                                         <span class="text-2xl font-bold text-slate-500">%</span>
                                     </div>
                                 </div>
                                 
-                                <div class="mt-auto w-full flex flex-col gap-2">
-                                    <div class="w-full ${statusColor.badgeBg} border-2 ${statusColor.border} rounded-2xl p-3 shadow-md text-center relative overflow-hidden flex items-center justify-center ${statusColor.animClass}">
+                                <div class="mt-auto w-full pt-4">
+                                    <div class="w-full ${statusColor.badgeBg} border-2 ${statusColor.border} rounded-[1.5rem] p-4 shadow-md text-center relative overflow-hidden flex flex-col items-center justify-center ${statusColor.animClass}">
                                         <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
-                                        <span class="text-xl mr-2 relative z-10">${getStatusEmoji(statusObj)}</span>
-                                        <span class="text-lg font-black ${statusColor.badgeText} pt-1 relative z-10">${statusObj}</span>
-                                    </div>
-                                    <div class="w-full ${statusColor.subBg} px-4 py-2.5 rounded-xl border ${statusColor.subBorder} shadow-sm text-center">
-                                        <p class="text-sm font-bold ${statusColor.subText} pt-1">${statusColor.subtext}</p>
+                                        <div class="flex items-center justify-center gap-2 relative z-10 w-full mb-2">
+                                            <span class="text-2xl drop-shadow-sm">${getStatusEmoji(statusObj)}</span>
+                                            <span class="text-xl font-black ${statusColor.badgeText} pt-1 drop-shadow-sm">${statusObj}</span>
+                                        </div>
+                                        <div class="px-4 py-1.5 bg-white/80 backdrop-blur-sm rounded-xl shadow-inner border border-white/60 relative z-10">
+                                            <p class="text-xs font-black ${statusColor.subText} pt-1 tracking-wide">${statusColor.subtext}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -865,53 +877,67 @@
                     const bStatusColor = getDonutStatusColorConfig(bStatus);
                     
                     const bPctVal = parseFloat(bPctCurrent);
-                    const arcLength = 109.95; 
-                    const fillLength = Math.min(bPctVal, 100) / 100 * arcLength;
+                    const arcLength = 251.32; 
+                    const fillLength = (Math.min(bPctVal, 100) / 100) * arcLength;
                     const dashOffset = arcLength - fillLength;
                     const needleDeg = (Math.min(bPctVal, 100) * 1.8) - 90; 
 
                     pieChartsContainer.innerHTML += `
-                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-[#FFFBEB] rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500">
+                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-[#FEF3C7] rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500 pb-8">
                             <div class="absolute top-0 left-0 w-full h-2 ${bStatusColor.badgeBg}"></div>
                             
-                            <div class="relative z-10 p-6 sm:p-8 flex flex-col items-center w-full h-full mt-2">
+                            <div class="relative z-10 px-6 pt-8 pb-0 flex flex-col items-center w-full h-full">
                                 <div class="mb-4 w-full text-center border-b border-black/5 pb-4">
-                                    <h4 class="text-lg xl:text-xl font-black text-amber-900 truncate w-full pt-1">สถานะการใช้จ่ายงบประมาณ</h4>
+                                    <h4 class="text-xl font-black text-amber-900 truncate w-full pt-1">สถานะการใช้จ่ายงบประมาณ</h4>
                                     <p class="text-sm font-bold text-slate-500/80 mt-1.5 flex items-center justify-center gap-1.5"><span class="text-red-500">📍</span> ณ ไตรมาสที่ ${currentQuarter}</p>
                                 </div>
 
-                                <div class="relative w-[220px] h-[130px] mx-auto mt-6 mb-2">
-                                    <svg viewBox="0 0 100 55" class="w-full h-full drop-shadow-md overflow-visible">
-                                        <path d="M 10 45 A 35 35 0 0 1 90 45" fill="none" stroke="#E2E8F0" stroke-width="8" stroke-linecap="round" />
-                                        <path d="M 10 45 A 35 35 0 0 1 90 45" fill="none" stroke="${bStatusColor.ring}" stroke-width="8" stroke-linecap="round"
+                                <div class="relative w-[260px] h-[140px] mx-auto mt-4 mb-2 flex justify-center">
+                                    <svg viewBox="0 0 200 120" class="w-full h-full drop-shadow-xl overflow-visible z-10">
+                                        <defs>
+                                            <filter id="glow-budget" x="-20%" y="-20%" width="140%" height="140%">
+                                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                                <feMerge>
+                                                    <feMergeNode in="blur" />
+                                                    <feMergeNode in="SourceGraphic" />
+                                                </feMerge>
+                                            </filter>
+                                            <linearGradient id="grad-budget" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="${bStatusColor.ring}" stop-opacity="0.6"/>
+                                                <stop offset="100%" stop-color="${bStatusColor.ring}" />
+                                            </linearGradient>
+                                        </defs>
+                                        
+                                        <path d="M 30 100 A 70 70 0 0 1 170 100" fill="none" stroke="#CBD5E1" stroke-width="3" stroke-dasharray="2 10.8" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linecap="round" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E2E8F0" stroke-width="14" stroke-linecap="round" opacity="0.6"/>
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#grad-budget)" stroke-width="14" stroke-linecap="round"
                                               stroke-dasharray="${arcLength}" stroke-dashoffset="${arcLength}"
-                                              id="svg-arc-budget" class="gauge-arc-transition" />
+                                              id="svg-arc-budget" class="gauge-arc-transition" filter="url(#glow-budget)" />
+
+                                        <g id="svg-needle-budget" class="gauge-needle-transition" style="transform-origin: 100px 100px; transform: rotate(-90deg);">
+                                            <polygon points="96,100 104,100 100,15" fill="#1E293B" />
+                                            <circle cx="100" cy="100" r="10" fill="#1E293B" />
+                                            <circle cx="100" cy="100" r="4" fill="#F8FAFC" />
+                                        </g>
                                     </svg>
                                     
-                                    <div id="svg-needle-budget" class="absolute bottom-[20px] left-1/2 w-2 h-[85px] z-20 origin-bottom flex flex-col items-center justify-start gauge-needle-transition" style="transform: translateX(-50%) rotate(-90deg);">
-                                        <div class="w-4 h-4 rounded-full border-2 border-white shadow-[0_0_10px_rgba(0,0,0,0.3)] ${bStatusColor.badgeBg}"></div>
-                                        <div class="w-1 h-full bg-gradient-to-b from-slate-700 to-slate-900 rounded-full -mt-2"></div>
-                                    </div>
-                                    
-                                    <div class="absolute bottom-[10px] left-1/2 -translate-x-1/2 w-6 h-6 rounded-full bg-slate-800 border-[3px] border-white shadow-lg z-30"></div>
-                                </div>
-
-                                <div class="flex flex-col items-center mb-6 w-full">
-                                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">ความก้าวหน้าการเบิกจ่าย</span>
-                                    <div class="flex items-baseline gap-1">
+                                    <div class="absolute bottom-[-5px] left-1/2 -translate-x-1/2 flex items-baseline gap-1 z-0">
                                         <span class="text-5xl font-black text-slate-800 tracking-tight">${bPctCurrent}</span>
                                         <span class="text-2xl font-bold text-slate-500">%</span>
                                     </div>
                                 </div>
                                 
-                                <div class="mt-auto w-full flex flex-col gap-2">
-                                    <div class="w-full ${bStatusColor.badgeBg} border-2 ${bStatusColor.border} rounded-2xl p-3 shadow-md text-center relative overflow-hidden flex items-center justify-center ${bStatusColor.animClass}">
+                                <div class="mt-auto w-full pt-4">
+                                    <div class="w-full ${bStatusColor.badgeBg} border-2 ${bStatusColor.border} rounded-[1.5rem] p-4 shadow-md text-center relative overflow-hidden flex flex-col items-center justify-center ${bStatusColor.animClass}">
                                         <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
-                                        <span class="text-xl mr-2 relative z-10">${getStatusEmoji(bStatus)}</span>
-                                        <span class="text-lg font-black ${bStatusColor.badgeText} pt-1 relative z-10">${bStatus}</span>
-                                    </div>
-                                    <div class="w-full ${bStatusColor.subBg} px-4 py-2.5 rounded-xl border ${bStatusColor.subBorder} shadow-sm text-center">
-                                        <p class="text-sm font-bold ${bStatusColor.subText} pt-1">${bStatusColor.subtext}</p>
+                                        <div class="flex items-center justify-center gap-2 relative z-10 w-full mb-2">
+                                            <span class="text-2xl drop-shadow-sm">${getStatusEmoji(bStatus)}</span>
+                                            <span class="text-xl font-black ${bStatusColor.badgeText} pt-1 drop-shadow-sm">${bStatus}</span>
+                                        </div>
+                                        <div class="px-4 py-1.5 bg-white/80 backdrop-blur-sm rounded-xl shadow-inner border border-white/60 relative z-10">
+                                            <p class="text-xs font-black ${bStatusColor.subText} pt-1 tracking-wide">${bStatusColor.subtext}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -920,13 +946,13 @@
                     pieAnimations.push({ id: `budget`, offset: dashOffset, deg: needleDeg }); 
                 }
 
-                // 🚀 คำสั่งแอนิเมชันสำหรับ SVG Speedometer
+                // 🚀 คำสั่งแอนิเมชันให้เข็มชี้และ SVG Arc วิ่ง
                 setTimeout(() => {
                     pieAnimations.forEach(anim => {
                         const arc = document.getElementById(`svg-arc-${anim.id}`);
                         const needle = document.getElementById(`svg-needle-${anim.id}`);
                         if (arc) arc.style.strokeDashoffset = anim.offset;
-                        if (needle) needle.style.transform = `translateX(-50%) rotate(${anim.deg}deg)`;
+                        if (needle) needle.style.transform = `rotate(${anim.deg}deg)`;
                     });
                 }, 150);
 
