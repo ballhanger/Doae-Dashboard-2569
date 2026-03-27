@@ -128,12 +128,20 @@
         <div id="kpi-cards-container" class="flex flex-col gap-4 mb-6 relative z-10 fade-in-up delay-100"></div>
         <div id="budget-cards-container" class="hidden fade-in-up delay-200 mb-10 relative z-10"></div>
         
-        <div id="donut-zone-header" class="hidden fade-in-up delay-300 w-full max-w-[1400px] mx-auto mb-10 mt-8">
-            <div class="h-1.5 w-full bg-gradient-to-r from-[#FDE68A] via-[#F59E0B] to-[#D97706] rounded-full shadow-[0_4px_12px_rgba(217,119,6,0.3)] border-t border-[#FEF3C7] mb-8"></div>
-            <h3 class="text-2xl md:text-3xl lg:text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600 drop-shadow-md tracking-tight mb-3 pt-1 px-4">
+        <div id="donut-zone-header" class="hidden fade-in-up delay-300 w-full max-w-[1400px] mx-auto mb-10 mt-10">
+            <div class="h-1.5 w-full bg-gradient-to-r from-[#FDE68A] via-[#F59E0B] to-[#D97706] rounded-full shadow-[0_4px_12px_rgba(217,119,6,0.3)] border-t border-[#FEF3C7] mb-10"></div>
+            <h3 class="text-3xl md:text-4xl lg:text-5xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600 drop-shadow-lg tracking-tight mb-6 pt-1 px-4">
                 สถานะความก้าวหน้าผลการดำเนินงาน
             </h3>
-            <p class="text-base sm:text-lg font-bold text-center text-slate-500 mb-4 px-4">แผนงานสะสม vs ผลงานสะสม ณ ไตรมาสปัจจุบัน</p>
+            <div class="flex flex-col items-center justify-center gap-4 px-4 mb-2">
+                <div class="bg-white/80 backdrop-blur-sm border border-slate-200 shadow-md rounded-2xl px-6 py-2.5 transform hover:scale-105 transition-transform">
+                    <p class="text-xl md:text-2xl lg:text-3xl font-extrabold text-center text-slate-700 tracking-wide pt-1 drop-shadow-sm">แผนงานสะสม <span class="text-red-500 mx-1">vs</span> ผลงานสะสม</p>
+                </div>
+                <div class="inline-flex items-center gap-2.5 px-6 py-2 bg-gradient-to-r from-red-500 to-orange-500 rounded-full shadow-[0_6px_15px_rgba(239,68,68,0.4)] border border-red-300 text-white transform hover:-translate-y-1 transition-transform">
+                    <span class="text-2xl drop-shadow-md">📍</span>
+                    <span class="text-xl lg:text-2xl font-black drop-shadow-md pt-1 tracking-wide" id="dynamic-quarter-text">ณ ไตรมาสที่ 1</span>
+                </div>
+            </div>
         </div>
 
         <div id="pie-charts-container" class="hidden flex flex-wrap justify-center gap-8 mb-16 fade-in-up delay-300 w-full max-w-[1400px] mx-auto"></div>
@@ -247,7 +255,7 @@
             { planBg: 'bg-pink-300', planBorder: 'border-pink-400', planText: 'text-pink-700', darkText: 'text-pink-900', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-600', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500', cardPlanBg: 'bg-gradient-to-br from-pink-200 to-pink-300', cardPlanText: 'text-pink-900', cardActBg: 'bg-gradient-to-br from-pink-500 to-pink-600', cardActText: 'text-white', cardPctBg: 'bg-pink-50', cardPctText: 'text-pink-800' }
         ];
 
-        // 🚀 อัปเกรด Config สี ให้รองรับพื้นหลังการ์ดแบบ Solid Color แยกซ้าย-ขวา
+        // 🚀 อัปเกรด Config สีของสถานะให้ Solid และมีสีตัวอักษรชัดเจน
         const getDonutStatusColorConfig = (status) => {
             if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-emerald-500', badgeText: 'text-white', pctText: 'text-white', border: 'border-emerald-600', subBg: 'bg-white', subText: 'text-emerald-700', subBorder: 'border-emerald-200', animClass: 'anim-success-alt', subtext: 'ร้อยละ ≥ 100' };
             if (status === "ล่าช้า") return { ring: '#FACC15', badgeBg: 'bg-amber-400', badgeText: 'text-slate-900', pctText: 'text-slate-900', border: 'border-amber-500', subBg: 'bg-white', subText: 'text-amber-800', subBorder: 'border-amber-200', animClass: 'anim-warning-alt', subtext: 'ร้อยละ 50 - 99' }; 
@@ -678,6 +686,10 @@
                     }
                 }
                 
+                // 🚀 อัปเดตข้อความและไตรมาส ในกล่อง Header อัตโนมัติ
+                const qText = document.getElementById('dynamic-quarter-text');
+                if(qText) qText.textContent = `ณ ไตรมาสที่ ${currentQuarter}`;
+
                 document.getElementById('bar-chart-main-container').classList.remove('hidden');
                 document.getElementById('table-main-container').classList.remove('hidden');
                 
@@ -784,7 +796,7 @@
                     budgetContainer.classList.remove('hidden');
                 } else budgetContainer.classList.add('hidden');
 
-                // ================== 3. โซนสถานะความก้าวหน้า (SVG Premium Gauge + Status Card) ==================
+                // ================== 3. โซนสถานะความก้าวหน้า (SVG Premium Gauge + Smart Status Card) ==================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
                 const pieAnimations = []; 
@@ -800,7 +812,7 @@
                     const statusColor = getDonutStatusColorConfig(statusObj);
 
                     const pctVal = parseFloat(percentCumCurrent);
-                    const arcLength = 251.32; // 180 degree arc length for radius=80
+                    const arcLength = 251.32; 
                     const fillLength = (Math.min(pctVal, 100) / 100) * arcLength;
                     const dashOffset = arcLength - fillLength;
                     const needleDeg = (Math.min(pctVal, 100) * 1.8) - 90; 
@@ -809,13 +821,12 @@
                         <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] ${theme.cardPctBg} rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500 pb-6">
                             
                             <div class="relative z-10 px-6 pt-8 pb-0 flex flex-col items-center w-full h-full">
-                                <div class="mb-4 w-full text-center border-b border-black/5 pb-4">
-                                    <h4 class="text-xl font-black ${theme.darkText} truncate w-full pt-1">สถานะผลการดำเนินงาน (${unit})</h4>
-                                    <p class="text-sm font-bold text-slate-500/80 mt-1.5 flex items-center justify-center gap-1.5"><span class="text-red-500">📍</span> ณ ไตรมาสที่ ${currentQuarter}</p>
+                                <div class="mb-5 w-full text-center border-b border-black/10 pb-5">
+                                    <h4 class="text-2xl sm:text-3xl font-black ${theme.darkText} drop-shadow-md truncate w-full pt-1 tracking-wide px-2 bg-white/40 py-1.5 rounded-xl border border-white/50 inline-block shadow-sm">หน่วยนับ: ${unit}</h4>
                                 </div>
 
-                                <div class="relative w-[300px] h-[160px] mx-auto mt-4 flex justify-center">
-                                    <svg viewBox="0 0 200 120" class="w-full h-full drop-shadow-xl overflow-visible z-10">
+                                <div class="relative w-[320px] h-[170px] mx-auto mt-4 flex justify-center">
+                                    <svg viewBox="0 0 200 120" class="w-full h-full overflow-visible z-10" style="filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.15));">
                                         <defs>
                                             <filter id="glow-kpi-${idx}" x="-20%" y="-20%" width="140%" height="140%">
                                                 <feGaussianBlur stdDeviation="3" result="blur" />
@@ -825,43 +836,44 @@
                                                 </feMerge>
                                             </filter>
                                             <linearGradient id="grad-kpi-${idx}" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                <stop offset="0%" stop-color="${statusColor.ring}" stop-opacity="0.7"/>
+                                                <stop offset="0%" stop-color="${statusColor.ring}" stop-opacity="0.8"/>
                                                 <stop offset="100%" stop-color="${statusColor.ring}" />
                                             </linearGradient>
                                         </defs>
                                         
-                                        <path d="M 30 100 A 70 70 0 0 1 170 100" fill="none" stroke="#CBD5E1" stroke-width="3" stroke-dasharray="2 10.8" />
-                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" />
-                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E2E8F0" stroke-width="18" stroke-linecap="round" opacity="0.6"/>
-                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#grad-kpi-${idx})" stroke-width="18" stroke-linecap="round"
+                                        <path d="M 40 100 A 60 60 0 0 1 160 100" fill="none" stroke="#1E293B" stroke-width="4" stroke-dasharray="3 15.8" opacity="0.7" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E2E8F0" stroke-width="24" stroke-linecap="round" opacity="0.6"/>
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#grad-kpi-${idx})" stroke-width="24" stroke-linecap="round"
                                               stroke-dasharray="${arcLength}" stroke-dashoffset="${arcLength}"
                                               id="svg-arc-kpi-${idx}" class="gauge-arc-transition" filter="url(#glow-kpi-${idx})" />
 
-                                        <g id="svg-needle-kpi-${idx}" class="gauge-needle-transition" style="transform-origin: 100px 100px; transform: rotate(-90deg);">
-                                            <polygon points="96,100 104,100 100,10" fill="#1E293B" />
-                                            <circle cx="100" cy="100" r="12" fill="#1E293B" />
+                                        <g id="svg-needle-kpi-${idx}" class="gauge-needle-transition" style="transform-origin: 100px 100px; transform: rotate(-90deg); filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.4));">
+                                            <polygon points="95,100 105,100 100,16" fill="#1E293B" />
+                                            <circle cx="100" cy="100" r="14" fill="#1E293B" />
                                             <circle cx="100" cy="100" r="5" fill="#F8FAFC" />
                                         </g>
                                     </svg>
                                 </div>
                                 
                                 <div class="mt-auto w-full pt-2">
-                                    <div class="w-full ${statusColor.badgeBg} border-2 ${statusColor.border} rounded-2xl p-3 shadow-lg flex flex-row items-center justify-between ${statusColor.animClass}">
+                                    <div class="w-full ${statusColor.badgeBg} border-2 ${statusColor.border} rounded-3xl p-3 shadow-xl flex flex-row items-stretch justify-between ${statusColor.animClass} relative overflow-hidden">
+                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-2xl pointer-events-none"></div>
                                         
-                                        <div class="w-2/5 flex flex-col items-center justify-center border-r-2 border-white/30 pr-2 pb-1">
-                                            <div class="flex items-baseline gap-1">
-                                                <span class="text-4xl sm:text-5xl font-black ${statusColor.pctText} tracking-tight drop-shadow-sm">${percentCumCurrent}</span>
-                                                <span class="text-xl sm:text-2xl font-bold ${statusColor.pctText} opacity-90">%</span>
+                                        <div class="w-[35%] flex flex-col items-center justify-center border-r-2 border-white/30 pr-2 relative z-10">
+                                            <div class="flex items-baseline gap-0.5">
+                                                <span class="text-3xl sm:text-4xl font-black ${statusColor.pctText} tracking-tighter drop-shadow-md">${percentCumCurrent}</span>
+                                                <span class="text-lg sm:text-xl font-bold ${statusColor.pctText} opacity-90 drop-shadow-sm">%</span>
                                             </div>
                                         </div>
 
-                                        <div class="w-3/5 flex flex-col items-center justify-center pl-2 gap-2">
-                                            <div class="flex items-center justify-center gap-1.5 w-full">
-                                                <span class="text-xl drop-shadow-sm">${getStatusEmoji(statusObj)}</span>
-                                                <span class="text-base sm:text-lg font-black ${statusColor.badgeText} pt-1 drop-shadow-sm truncate">${statusObj}</span>
+                                        <div class="w-[65%] flex flex-col items-center justify-center pl-3 gap-2 relative z-10">
+                                            <div class="flex items-center justify-center gap-2 w-full">
+                                                <span class="text-2xl drop-shadow-md">${getStatusEmoji(statusObj)}</span>
+                                                <span class="text-xl sm:text-2xl font-black ${statusColor.badgeText} pt-1 drop-shadow-md truncate tracking-wide">${statusObj}</span>
                                             </div>
-                                            <div class="w-[95%] px-2 py-1.5 bg-white/95 rounded-lg shadow-inner border border-white/60 flex items-center justify-center">
-                                                <p class="text-[10px] sm:text-[11px] font-black ${statusColor.subText} pt-0.5 tracking-wide text-center">${statusColor.subtext}</p>
+                                            <div class="w-full px-3 py-2 bg-white/95 rounded-xl shadow-inner border border-white/60 flex items-center justify-center">
+                                                <p class="text-xs sm:text-sm font-black ${statusColor.subText} pt-0.5 tracking-wide text-center leading-snug">เกณฑ์: ${statusColor.subtext}</p>
                                             </div>
                                         </div>
 
@@ -889,13 +901,12 @@
                         <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-[#FEF3C7] rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500 pb-6">
                             
                             <div class="relative z-10 px-6 pt-8 pb-0 flex flex-col items-center w-full h-full">
-                                <div class="mb-4 w-full text-center border-b border-black/5 pb-4">
-                                    <h4 class="text-xl font-black text-amber-900 truncate w-full pt-1">สถานะการใช้จ่ายงบประมาณ</h4>
-                                    <p class="text-sm font-bold text-slate-500/80 mt-1.5 flex items-center justify-center gap-1.5"><span class="text-red-500">📍</span> ณ ไตรมาสที่ ${currentQuarter}</p>
+                                <div class="mb-5 w-full text-center border-b border-black/10 pb-5">
+                                    <h4 class="text-2xl sm:text-3xl font-black text-amber-900 drop-shadow-md truncate w-full pt-1 tracking-wide px-2 bg-white/40 py-1.5 rounded-xl border border-white/50 inline-block shadow-sm">หน่วยนับ: บาท</h4>
                                 </div>
 
-                                <div class="relative w-[300px] h-[160px] mx-auto mt-4 flex justify-center">
-                                    <svg viewBox="0 0 200 120" class="w-full h-full drop-shadow-xl overflow-visible z-10">
+                                <div class="relative w-[320px] h-[170px] mx-auto mt-4 flex justify-center">
+                                    <svg viewBox="0 0 200 120" class="w-full h-full overflow-visible z-10" style="filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.15));">
                                         <defs>
                                             <filter id="glow-budget" x="-20%" y="-20%" width="140%" height="140%">
                                                 <feGaussianBlur stdDeviation="3" result="blur" />
@@ -905,43 +916,44 @@
                                                 </feMerge>
                                             </filter>
                                             <linearGradient id="grad-budget" x1="0%" y1="0%" x2="100%" y2="0%">
-                                                <stop offset="0%" stop-color="${bStatusColor.ring}" stop-opacity="0.7"/>
+                                                <stop offset="0%" stop-color="${bStatusColor.ring}" stop-opacity="0.8"/>
                                                 <stop offset="100%" stop-color="${bStatusColor.ring}" />
                                             </linearGradient>
                                         </defs>
                                         
-                                        <path d="M 30 100 A 70 70 0 0 1 170 100" fill="none" stroke="#CBD5E1" stroke-width="3" stroke-dasharray="2 10.8" />
-                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" />
-                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E2E8F0" stroke-width="18" stroke-linecap="round" opacity="0.6"/>
-                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#grad-budget)" stroke-width="18" stroke-linecap="round"
+                                        <path d="M 40 100 A 60 60 0 0 1 160 100" fill="none" stroke="#1E293B" stroke-width="4" stroke-dasharray="3 15.8" opacity="0.7" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E2E8F0" stroke-width="24" stroke-linecap="round" opacity="0.6"/>
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#grad-budget)" stroke-width="24" stroke-linecap="round"
                                               stroke-dasharray="${arcLength}" stroke-dashoffset="${arcLength}"
                                               id="svg-arc-budget" class="gauge-arc-transition" filter="url(#glow-budget)" />
 
-                                        <g id="svg-needle-budget" class="gauge-needle-transition" style="transform-origin: 100px 100px; transform: rotate(-90deg);">
-                                            <polygon points="96,100 104,100 100,10" fill="#1E293B" />
-                                            <circle cx="100" cy="100" r="12" fill="#1E293B" />
+                                        <g id="svg-needle-budget" class="gauge-needle-transition" style="transform-origin: 100px 100px; transform: rotate(-90deg); filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.4));">
+                                            <polygon points="95,100 105,100 100,16" fill="#1E293B" />
+                                            <circle cx="100" cy="100" r="14" fill="#1E293B" />
                                             <circle cx="100" cy="100" r="5" fill="#F8FAFC" />
                                         </g>
                                     </svg>
                                 </div>
                                 
                                 <div class="mt-auto w-full pt-2">
-                                    <div class="w-full ${bStatusColor.badgeBg} border-2 ${bStatusColor.border} rounded-2xl p-3 shadow-lg flex flex-row items-center justify-between ${bStatusColor.animClass}">
+                                    <div class="w-full ${bStatusColor.badgeBg} border-2 ${bStatusColor.border} rounded-3xl p-3 shadow-xl flex flex-row items-stretch justify-between ${bStatusColor.animClass} relative overflow-hidden">
+                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-2xl pointer-events-none"></div>
                                         
-                                        <div class="w-2/5 flex flex-col items-center justify-center border-r-2 border-white/30 pr-2 pb-1">
-                                            <div class="flex items-baseline gap-1">
-                                                <span class="text-4xl sm:text-5xl font-black ${bStatusColor.pctText} tracking-tight drop-shadow-sm">${bPctCurrent}</span>
-                                                <span class="text-xl sm:text-2xl font-bold ${bStatusColor.pctText} opacity-90">%</span>
+                                        <div class="w-[35%] flex flex-col items-center justify-center border-r-2 border-white/30 pr-2 relative z-10">
+                                            <div class="flex items-baseline gap-0.5">
+                                                <span class="text-3xl sm:text-4xl font-black ${bStatusColor.pctText} tracking-tighter drop-shadow-md">${bPctCurrent}</span>
+                                                <span class="text-lg sm:text-xl font-bold ${bStatusColor.pctText} opacity-90 drop-shadow-sm">%</span>
                                             </div>
                                         </div>
 
-                                        <div class="w-3/5 flex flex-col items-center justify-center pl-2 gap-2">
-                                            <div class="flex items-center justify-center gap-1.5 w-full">
-                                                <span class="text-xl drop-shadow-sm">${getStatusEmoji(bStatus)}</span>
-                                                <span class="text-base sm:text-lg font-black ${bStatusColor.badgeText} pt-1 drop-shadow-sm truncate">${bStatus}</span>
+                                        <div class="w-[65%] flex flex-col items-center justify-center pl-3 gap-2 relative z-10">
+                                            <div class="flex items-center justify-center gap-2 w-full">
+                                                <span class="text-2xl drop-shadow-md">${getStatusEmoji(bStatus)}</span>
+                                                <span class="text-xl sm:text-2xl font-black ${bStatusColor.badgeText} pt-1 drop-shadow-md truncate tracking-wide">${bStatus}</span>
                                             </div>
-                                            <div class="w-[95%] px-2 py-1.5 bg-white/95 rounded-lg shadow-inner border border-white/60 flex items-center justify-center">
-                                                <p class="text-[10px] sm:text-[11px] font-black ${bStatusColor.subText} pt-0.5 tracking-wide text-center">${bStatusColor.subtext}</p>
+                                            <div class="w-full px-3 py-2 bg-white/95 rounded-xl shadow-inner border border-white/60 flex items-center justify-center">
+                                                <p class="text-xs sm:text-sm font-black ${bStatusColor.subText} pt-0.5 tracking-wide text-center leading-snug">เกณฑ์: ${bStatusColor.subtext}</p>
                                             </div>
                                         </div>
 
@@ -953,7 +965,7 @@
                     pieAnimations.push({ id: `budget`, offset: dashOffset, deg: needleDeg }); 
                 }
 
-                // 🚀 คำสั่งแอนิเมชันให้เข็มชี้และ SVG Arc วิ่ง (0.8s)
+                // 🚀 คำสั่งแอนิเมชันให้เข็มชี้และ SVG Arc วิ่ง (ปรับสปีดเร็วขึ้น)
                 setTimeout(() => {
                     pieAnimations.forEach(anim => {
                         const arc = document.getElementById(`svg-arc-${anim.id}`);
@@ -1108,7 +1120,10 @@
 
                 setTimeout(() => {
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col').forEach(bar => bar.style.height = bar.getAttribute('data-h') + '%');
-                    document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => text.classList.remove('opacity-0'));
+                    document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text, #table-body .bar-chart-col-text').forEach(text => {
+                        text.classList.remove('opacity-0');
+                        if (text.hasAttribute('data-left')) text.style.left = text.getAttribute('data-left') + '%';
+                    });
                 }, 50);
 
                 // ================== 5. โซนภาพรวมสถานะ ==================
