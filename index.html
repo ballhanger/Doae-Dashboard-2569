@@ -86,10 +86,6 @@
                 overflow-x: hidden !important;
             }
         }
-        
-        @keyframes drawComboLine {
-            to { stroke-dashoffset: 0; }
-        }
     </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-8 lg:pr-24 text-slate-800">
@@ -155,9 +151,7 @@
                 <svg class="w-7 h-7 mr-3 text-orange-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                 ติดตามผลการดำเนินงานสะสมรายไตรมาส (แผนงานสะสม vs ผลงานสะสม)
             </h3>
-            
             <div class="flex flex-wrap justify-center gap-x-4 sm:gap-x-6 gap-y-3 mt-4 mb-2 z-20 relative" id="bar-legend-container"></div>
-            
             <div class="w-full overflow-x-auto hide-scroll pb-6 pt-4 relative z-10">
                 <div class="relative h-[400px] sm:h-[450px] flex justify-between items-end px-2 sm:px-4 pb-2 transition-all duration-500" id="combined-bar-chart-container"></div>
             </div>
@@ -694,96 +688,10 @@
                 const qText = document.getElementById('dynamic-quarter-text');
                 if(qText) qText.textContent = `ณ ไตรมาสที่ ${currentQuarter}`;
 
-                // 🚀 ฟังก์ชันวาดเส้น Combo Line (SVG Overlay)
-                window.drawComboTrendLines = function() {
-                    const container = document.getElementById('combined-bar-chart-container');
-                    if (!container) return;
-                    
-                    let svg = document.getElementById('combo-lines-svg');
-                    if (!svg) {
-                        svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-                        svg.id = 'combo-lines-svg';
-                        svg.style.position = 'absolute';
-                        svg.style.top = '0';
-                        svg.style.left = '0';
-                        svg.style.width = '100%';
-                        svg.style.height = '100%';
-                        svg.style.pointerEvents = 'none';
-                        svg.style.zIndex = '30'; 
-                        container.appendChild(svg);
-                    }
-                    svg.innerHTML = ''; 
-                    
-                    const containerRect = container.getBoundingClientRect();
-                    
-                    // Loop หาทุกๆ Plan Dot เพื่อลากเส้นเชื่อมต่อกัน
-                    const maxUnits = 20; 
-                    for(let uIdx = 0; uIdx < maxUnits; uIdx++) {
-                        let points = [];
-                        let lineColorClass = "text-slate-800"; 
-                        for(let q = 1; q <= 4; q++) {
-                            const dot = document.getElementById(`dot-${uIdx}-${q}`);
-                            if(dot) {
-                                const rect = dot.getBoundingClientRect();
-                                const x = (rect.left - containerRect.left) + container.scrollLeft + rect.width / 2;
-                                const y = (rect.top - containerRect.top) + container.scrollTop + rect.height / 2;
-                                points.push(`${x},${y}`);
-                                if(dot.getAttribute('data-line-color')) {
-                                    lineColorClass = dot.getAttribute('data-line-color');
-                                }
-                            }
-                        }
-                        if(points.length > 1) {
-                            const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-                            polyline.setAttribute("points", points.join(" "));
-                            polyline.setAttribute("fill", "none");
-                            polyline.setAttribute("stroke", "currentColor");
-                            polyline.setAttribute("class", `${lineColorClass} opacity-80`);
-                            polyline.setAttribute("stroke-width", "3.5");
-                            polyline.setAttribute("stroke-dasharray", "8, 6"); // เส้นประ
-                            polyline.style.animation = "drawComboLine 1.5s ease-out forwards";
-                            polyline.style.strokeDashoffset = "1000";
-                            polyline.style.strokeDasharray = "1000";
-                            svg.appendChild(polyline);
-                        }
-                    }
-
-                    // Budget Line
-                    let bPoints = [];
-                    for(let q = 1; q <= 4; q++) {
-                        const dot = document.getElementById(`dot-budget-${q}`);
-                        if(dot) {
-                            const rect = dot.getBoundingClientRect();
-                            const x = (rect.left - containerRect.left) + container.scrollLeft + rect.width / 2;
-                            const y = (rect.top - containerRect.top) + container.scrollTop + rect.height / 2;
-                            bPoints.push(`${x},${y}`);
-                        }
-                    }
-                    if(bPoints.length > 1) {
-                        const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-                        polyline.setAttribute("points", bPoints.join(" "));
-                        polyline.setAttribute("fill", "none");
-                        polyline.setAttribute("stroke", "currentColor");
-                        polyline.setAttribute("class", `text-amber-800 opacity-80`);
-                        polyline.setAttribute("stroke-width", "3.5");
-                        polyline.setAttribute("stroke-dasharray", "8, 6");
-                        polyline.style.animation = "drawComboLine 1.5s ease-out forwards";
-                        polyline.style.strokeDashoffset = "1000";
-                        polyline.style.strokeDasharray = "1000";
-                        svg.appendChild(polyline);
-                    }
-                };
-
                 document.getElementById('bar-chart-main-container').classList.remove('hidden');
                 document.getElementById('table-main-container').classList.remove('hidden');
                 
                 renderDashboardUI(synthesizedRows, viewLevel, isActivity);
-
-                // Add resize listener to redraw SVG lines when window size changes
-                window.addEventListener('resize', () => {
-                    clearTimeout(window.resizeTimer);
-                    window.resizeTimer = setTimeout(window.drawComboTrendLines, 200);
-                });
 
             } catch (error) {
                 console.error("Critical error in loadProject:", error);
@@ -886,7 +794,7 @@
                     budgetContainer.classList.remove('hidden');
                 } else budgetContainer.classList.add('hidden');
 
-                // ================== 3. โซนสถานะความก้าวหน้า (SVG Premium Gauge) ==================
+                // ================== 3. โซนสถานะความก้าวหน้า (SVG Premium Gauge + Smart Status Card) ==================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
                 const pieAnimations = []; 
@@ -1066,42 +974,17 @@
                     });
                 }, 100);
 
-                // ================== 4. โซนติดตามผลรายไตรมาส (Combo Chart: Bar + Line Overlay) ==================
+                // ================== 4. โซนกราฟแท่ง ==================
                 const barLegend = document.getElementById('bar-legend-container');
                 let legendHtml = '';
                 unitKeys.forEach((unit, idx) => {
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
-                    // 🚀 อัปเดตสัญลักษณ์ Legend สำหรับ Combo Chart (เส้นประ + แท่งสี)
-                    legendHtml += `
-                        <div class="flex items-center px-4 py-2 bg-[#F8FAFC] rounded-full shadow-sm border border-slate-200 font-bold text-xs sm:text-sm pt-1 gap-4">
-                            <span class="${theme.darkText} font-black text-sm uppercase tracking-wide mr-2 border-r border-slate-300 pr-4">${unit}</span>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-0 border-t-4 border-dashed opacity-70 ${theme.planBorder.replace('border-', 'border-')} flex items-center justify-center relative"><div class="w-3.5 h-3.5 rounded-full bg-white border-[3px] ${theme.planBorder} shadow-md absolute"></div></div>
-                                <span class="text-slate-600">แผนงาน</span>
-                            </div>
-                            <div class="w-px h-4 bg-slate-300"></div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-4 h-4 ${theme.actBg} rounded-sm shadow-[inset_0_-2px_4px_rgba(0,0,0,0.2)] border border-white/50"></div>
-                                <span class="text-slate-600">ผลงาน</span>
-                            </div>
-                        </div>
-                    `;
+                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 ${theme.planText} font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 ${theme.legendPlanBg} border ${theme.planBorder} mr-2 rounded-sm shadow-inner"></div> แผนงาน (${unit})</div>`;
+                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 ${theme.actText} font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 ${theme.legendActBg} border ${theme.actBorder} mr-2 rounded-sm shadow-inner"></div> ผลงาน (${unit})</div>`;
                 });
                 if (budgetRows.length > 0) {
-                    legendHtml += `
-                        <div class="flex items-center px-4 py-2 bg-[#F8FAFC] rounded-full shadow-sm border border-slate-200 font-bold text-xs sm:text-sm pt-1 gap-4">
-                            <span class="text-amber-800 font-black text-sm uppercase tracking-wide mr-2 border-r border-slate-300 pr-4">งบประมาณ</span>
-                            <div class="flex items-center gap-2">
-                                <div class="w-8 h-0 border-t-4 border-dashed opacity-70 border-amber-600 flex items-center justify-center relative"><div class="w-3.5 h-3.5 rounded-full bg-white border-[3px] border-amber-600 shadow-md absolute"></div></div>
-                                <span class="text-slate-600">แผนเบิกจ่าย</span>
-                            </div>
-                            <div class="w-px h-4 bg-slate-300"></div>
-                            <div class="flex items-center gap-2">
-                                <div class="w-4 h-4 bg-amber-400 rounded-sm shadow-[inset_0_-2px_4px_rgba(0,0,0,0.2)] border border-white/50"></div>
-                                <span class="text-slate-600">ผลเบิกจ่าย</span>
-                            </div>
-                        </div>
-                    `;
+                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 text-yellow-700 font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 bg-yellow-300 border border-yellow-400 mr-2 rounded-sm shadow-inner"></div> แผนงบประมาณ</div>`;
+                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 text-yellow-700 font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 bg-yellow-500 border border-yellow-600 mr-2 rounded-sm shadow-inner"></div> ผลเบิกจ่าย</div>`;
                 }
                 barLegend.innerHTML = legendHtml;
 
@@ -1137,103 +1020,92 @@
                         if (kpi.plan === 0 && kpi.act === 0) return;
 
                         const theme = kpiColorThemes[kpiIdx % kpiColorThemes.length];
-                        const maxValRaw = Math.max(kpiByUnit[kpi.unit].target, kpiByUnit[kpi.unit].actual, ...[1,2,3,4].map(qx => { let s=0; for(let i=1; i<=qx; i++) s+= kpiByUnit[kpi.unit][`p${i}`]; return s; }));
-                        const maxVal = maxValRaw > 0 ? maxValRaw * 1.15 : 1; 
-
+                        const maxVal = Math.max(kpiByUnit[kpi.unit].target, kpiByUnit[kpi.unit].actual, ...[1,2,3,4].map(qx => { let s=0; for(let i=1; i<=qx; i++) s+= kpiByUnit[kpi.unit][`p${i}`]; return s; })) * 1.25 || 1;
                         const ppH = Math.min((kpi.plan / maxVal) * 100, 100);
                         const paH = q.showActual ? Math.min((kpi.act / maxVal) * 100, 100) : 0;
                         
                         const pctVal = kpi.plan > 0 ? (kpi.act / kpi.plan) * 100 : (kpi.act > 0 ? 100 : 0);
-                        let pctText = pctVal === 0 || pctVal === 100 ? `${Math.round(pctVal)}%` : `${pctVal.toFixed(2)}%`;
+                        let pctText = "";
+                        if (pctVal === 0 || pctVal === 100) { pctText = `${Math.round(pctVal)} %`; } 
+                        else { pctText = `${pctVal.toFixed(2)} %`; }
                         
-                        let pctColor = "text-white";
+                        let badgeStyle = "bg-[#F8FAFC] text-slate-800 border-slate-200"; 
                         if (kpi.plan > 0) {
-                            if (pctVal >= 100) pctColor = "text-emerald-400";
-                            else if (pctVal >= 50) pctColor = "text-yellow-400";
-                            else pctColor = "text-red-400";
+                            if (kpi.act === 0) badgeStyle = "bg-slate-900 text-white border-slate-700"; 
+                            else if (pctVal >= 100) badgeStyle = "bg-emerald-700 text-white border-emerald-600"; 
+                            else if (pctVal >= 50) badgeStyle = "bg-amber-600 text-white border-amber-500"; 
+                            else badgeStyle = "bg-red-700 text-white border-red-600"; 
                         }
 
-                        // 🚀 โครงสร้าง HTML แบบแยกป้าย Tooltip
                         barsHtml += `
-                            <div class="flex flex-col items-center justify-end h-full relative w-10 sm:w-14 mx-2">
-                                
-                                <div class="group/actualbar relative w-full h-full flex items-end justify-center cursor-pointer z-10">
-                                    ${q.showActual ? `
-                                    <div class="absolute bottom-0 w-full ${theme.actBg} rounded-t-sm bar-chart-col shadow-[inset_0_-4px_8px_rgba(0,0,0,0.2)] border border-white/30" style="height: 0%" data-h="${paH}"></div>
-                                    <div class="absolute flex flex-col items-center pb-2 opacity-0 group-hover/actualbar:-translate-y-3 group-hover/actualbar:opacity-100 transition-all duration-300 pointer-events-none z-[70]" style="bottom: ${paH}%">
-                                        <div class="bg-slate-800 text-white px-3 py-2 rounded-xl shadow-2xl border border-slate-600 text-center min-w-[90px]">
-                                            <span class="block text-[10px] text-slate-300 mb-0.5">ผลงานสะสม</span>
-                                            <span class="block text-sm font-black text-white">${formatAutoDecimal(kpi.act)}</span>
-                                            <span class="block text-xs font-bold ${pctColor} mt-0.5">${pctText}</span>
-                                            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 transform rotate-45 border-r border-b border-slate-600"></div>
-                                        </div>
-                                    </div>
-                                    ` : `
-                                    <div class="w-full bg-slate-200 border-2 border-dashed border-slate-300 rounded-t-sm h-[10px] opacity-50"></div>
-                                    `}
-                                </div>
-
-                                <div id="dot-${kpiIdx}-${q.q}" data-line-color="${theme.planText}" class="group/plandot absolute w-4 h-4 sm:w-5 sm:h-5 bg-white border-[3px] ${theme.planBorder} rounded-full z-40 transform translate-y-1/2 cursor-pointer hover:scale-125 transition-transform" style="bottom: ${ppH}%">
-                                    <div class="absolute flex flex-col items-center pb-3 opacity-0 group-hover/plandot:-translate-y-4 group-hover/plandot:opacity-100 transition-all duration-300 pointer-events-none z-[80]" style="bottom: 100%; left: 50%; transform: translateX(-50%);">
-                                        <div class="bg-white px-3 py-2 rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.15)] border border-slate-200 text-center min-w-[100px]">
-                                            <span class="block text-[10px] text-slate-500 font-bold mb-0.5">แผนงานสะสม</span>
-                                            <span class="block text-sm font-black ${theme.darkText}">${formatAutoDecimal(kpi.plan)}</span>
-                                            <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white transform rotate-45 border-r border-b border-slate-200"></div>
-                                        </div>
+                            <div class="flex flex-col items-center justify-end h-full relative w-8 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
+                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-20 group-hover/item:-translate-y-2 group-hover/item:z-[60] group-hover/item:scale-105" style="bottom: ${ppH}%">
+                                    <div class="flex flex-col w-auto min-w-[65px] px-1.5 py-0.5 bg-white rounded shadow-md border border-slate-200">
+                                        <span class="text-center font-black text-[11px] ${theme.darkText} leading-none whitespace-nowrap pt-1">${formatAutoDecimal(kpi.plan)}</span>
+                                        <span class="text-right font-bold text-[11px] ${theme.darkText} opacity-90 leading-none whitespace-nowrap mt-1">${kpi.unit}</span>
                                     </div>
                                 </div>
+                                <div class="w-full ${theme.planBg} border ${theme.planBorder} rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${ppH}"></div>
                             </div>`;
+                            
+                        if(q.showActual) {
+                            barsHtml += `
+                            <div class="flex flex-col items-center justify-end h-full relative w-8 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
+                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-30 group-hover/item:-translate-y-2 group-hover/item:z-[60] group-hover/item:scale-105" style="bottom: ${paH}%">
+                                    <span class="${badgeStyle} text-[10px] sm:text-xs px-2 py-0.5 rounded shadow-md mb-1 font-bold pt-1 whitespace-nowrap border">${pctText}</span>
+                                    <div class="flex flex-col w-auto min-w-[65px] px-1.5 py-0.5 bg-white rounded shadow-md border border-slate-200">
+                                        <span class="text-center font-black text-[11px] ${theme.darkText} leading-none whitespace-nowrap pt-1">${formatAutoDecimal(kpi.act)}</span>
+                                        <span class="text-right font-bold text-[11px] ${theme.darkText} opacity-90 leading-none whitespace-nowrap mt-1">${kpi.unit}</span>
+                                    </div>
+                                </div>
+                                <div class="w-full ${theme.actBg} border ${theme.actBorder} rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${paH}"></div>
+                            </div>`;
+                        } else { barsHtml += `<div class="w-8 sm:w-10 lg:w-12 mx-1"></div>`; }
                     });
 
                     if(budgetRows.length > 0 && (q.bPlan > 0 || q.bAct > 0)) {
                         const bObj = budgetRows[0];
-                        const maxBRaw = Math.max(bObj.target, bObj.actual, ...[1,2,3,4].map(qx => { let s=0; for(let i=1; i<=qx; i++) s+= bObj[`planQ${i}`]; return s; }));
-                        const maxB = maxBRaw > 0 ? maxBRaw * 1.15 : 1; 
-
+                        const maxB = Math.max(bObj.target, bObj.actual, ...[1,2,3,4].map(qx => { let s=0; for(let i=1; i<=qx; i++) s+= bObj[`planQ${i}`]; return s; })) * 1.25 || 1;
                         const bpH = Math.min((q.bPlan / maxB) * 100, 100);
                         const baH = q.showActual ? Math.min((q.bAct / maxB) * 100, 100) : 0;
                         
                         const pctVal = q.bPlan > 0 ? (q.bAct / q.bPlan) * 100 : (q.bAct > 0 ? 100 : 0);
-                        let pctText = pctVal === 0 || pctVal === 100 ? `${Math.round(pctVal)}%` : `${pctVal.toFixed(2)}%`;
+                        let pctText = "";
+                        if (pctVal === 0 || pctVal === 100) { pctText = `${Math.round(pctVal)} %`; } 
+                        else { pctText = `${pctVal.toFixed(2)} %`; }
                         
-                        let pctColor = "text-white";
+                        let badgeStyle = "bg-[#F8FAFC] text-slate-800 border-slate-200"; 
                         if (q.bPlan > 0) {
-                            if (pctVal >= 100) pctColor = "text-emerald-400";
-                            else if (pctVal >= 50) pctColor = "text-yellow-400";
-                            else pctColor = "text-red-400";
+                            if (q.bAct === 0) badgeStyle = "bg-slate-900 text-white border-slate-700";
+                            else if (pctVal >= 100) badgeStyle = "bg-emerald-700 text-white border-emerald-600";
+                            else if (pctVal >= 50) badgeStyle = "bg-amber-600 text-white border-amber-500";
+                            else badgeStyle = "bg-red-700 text-white border-red-600";
                         }
 
-                        barsHtml += `<div class="w-4 border-l border-dashed border-orange-300/50 mx-2"></div>`;
-                        
-                        barsHtml += `
-                            <div class="flex flex-col items-center justify-end h-full relative w-10 sm:w-14 mx-2">
-                                
-                                <div class="group/actualbar relative w-full h-full flex items-end justify-center cursor-pointer z-10">
-                                    ${q.showActual ? `
-                                    <div class="absolute bottom-0 w-full bg-amber-400 rounded-t-sm bar-chart-col shadow-[inset_0_-4px_8px_rgba(0,0,0,0.2)] border border-white/30" style="height: 0%" data-h="${baH}"></div>
-                                    <div class="absolute flex flex-col items-center pb-2 opacity-0 group-hover/actualbar:-translate-y-3 group-hover/actualbar:opacity-100 transition-all duration-300 pointer-events-none z-[70]" style="bottom: ${baH}%">
-                                        <div class="bg-slate-800 text-white px-3 py-2 rounded-xl shadow-2xl border border-slate-600 text-center min-w-[100px]">
-                                            <span class="block text-[10px] text-slate-300 mb-0.5">ผลเบิกจ่ายสะสม</span>
-                                            <span class="block text-sm font-black text-white">${formatMoney(q.bAct)}</span>
-                                            <span class="block text-xs font-bold ${pctColor} mt-0.5">${pctText}</span>
-                                            <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-slate-800 transform rotate-45 border-r border-b border-slate-600"></div>
-                                        </div>
-                                    </div>
-                                    ` : `
-                                    <div class="w-full bg-slate-200 border-2 border-dashed border-slate-300 rounded-t-sm h-[10px] opacity-50"></div>
-                                    `}
-                                </div>
-
-                                <div id="dot-budget-${q.q}" data-line-color="text-amber-600" class="group/plandot absolute w-4 h-4 sm:w-5 sm:h-5 bg-white border-[3px] border-amber-600 rounded-full z-40 transform translate-y-1/2 cursor-pointer hover:scale-125 transition-transform" style="bottom: ${bpH}%">
-                                    <div class="absolute flex flex-col items-center pb-3 opacity-0 group-hover/plandot:-translate-y-4 group-hover/plandot:opacity-100 transition-all duration-300 pointer-events-none z-[80]" style="bottom: 100%; left: 50%; transform: translateX(-50%);">
-                                        <div class="bg-white px-3 py-2 rounded-xl shadow-[0_4px_15px_rgba(0,0,0,0.15)] border border-slate-200 text-center min-w-[110px]">
-                                            <span class="block text-[10px] text-slate-500 font-bold mb-0.5">แผนเบิกจ่ายสะสม</span>
-                                            <span class="block text-sm font-black text-amber-800">${formatMoney(q.bPlan)}</span>
-                                            <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white transform rotate-45 border-r border-b border-slate-200"></div>
-                                        </div>
+                        barsHtml += `<div class="w-4"></div>
+                            <div class="flex flex-col items-center justify-end h-full relative w-8 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
+                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-20 group-hover/item:-translate-y-2 group-hover/item:z-[60] group-hover/item:scale-105" style="bottom: ${bpH}%">
+                                    <div class="flex flex-col w-auto min-w-[65px] px-1.5 py-0.5 bg-white rounded shadow-md border border-slate-200">
+                                        <span class="text-center font-black text-[11px] text-yellow-700 leading-none whitespace-nowrap pt-1">${formatMoney(q.bPlan)}</span>
+                                        <span class="text-right font-bold text-[11px] text-yellow-700 opacity-90 leading-none whitespace-nowrap mt-1">บาท</span>
                                     </div>
                                 </div>
+                                <div class="w-full bg-[#FDE047] border border-yellow-500 rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${bpH}"></div>
                             </div>`;
+                            
+                        if(q.showActual) {
+                            barsHtml += `
+                            <div class="flex flex-col items-center justify-end h-full relative w-8 sm:w-10 lg:w-12 group/item hover:z-50 mx-1">
+                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-30 group-hover/item:-translate-y-2 group-hover/item:z-[60] group-hover/item:scale-105" style="bottom: ${baH}%">
+                                    <span class="${badgeStyle} text-[10px] sm:text-xs px-2 py-0.5 rounded shadow-md mb-1 font-bold pt-1 whitespace-nowrap border">${pctText}</span>
+                                    <div class="flex flex-col w-auto min-w-[65px] px-1.5 py-0.5 bg-white rounded shadow-md border border-slate-200">
+                                        <span class="text-center font-black text-[11px] text-amber-800 leading-none whitespace-nowrap pt-1">${formatMoney(q.bAct)}</span>
+                                        <span class="text-right font-bold text-[11px] text-amber-800 opacity-90 leading-none whitespace-nowrap mt-1">บาท</span>
+                                    </div>
+                                </div>
+                                <div class="w-full bg-[#D97706] border border-amber-700 rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${baH}"></div>
+                            </div>`;
+                        } else { barsHtml += `<div class="w-8 sm:w-10 lg:w-12 mx-1"></div>`; }
                     }
 
                     if (barsHtml === '') barsHtml = `<div class="flex items-center justify-center h-full w-full opacity-50 font-bold pt-1 ${isQ1Q3 ? 'text-white' : 'text-slate-700'}">ไม่มีแผนงานสะสมในไตรมาสนี้</div>`;
@@ -1245,24 +1117,13 @@
                         </div>`;
                 });
 
-                // 🚀 คำสั่งแอนิเมชันสำหรับ SVG Speedometer และ Bar Chart
                 setTimeout(() => {
-                    // แอนิเมทหน้าปัดความเร็ว
-                    pieAnimations.forEach(anim => {
-                        const arc = document.getElementById(`svg-arc-${anim.id}`);
-                        const needle = document.getElementById(`svg-needle-${anim.id}`);
-                        if (arc) arc.style.strokeDashoffset = anim.offset;
-                        if (needle) needle.style.transform = `rotate(${anim.deg}deg)`;
-                    });
-                    
-                    // แอนิเมทความสูงกราฟแท่ง (Actual)
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col').forEach(bar => bar.style.height = bar.getAttribute('data-h') + '%');
-                    
-                    // 🚀 เรียกฟังก์ชันวาดเส้น Combo Line หลังจากเรนเดอร์กราฟแท่งเสร็จ
-                    if (typeof window.drawComboTrendLines === 'function') {
-                        window.drawComboTrendLines();
-                    }
-                }, 150);
+                    document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text, #table-body .bar-chart-col-text').forEach(text => {
+                        text.classList.remove('opacity-0');
+                        if (text.hasAttribute('data-left')) text.style.left = text.getAttribute('data-left') + '%';
+                    });
+                }, 50);
 
                 // ================== 5. โซนภาพรวมสถานะ ==================
                 let summaryTitle = "";
