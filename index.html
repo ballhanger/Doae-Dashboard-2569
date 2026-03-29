@@ -174,9 +174,9 @@
                             <th class="px-6 py-4 min-w-[280px] text-center align-middle pt-2">
                                 <div class="flex flex-col items-center justify-center">
                                     <span class="mb-1">ความก้าวหน้า</span>
-                                    <div class="flex flex-col items-start bg-white/60 px-4 py-2 rounded-xl border border-orange-300 shadow-md text-xs sm:text-sm font-extrabold text-slate-900 normal-case tracking-normal mt-2">
-                                        <div class="flex items-center mb-1.5"><div class="w-3 h-3 bg-slate-800 rounded-[2px] mr-2.5 shadow-sm flex-shrink-0"></div> <span class="pt-0.5">ร้อยละความก้าวหน้าทั้งปี</span></div>
-                                        <div class="flex items-center"><div class="w-3 h-3 bg-[#F8FAFC] border border-slate-300 rounded-[2px] mr-2.5 shadow-sm flex-shrink-0"></div> <span class="pt-0.5">ร้อยละความก้าวหน้า ณ ไตรมาสปัจจุบัน</span></div>
+                                    <div class="flex flex-col items-start bg-white/60 px-4 py-2 rounded-xl border border-emerald-300 shadow-md text-xs sm:text-sm font-extrabold text-slate-900 normal-case tracking-normal mt-2 w-full max-w-[240px]">
+                                        <div class="flex items-center mb-1.5"><div class="w-3 h-3 bg-blue-500 rounded-[2px] mr-2.5 shadow-sm flex-shrink-0"></div> <span class="pt-0.5 text-slate-700">แถบเป้าหมาย (ตามแผน)</span></div>
+                                        <div class="flex items-center"><div class="w-3 h-3 bg-emerald-400 rounded-[2px] mr-2.5 shadow-sm flex-shrink-0 border border-slate-300"></div> <span class="pt-0.5 text-slate-700">แถบผลงาน (สีตามสถานะ)</span></div>
                                     </div>
                                 </div>
                             </th>
@@ -255,7 +255,7 @@
             { planBg: 'bg-pink-300', planBorder: 'border-pink-400', planText: 'text-pink-700', darkText: 'text-pink-900', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-600', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500', cardPlanBg: 'bg-gradient-to-br from-pink-200 to-pink-300', cardPlanText: 'text-pink-900', cardActBg: 'bg-gradient-to-br from-pink-500 to-pink-600', cardActText: 'text-white', cardPctBg: 'bg-pink-50', cardPctText: 'text-pink-800' }
         ];
 
-        // 🚀 อัปเดตสีสถานะ "เป็นไปตามแผน" ให้เป็นสีดำ (slate-900) ตามที่ลูกค้าขอ
+        // 🚀 อัปเดตสีสถานะ "เป็นไปตามแผน" ให้เป็นสีดำ (slate-900)
         const getDonutStatusColorConfig = (status) => {
             if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-emerald-500', badgeText: 'text-slate-900', pctText: 'text-slate-900', border: 'border-emerald-600', subBg: 'bg-white', subText: 'text-emerald-700', subBorder: 'border-emerald-200', animClass: 'anim-success-alt', subtext: 'ร้อยละ ≥ 100', sepBorder: 'border-slate-800/20' };
             if (status === "ล่าช้า") return { ring: '#FACC15', badgeBg: 'bg-amber-400', badgeText: 'text-slate-900', pctText: 'text-slate-900', border: 'border-amber-500', subBg: 'bg-white', subText: 'text-amber-800', subBorder: 'border-amber-200', animClass: 'anim-warning-alt', subtext: 'ร้อยละ 50 - 99', sepBorder: 'border-slate-800/20' }; 
@@ -399,8 +399,18 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        window.navigatePrev = function() { if (currentProjectIndex > 0) selectProject(currentProjectIndex - 1); }
-        window.navigateNext = function() { if (currentProjectIndex < MASTER_INDEX.length - 1) selectProject(currentProjectIndex + 1); }
+        // 🚀 อัปเดตฟังก์ชันปุ่มลูกศร ให้กระโดดข้ามหน้า "งบประมาณ" อัตโนมัติ
+        window.navigatePrev = function() { 
+            let prevIdx = currentProjectIndex - 1;
+            while(prevIdx >= 0 && MASTER_INDEX[prevIdx].name.includes("งบประมาณ")) prevIdx--;
+            if (prevIdx >= 0) selectProject(prevIdx); 
+        }
+        
+        window.navigateNext = function() { 
+            let nextIdx = currentProjectIndex + 1;
+            while(nextIdx < MASTER_INDEX.length && MASTER_INDEX[nextIdx].name.includes("งบประมาณ")) nextIdx++;
+            if (nextIdx < MASTER_INDEX.length) selectProject(nextIdx); 
+        }
 
         window.addEventListener('popstate', function(e) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -428,6 +438,10 @@
                     const isGroup = item.url === "AUTO_GROUP";
                     const isSub = item.name.trim().startsWith("-"); 
                     
+                    // 🚀 ดักจับและซ่อนเมนู "งบประมาณ"
+                    const isHiddenBudget = item.name.includes("งบประมาณ");
+                    if (isHiddenBudget) return; // ข้ามการสร้างเมนู
+
                     const seqStr = String(item.seq).trim();
                     const prefix = (seqStr && seqStr !== "0") ? (seqStr.includes('.') ? `${seqStr} ` : `${seqStr}. `) : '';
                     const displayName = `${prefix}${item.name.replace(/^- /, '')}`;
@@ -485,10 +499,16 @@
                 window.history.pushState({path:newUrl}, '', newUrl);
             }
 
+            // 🚀 อัปเดตเช็คปิดการทำงานปุ่มลูกศร (ข้ามหน้างบประมาณ)
+            let prevIdx = index - 1;
+            while(prevIdx >= 0 && MASTER_INDEX[prevIdx].name.includes("งบประมาณ")) prevIdx--;
+            let nextIdx = index + 1;
+            while(nextIdx < MASTER_INDEX.length && MASTER_INDEX[nextIdx].name.includes("งบประมาณ")) nextIdx++;
+
             const btnPrev = document.getElementById('dock-btn-prev');
             const btnNext = document.getElementById('dock-btn-next');
-            if(btnPrev) btnPrev.disabled = (index === 0);
-            if(btnNext) btnNext.disabled = (index === MASTER_INDEX.length - 1);
+            if(btnPrev) btnPrev.disabled = (prevIdx < 0);
+            if(btnNext) btnNext.disabled = (nextIdx >= MASTER_INDEX.length);
 
             document.querySelectorAll('.quick-jump-btn').forEach(btn => {
                 btn.classList.remove('bg-emerald-500', 'text-white', 'border-emerald-600', 'scale-110', 'shadow-md');
@@ -809,6 +829,9 @@
                     let statusObj = determineStatus(d.p1, d.p2, d.p3, d.p4, d.actual, currentQuarter, isLastMonthOfQuarter);
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
                     const statusColor = getDonutStatusColorConfig(statusObj);
+                    
+                    // 🚀 สมองกลตัดคำสถานะที่ยาวเกินไป
+                    let displayStatusObj = statusObj.includes("มีแผนอยู่ใน") ? statusObj.replace("มีแผนอยู่ใน ", "มีแผนอยู่ใน<br>") : statusObj;
 
                     const pctVal = parseFloat(percentCumCurrent);
                     const arcLength = 251.32; 
@@ -870,7 +893,7 @@
                                         <div class="w-[68%] flex flex-col items-center justify-center pl-2 gap-1.5 relative z-10 overflow-hidden">
                                             <div class="flex items-center justify-center gap-1.5 w-full">
                                                 <span class="text-xl sm:text-2xl drop-shadow-md shrink-0">${getStatusEmoji(statusObj)}</span>
-                                                <span class="text-[17px] sm:text-[20px] lg:text-[22px] font-black ${statusColor.badgeText} pt-1 drop-shadow-md whitespace-nowrap tracking-tight">${statusObj}</span>
+                                                <span class="text-[17px] sm:text-[20px] lg:text-[22px] font-black ${statusColor.badgeText} pt-1 drop-shadow-md whitespace-nowrap tracking-tight">${displayStatusObj}</span>
                                             </div>
                                             <div class="w-full px-2 py-1.5 bg-white/95 rounded-xl shadow-inner border border-white/60 flex items-center justify-center">
                                                 <p class="text-[10px] sm:text-xs font-black ${statusColor.subText} pt-0.5 tracking-wide text-center leading-snug">เกณฑ์: ${statusColor.subtext}</p>
@@ -891,6 +914,9 @@
                     let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
                     const bStatusColor = getDonutStatusColorConfig(bStatus);
                     
+                    // 🚀 สมองกลตัดคำสถานะที่ยาวเกินไป
+                    let displayBStatus = bStatus.includes("มีแผนอยู่ใน") ? bStatus.replace("มีแผนอยู่ใน ", "มีแผนอยู่ใน<br>") : bStatus;
+
                     const bPctVal = parseFloat(bPctCurrent);
                     const arcLength = 251.32; 
                     const fillLength = (Math.min(bPctVal, 100) / 100) * arcLength;
@@ -951,7 +977,7 @@
                                         <div class="w-[68%] flex flex-col items-center justify-center pl-2 gap-1.5 relative z-10 overflow-hidden">
                                             <div class="flex items-center justify-center gap-1.5 w-full">
                                                 <span class="text-xl sm:text-2xl drop-shadow-md shrink-0">${getStatusEmoji(bStatus)}</span>
-                                                <span class="text-[17px] sm:text-[20px] lg:text-[22px] font-black ${bStatusColor.badgeText} pt-1 drop-shadow-md whitespace-nowrap tracking-tight">${bStatus}</span>
+                                                <span class="text-[17px] sm:text-[20px] lg:text-[22px] font-black ${bStatusColor.badgeText} pt-1 drop-shadow-md whitespace-nowrap tracking-tight">${displayBStatus}</span>
                                             </div>
                                             <div class="w-full px-2 py-1.5 bg-white/95 rounded-xl shadow-inner border border-white/60 flex items-center justify-center">
                                                 <p class="text-[10px] sm:text-xs font-black ${bStatusColor.subText} pt-0.5 tracking-wide text-center leading-snug">เกณฑ์: ${bStatusColor.subtext}</p>
@@ -1120,12 +1146,13 @@
 
                 setTimeout(() => {
                     document.querySelectorAll('#combined-bar-chart-container .bar-chart-col').forEach(bar => bar.style.height = bar.getAttribute('data-h') + '%');
-                    document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => {
+                    document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text, #table-body .bar-chart-col-text').forEach(text => {
                         text.classList.remove('opacity-0');
+                        if (text.hasAttribute('data-left')) text.style.left = text.getAttribute('data-left') + '%';
                     });
                 }, 50);
 
-                // ================== 5. โซนภาพรวมสถานะ (แก้บั๊กหาย ยืนยันโชว์ 100%) ==================
+                // ================== 5. โซนภาพรวมสถานะ ==================
                 let summaryTitle = "";
                 let firstCardTitle = "";
                 let tableTitle = "";
@@ -1244,7 +1271,7 @@
                 `;
                 summaryContainer.classList.remove('hidden');
 
-                // ================== 6. โซนตาราง (Single Progress Bar ต้นฉบับวันศุกร์) ==================
+                // ================== 6. โซนตาราง (Single Progress Bar กลับมาเป็นเวอร์ชันวันศุกร์ 100%) ==================
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>${tableTitle}`;
                 document.getElementById('table-col-1-header').textContent = col1Title;
 
