@@ -741,7 +741,6 @@
                     kpiByUnit[u].a1 += act.actualQ1; kpiByUnit[u].a2 += act.actualQ2; kpiByUnit[u].a3 += act.actualQ3; kpiByUnit[u].a4 += act.actualQ4;
                 });
 
-                // 🚀 เช็คว่ามี KPI หรือไม่
                 const unitKeys = Object.keys(kpiByUnit);
                 const hasKPI = unitKeys.length > 0;
                 const hasBudget = budgetRows.length > 0;
@@ -749,7 +748,7 @@
                 let budgetTitleStr = viewLevel === "ALL" ? "งบประมาณทั้งปี (พรบ.)" : (viewLevel === "GROUP" ? "งบประมาณโครงการ (พรบ.)" : (isActivity ? "งบประมาณกิจกรรมหลัก (พรบ.)" : "งบประมาณโครงการ (พรบ.)"));
                 let kpiTargetTitlePrefix = viewLevel === "ALL" ? "เป้าหมายทั้งหมด (พรบ.)" : (viewLevel === "GROUP" ? "เป้าหมายโครงการ (พรบ.)" : (isActivity ? "เป้าหมายกิจกรรมหลัก (พรบ.)" : "เป้าหมายโครงการ (พรบ.)"));
 
-                // ================== 1. การ์ด KPI (เพิ่มระบบ Smart Empty State ดักจับถ้าไม่มี KPI) ==================
+                // ================== 1. การ์ด KPI ==================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
                 
@@ -797,7 +796,6 @@
                         `;
                     });
                 } else {
-                    // 🚀 โชว์หน้า Empty State สวยๆ เมื่อไม่มีข้อมูล KPI
                     kpiContainer.innerHTML = `
                         <div class="bg-white rounded-[2rem] shadow-sm border border-slate-200 p-8 sm:p-12 text-center flex flex-col items-center justify-center fade-in-up">
                             <div class="p-4 bg-slate-50 rounded-full mb-4 text-slate-400 shadow-inner">
@@ -849,7 +847,6 @@
                 pieChartsContainer.innerHTML = '';
                 const pieAnimations = []; 
                 
-                // 🚀 ดักจับ: ถ้าไม่มีทั้ง KPI และงบ ให้ซ่อนโซน SVG ทั้งแผง
                 if (!hasKPI && !hasBudget) {
                     document.getElementById('donut-zone-header').classList.add('hidden');
                     pieChartsContainer.classList.add('hidden');
@@ -867,6 +864,12 @@
                             
                             let displayStatusObj = statusObj.includes("มีแผนอยู่ใน") ? statusObj.replace("มีแผนอยู่ใน ", "มีแผนอยู่ใน<br>") : statusObj;
 
+                            // 🚀 ระบบสมองกลตั้งชื่อการ์ด SVG แบบ Dynamic
+                            let displayGaugeTitle = unit; 
+                            if (viewLevel !== "ALL") {
+                                displayGaugeTitle = `กิจกรรม KPI (${unit})`;
+                            }
+
                             const pctVal = parseFloat(percentCumCurrent);
                             const arcLength = 251.32; 
                             const fillLength = (Math.min(pctVal, 100) / 100) * arcLength;
@@ -879,7 +882,7 @@
                                     
                                     <div class="relative z-10 px-6 pt-8 pb-0 flex flex-col items-center w-full h-full">
                                         <div class="mb-5 w-full text-center border-b border-black/10 pb-5">
-                                            <h4 class="text-2xl sm:text-3xl font-black ${theme.darkText} drop-shadow-md truncate w-full pt-1 tracking-wide px-2 bg-white/40 py-1.5 rounded-xl border border-white/50 inline-block shadow-sm">${unit}</h4>
+                                            <h4 class="text-xl sm:text-2xl lg:text-3xl font-black ${theme.darkText} drop-shadow-md truncate w-full pt-1 tracking-wide px-2 bg-white/40 py-1.5 rounded-xl border border-white/50 inline-block shadow-sm">${displayGaugeTitle}</h4>
                                         </div>
 
                                         <div class="relative w-[320px] h-[170px] mx-auto mt-4 flex justify-center">
@@ -1036,7 +1039,7 @@
                     }, 100);
                 }
 
-                // ================== 4. โซนกราฟแท่ง (มีระบบดักจับถ้าไม่มีข้อมูล KPI และงบประมาณ) ==================
+                // ================== 4. โซนกราฟแท่ง ==================
                 const barLegend = document.getElementById('bar-legend-container');
                 let legendHtml = '';
                 
@@ -1057,7 +1060,6 @@
                 const barContainer = document.getElementById('combined-bar-chart-container');
                 barContainer.innerHTML = '';
                 
-                // 🚀 ดักจับ: ถ้าไม่มีทั้ง KPI และงบ ให้ซ่อนโซนกราฟแท่ง
                 if (!hasKPI && !hasBudget) {
                     document.getElementById('bar-chart-main-container').classList.add('hidden');
                 } else {
