@@ -86,11 +86,6 @@
                 overflow-x: hidden !important;
             }
         }
-        
-        /* 🚀 Animation สำหรับวาดเส้น Line ของ Combo Chart */
-        @keyframes drawComboLine {
-            to { stroke-dashoffset: 0; }
-        }
     </style>
 </head>
 <body class="p-4 sm:p-6 lg:p-8 lg:pr-24 text-slate-800">
@@ -151,31 +146,15 @@
 
         <div id="pie-charts-container" class="hidden flex flex-wrap justify-center gap-8 mb-16 fade-in-up delay-300 w-full max-w-[1400px] mx-auto"></div>
 
-        <div id="bar-chart-main-container" class="hidden fade-in-up delay-400 bg-slate-50/70 backdrop-blur-sm rounded-[3rem] shadow-inner border border-slate-200 p-6 sm:p-10 md:p-12 mb-12 flex flex-col w-full transform transition-all duration-500 relative overflow-hidden">
-            <h3 class="text-2xl md:text-3xl lg:text-4xl font-black mb-4 flex flex-col md:flex-row md:items-center text-[#1E3A8A] border-b-2 border-slate-200 pb-5 relative z-10 pt-1 drop-shadow-sm px-2 gap-2 md:gap-0">
-                <div class="flex items-center">
-                    <svg class="w-8 h-8 md:w-10 md:h-10 mr-4 text-blue-600 drop-shadow-md shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
-                    ติดตามผลการดำเนินงานสะสมรายไตรมาส
-                </div>
-                <span class="text-base sm:text-xl font-bold text-slate-500 md:ml-4 bg-white px-3 py-1 rounded-lg border border-slate-200 shadow-sm w-max">(แยกตามหน่วยนับ)</span>
+        <div id="bar-chart-main-container" class="hidden fade-in-up delay-400 bg-[#FFEDD5] rounded-[2rem] shadow-sm border border-orange-200 p-4 sm:p-6 md:p-8 mb-10 flex flex-col w-full transform transition-all duration-500 relative overflow-hidden">
+            <h3 class="text-xl md:text-2xl font-extrabold mb-2 flex items-center text-slate-800 border-b border-orange-300 pb-4 relative z-10 pt-1">
+                <svg class="w-7 h-7 mr-3 text-orange-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                ติดตามผลการดำเนินงานสะสมรายไตรมาส (แผนงานสะสม vs ผลงานสะสม)
             </h3>
+            <div class="flex flex-wrap justify-center gap-x-4 sm:gap-x-6 gap-y-3 mt-4 mb-2 z-20 relative" id="bar-legend-container"></div>
             
-            <div class="flex flex-wrap justify-center gap-4 mt-2 mb-10 z-20 relative w-full" id="bar-legend-container">
-                <div class="flex items-center gap-4 bg-white px-6 py-2.5 rounded-full shadow-md border border-slate-200 hover:shadow-lg transition-shadow">
-                    <div class="flex items-center gap-2.5 font-bold text-sm sm:text-base text-slate-700 pt-1">
-                        <div class="w-8 h-0 border-t-[3px] border-slate-800 flex items-center justify-center relative"><div class="w-3.5 h-3.5 rounded-full bg-slate-800 border-2 border-white shadow-sm absolute"></div></div>
-                        เป้าหมายแผนงานสะสม
-                    </div>
-                    <div class="w-px h-5 bg-slate-300 mx-2"></div>
-                    <div class="flex items-center gap-2.5 font-bold text-sm sm:text-base text-slate-700 pt-1">
-                        <div class="w-5 h-5 bg-emerald-500 rounded-sm shadow-[inset_0_-2px_4px_rgba(0,0,0,0.2)] border border-emerald-600"></div>
-                        ผลการดำเนินงานสะสม
-                    </div>
-                </div>
-            </div>
-            
-            <div class="w-full relative z-10">
-                <div class="flex flex-wrap justify-center gap-8 lg:gap-10 transition-all duration-500 w-full" id="combined-bar-chart-container"></div>
+            <div class="w-full overflow-x-auto hide-scroll pb-6 pt-4 relative z-10">
+                <div class="relative h-[400px] sm:h-[450px] flex justify-between items-end px-2 sm:px-4 pb-2 transition-all duration-500" id="combined-bar-chart-container"></div>
             </div>
         </div>
 
@@ -816,152 +795,348 @@
                     budgetContainer.classList.remove('hidden');
                 } else budgetContainer.classList.add('hidden');
 
-                // ================== 3. โซนสถานะความก้าวหน้า (Combo Bar + Line Chart) ==================
-                const barContainer = document.getElementById('combined-bar-chart-container');
-                barContainer.innerHTML = '';
+                // ================== 3. โซนสถานะความก้าวหน้า (SVG Premium Gauge) ==================
+                const pieChartsContainer = document.getElementById('pie-charts-container');
+                pieChartsContainer.innerHTML = '';
+                const pieAnimations = []; 
                 
-                document.getElementById('bar-chart-main-container').classList.remove('hidden');
+                document.getElementById('donut-zone-header').classList.remove('hidden');
+                pieChartsContainer.classList.remove('hidden');
 
-                const generateComboChart = (title, unit, planData, actData, theme) => {
-                    let maxValRaw = Math.max(...planData, ...actData);
-                    let maxVal = maxValRaw > 0 ? maxValRaw * 1.15 : 1; 
+                unitKeys.forEach((unit, idx) => {
+                    const d = kpiByUnit[unit];
+                    const percentCumCurrent = getPctVsCurrentPlan(d.p1, d.p2, d.p3, d.p4, d.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
+                    let statusObj = determineStatus(d.p1, d.p2, d.p3, d.p4, d.actual, currentQuarter, isLastMonthOfQuarter);
+                    const theme = kpiColorThemes[idx % kpiColorThemes.length];
+                    const statusColor = getDonutStatusColorConfig(statusObj);
 
-                    let svgPoints = [];
-                    let colsHtml = '';
+                    const pctVal = parseFloat(percentCumCurrent);
+                    const arcLength = 251.32; 
+                    const fillLength = (Math.min(pctVal, 100) / 100) * arcLength;
+                    const dashOffset = arcLength - fillLength;
+                    const needleDeg = (Math.min(pctVal, 100) * 1.8) - 90; 
 
-                    for (let q = 1; q <= 4; q++) {
-                        let pVal = planData[q - 1];
-                        let aVal = q <= currentQuarter ? actData[q - 1] : 0;
-                        let showActual = q <= currentQuarter;
-
-                        let pPct = maxVal > 0 ? (pVal / maxVal) * 100 : 0;
-                        let aPct = showActual && maxVal > 0 ? (aVal / maxVal) * 100 : 0;
-
-                        let xPos = (q * 25) - 12.5; 
-                        let yPos = 100 - pPct;
-                        svgPoints.push(`${xPos},${yPos}`);
-
-                        colsHtml += `
-                            <div class="flex flex-col items-center justify-end h-full relative w-1/4 group/item z-10">
-                                ${showActual ? `
-                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-[60] group-hover/item:-translate-y-3 group-hover/item:opacity-100 transition-all duration-300 pointer-events-none" style="bottom: ${Math.max(aPct, pPct)}%">
-                                    <div class="bg-slate-800 text-white px-3 py-2 rounded-xl shadow-2xl border border-slate-600 text-center relative z-50 min-w-[100px]">
-                                        <span class="block text-[11px] text-emerald-400 font-black mb-1 pt-1">ผลงาน: ${formatAutoDecimal(aVal)}</span>
-                                        <span class="block text-[11px] text-slate-300 font-bold pt-1 border-t border-slate-600">แผน: ${formatAutoDecimal(pVal)}</span>
-                                        <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-slate-800 transform rotate-45 border-r border-b border-slate-600"></div>
-                                    </div>
-                                </div>
-                                <div class="w-[45%] sm:w-[55%] max-w-[45px] ${theme.actBg} border-t-2 border-l-2 border-white/50 rounded-t-xl bar-chart-col shadow-[inset_0_-4px_8px_rgba(0,0,0,0.2),_0_4px_10px_rgba(0,0,0,0.15)] relative overflow-hidden transition-all duration-1000 ease-out" style="height: 0%" data-h="${aPct}">
-                                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                                    <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20"></div>
-                                </div>
-                                ` : `
-                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-[60] group-hover/item:-translate-y-3 group-hover/item:opacity-100 transition-all duration-300 pointer-events-none" style="bottom: ${pPct}%">
-                                    <div class="bg-slate-800 text-white px-3 py-2 rounded-xl shadow-2xl border border-slate-600 text-center relative z-50 min-w-[100px]">
-                                        <span class="block text-[11px] text-slate-300 font-bold mb-1 pt-1">แผนงาน (ล่วงหน้า)</span>
-                                        <span class="block text-xs text-yellow-400 font-black pt-1 border-t border-slate-600">${formatAutoDecimal(pVal)}</span>
-                                        <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-slate-800 transform rotate-45 border-r border-b border-slate-600"></div>
-                                    </div>
-                                </div>
-                                <div class="w-[45%] sm:w-[55%] max-w-[45px] border-2 border-dashed border-slate-300 bg-slate-100/50 rounded-t-xl h-[10px] group-hover/item:h-[20px] transition-all duration-300 opacity-50"></div>
-                                `}
-
-                                <div class="absolute w-4 h-4 sm:w-5 sm:h-5 bg-slate-800 border-[3px] border-white rounded-full shadow-md z-40 transform transition-transform group-hover/item:scale-150 group-hover/item:bg-blue-500 cursor-pointer" style="bottom: calc(${pPct}% - 8px);"></div>
-
-                                <div class="absolute -bottom-12 w-full text-center">
-                                    <div class="inline-block px-3 py-1.5 ${q === currentQuarter ? 'bg-blue-600 text-white border-blue-700' : 'bg-white text-slate-600 border-slate-200'} rounded-lg shadow-sm border text-xs sm:text-sm font-black pt-1 transition-colors">Q${q}</div>
-                                </div>
-                            </div>
-                        `;
-                    }
-
-                    let pointsAttr = svgPoints.join(' ');
-                    let steps = [1, 0.75, 0.5, 0.25, 0];
-
-                    return `
-                        <div class="w-full lg:w-[calc(50%-1rem)] max-w-[800px] bg-white rounded-[2.5rem] shadow-xl border border-slate-100 p-6 sm:p-8 flex flex-col relative hover:-translate-y-2 transition-all duration-500 hover:shadow-2xl fade-in-up">
+                    pieChartsContainer.innerHTML += `
+                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] ${theme.cardPctBg} rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500 pb-6">
+                            <div class="absolute top-0 left-0 w-full h-2 ${statusColor.badgeBg}"></div>
                             
-                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-12 border-b border-slate-100 pb-5 gap-4 relative z-10">
-                                <h4 class="text-xl sm:text-2xl font-black ${theme.darkText} flex items-center gap-3 pt-1">
-                                    <div class="p-2.5 ${theme.cardPctBg} rounded-xl shadow-sm"><svg class="w-7 h-7 ${theme.actText}" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg></div>
-                                    ${title}
-                                </h4>
-                                <span class="text-sm font-black text-slate-600 bg-slate-100 px-4 py-1.5 rounded-full border border-slate-200 shadow-inner pt-2">หน่วย: ${unit}</span>
-                            </div>
-                            
-                            <div class="relative w-full h-[280px] sm:h-[350px] mt-2 mb-12 ml-6 sm:ml-10 pr-4 sm:pr-8">
+                            <div class="relative z-10 px-6 pt-8 pb-0 flex flex-col items-center w-full h-full">
+                                <div class="mb-5 w-full text-center border-b border-black/10 pb-5">
+                                    <h4 class="text-2xl sm:text-3xl font-black ${theme.darkText} drop-shadow-md truncate w-full pt-1 tracking-wide px-2 bg-white/40 py-1.5 rounded-xl border border-white/50 inline-block shadow-sm">${unit}</h4>
+                                </div>
+
+                                <div class="relative w-[320px] h-[170px] mx-auto mt-4 flex justify-center">
+                                    <svg viewBox="0 0 200 120" class="w-full h-full overflow-visible z-10" style="filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.15));">
+                                        <defs>
+                                            <filter id="glow-kpi-${idx}" x="-20%" y="-20%" width="140%" height="140%">
+                                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                                <feMerge>
+                                                    <feMergeNode in="blur" />
+                                                    <feMergeNode in="SourceGraphic" />
+                                                </feMerge>
+                                            </filter>
+                                            <linearGradient id="grad-kpi-${idx}" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="${statusColor.ring}" stop-opacity="0.8"/>
+                                                <stop offset="100%" stop-color="${statusColor.ring}" />
+                                            </linearGradient>
+                                        </defs>
+                                        
+                                        <path d="M 40 100 A 60 60 0 0 1 160 100" fill="none" stroke="#1E293B" stroke-width="4" stroke-dasharray="3 15.8" opacity="0.7" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E2E8F0" stroke-width="24" stroke-linecap="round" opacity="0.6"/>
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#grad-kpi-${idx})" stroke-width="24" stroke-linecap="round"
+                                              stroke-dasharray="${arcLength}" stroke-dashoffset="${arcLength}"
+                                              id="svg-arc-kpi-${idx}" class="gauge-arc-transition" filter="url(#glow-kpi-${idx})" />
+
+                                        <g id="svg-needle-kpi-${idx}" class="gauge-needle-transition" style="transform-origin: 100px 100px; transform: rotate(-90deg); filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.4));">
+                                            <polygon points="95,100 105,100 100,16" fill="#1E293B" />
+                                            <circle cx="100" cy="100" r="14" fill="#1E293B" />
+                                            <circle cx="100" cy="100" r="5" fill="#F8FAFC" />
+                                        </g>
+                                    </svg>
+                                </div>
                                 
-                                <div class="absolute top-0 left-0 w-full h-full flex flex-col justify-between pointer-events-none z-0">
-                                    ${steps.map((pct, i) => `
-                                        <div class="w-full flex items-center border-t ${i === steps.length - 1 ? 'border-slate-400 border-solid' : 'border-slate-200 border-dashed'} h-0 relative">
-                                            <span class="absolute -left-3 sm:-left-4 -translate-x-full text-[10px] sm:text-xs font-black text-slate-400 bg-white pr-2 pt-0.5">${formatAutoDecimal(maxVal * pct)}</span>
+                                <div class="mt-auto w-full pt-2">
+                                    <div class="w-full ${statusColor.badgeBg} border-2 ${statusColor.border} rounded-3xl p-3 shadow-xl flex flex-row items-stretch justify-between ${statusColor.animClass} relative overflow-hidden">
+                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-2xl pointer-events-none"></div>
+                                        
+                                        <div class="w-[35%] flex flex-col items-center justify-center border-r-2 border-white/30 pr-2 relative z-10">
+                                            <div class="flex items-baseline gap-0.5">
+                                                <span class="text-3xl sm:text-4xl font-black ${statusColor.pctText} tracking-tighter drop-shadow-md">${percentCumCurrent}</span>
+                                                <span class="text-lg sm:text-xl font-bold ${statusColor.pctText} opacity-90 drop-shadow-sm">%</span>
+                                            </div>
                                         </div>
-                                    `).join('')}
-                                </div>
 
-                                <svg viewBox="0 0 100 100" class="absolute top-0 left-0 w-full h-full pointer-events-none z-20" preserveAspectRatio="none">
-                                    <defs>
-                                        <filter id="line-shadow-${unit.replace(/\s+/g, '')}" x="-20%" y="-20%" width="140%" height="140%">
-                                            <feDropShadow dx="0" dy="5" stdDeviation="4" flood-opacity="0.3" flood-color="#0F172A"/>
-                                        </filter>
-                                    </defs>
-                                    <polyline points="${pointsAttr}" fill="none" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" filter="url(#line-shadow-${unit.replace(/\s+/g, '')})" style="stroke-dashoffset: 1000; stroke-dasharray: 1000; animation: drawComboLine 2.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;" />
-                                </svg>
+                                        <div class="w-[65%] flex flex-col items-center justify-center pl-3 gap-2 relative z-10">
+                                            <div class="flex items-center justify-center gap-2 w-full">
+                                                <span class="text-2xl drop-shadow-md">${getStatusEmoji(statusObj)}</span>
+                                                <span class="text-xl sm:text-2xl font-black ${statusColor.badgeText} pt-1 drop-shadow-md truncate tracking-wide">${statusObj}</span>
+                                            </div>
+                                            <div class="w-full px-3 py-2 bg-white/95 rounded-xl shadow-inner border border-white/60 flex items-center justify-center">
+                                                <p class="text-xs sm:text-sm font-black ${statusColor.subText} pt-0.5 tracking-wide text-center leading-snug">เกณฑ์: ${statusColor.subtext}</p>
+                                            </div>
+                                        </div>
 
-                                <div class="absolute top-0 left-0 w-full h-full flex z-10">
-                                    ${colsHtml}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     `;
-                };
-
-                let chartsHtml = '';
-                unitKeys.forEach((unit, idx) => {
-                    const theme = kpiColorThemes[idx % kpiColorThemes.length];
-                    const d = kpiByUnit[unit];
-                    let planData = []; let actData = [];
-                    let pPlanCum = 0; let pActCum = 0;
-                    for(let q=1; q<=4; q++) {
-                        pPlanCum += d[`p${q}`];
-                        pActCum += d[`a${q}`];
-                        if (q === currentQuarter) pActCum = d.actual;
-                        planData.push(pPlanCum);
-                        actData.push(pActCum);
-                    }
-                    chartsHtml += generateComboChart(`ผลการดำเนินงาน`, unit, planData, actData, theme);
+                    pieAnimations.push({ id: `kpi-${idx}`, offset: dashOffset, deg: needleDeg });
                 });
 
                 if (budgetRows.length > 0) {
                     const bObj = budgetRows[0];
-                    let bPlanData = []; let bActData = [];
-                    let bPlanCum = 0; let bActCum = 0;
-                    for(let q=1; q<=4; q++) {
-                        bPlanCum += bObj[`planQ${q}`];
-                        bActCum += bObj[`actualQ${q}`];
-                        if (q === currentQuarter) bActCum = bObj.actual;
-                        bPlanData.push(bPlanCum);
-                        bActData.push(bActCum);
-                    }
-                    const budgetTheme = { 
-                        darkText: 'text-amber-900', legendActBg: 'bg-amber-500', 
-                        actBg: 'bg-amber-500', actBorder: 'border-amber-600', 
-                        cardPctBg: 'bg-amber-50', actText: 'text-amber-600' 
-                    };
-                    chartsHtml += generateComboChart(`การเบิกจ่ายงบประมาณ`, 'บาท', bPlanData, bActData, budgetTheme);
-                }
-                
-                barContainer.innerHTML = chartsHtml;
+                    const bPctCurrent = getPctVsCurrentPlan(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
+                    let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
+                    const bStatusColor = getDonutStatusColorConfig(bStatus);
+                    
+                    const bPctVal = parseFloat(bPctCurrent);
+                    const arcLength = 251.32; 
+                    const fillLength = (Math.min(bPctVal, 100) / 100) * arcLength;
+                    const dashOffset = arcLength - fillLength;
+                    const needleDeg = (Math.min(bPctVal, 100) * 1.8) - 90; 
 
-                // 🚀 คำสั่งแอนิเมชันให้แท่งบาร์ค่อยๆ เลื่อนขึ้น
+                    pieChartsContainer.innerHTML += `
+                        <div class="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.35rem)] max-w-[420px] bg-[#FEF3C7] rounded-[2.5rem] shadow-[0_8px_30px_rgba(0,0,0,0.06)] border border-white flex flex-col relative hover:-translate-y-2 overflow-hidden transition-all duration-500 pb-6">
+                            <div class="absolute top-0 left-0 w-full h-2 ${bStatusColor.badgeBg}"></div>
+                            
+                            <div class="relative z-10 px-6 pt-8 pb-0 flex flex-col items-center w-full h-full">
+                                <div class="mb-5 w-full text-center border-b border-black/10 pb-5">
+                                    <h4 class="text-2xl sm:text-3xl font-black text-amber-900 drop-shadow-md truncate w-full pt-1 tracking-wide px-2 bg-white/40 py-1.5 rounded-xl border border-white/50 inline-block shadow-sm">การเบิกจ่าย</h4>
+                                </div>
+
+                                <div class="relative w-[320px] h-[170px] mx-auto mt-4 flex justify-center">
+                                    <svg viewBox="0 0 200 120" class="w-full h-full overflow-visible z-10" style="filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.15));">
+                                        <defs>
+                                            <filter id="glow-budget" x="-20%" y="-20%" width="140%" height="140%">
+                                                <feGaussianBlur stdDeviation="3" result="blur" />
+                                                <feMerge>
+                                                    <feMergeNode in="blur" />
+                                                    <feMergeNode in="SourceGraphic" />
+                                                </feMerge>
+                                            </filter>
+                                            <linearGradient id="grad-budget" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stop-color="${bStatusColor.ring}" stop-opacity="0.8"/>
+                                                <stop offset="100%" stop-color="${bStatusColor.ring}" />
+                                            </linearGradient>
+                                        </defs>
+                                        
+                                        <path d="M 40 100 A 60 60 0 0 1 160 100" fill="none" stroke="#1E293B" stroke-width="4" stroke-dasharray="3 15.8" opacity="0.7" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" />
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#E2E8F0" stroke-width="24" stroke-linecap="round" opacity="0.6"/>
+                                        <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#grad-budget)" stroke-width="24" stroke-linecap="round"
+                                              stroke-dasharray="${arcLength}" stroke-dashoffset="${arcLength}"
+                                              id="svg-arc-budget" class="gauge-arc-transition" filter="url(#glow-budget)" />
+
+                                        <g id="svg-needle-budget" class="gauge-needle-transition" style="transform-origin: 100px 100px; transform: rotate(-90deg); filter: drop-shadow(0px 4px 6px rgba(0,0,0,0.4));">
+                                            <polygon points="95,100 105,100 100,16" fill="#1E293B" />
+                                            <circle cx="100" cy="100" r="14" fill="#1E293B" />
+                                            <circle cx="100" cy="100" r="5" fill="#F8FAFC" />
+                                        </g>
+                                    </svg>
+                                </div>
+                                
+                                <div class="mt-auto w-full pt-2">
+                                    <div class="w-full ${bStatusColor.badgeBg} border-2 ${bStatusColor.border} rounded-3xl p-3 shadow-xl flex flex-row items-stretch justify-between ${bStatusColor.animClass} relative overflow-hidden">
+                                        <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-2xl pointer-events-none"></div>
+                                        
+                                        <div class="w-[35%] flex flex-col items-center justify-center border-r-2 border-white/30 pr-2 relative z-10">
+                                            <div class="flex items-baseline gap-0.5">
+                                                <span class="text-3xl sm:text-4xl font-black ${bStatusColor.pctText} tracking-tighter drop-shadow-md">${bPctCurrent}</span>
+                                                <span class="text-lg sm:text-xl font-bold ${bStatusColor.pctText} opacity-90 drop-shadow-sm">%</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="w-[65%] flex flex-col items-center justify-center pl-3 gap-2 relative z-10">
+                                            <div class="flex items-center justify-center gap-2 w-full">
+                                                <span class="text-2xl drop-shadow-md">${getStatusEmoji(bStatus)}</span>
+                                                <span class="text-xl sm:text-2xl font-black ${bStatusColor.badgeText} pt-1 drop-shadow-md truncate tracking-wide">${bStatus}</span>
+                                            </div>
+                                            <div class="w-full px-3 py-2 bg-white/95 rounded-xl shadow-inner border border-white/60 flex items-center justify-center">
+                                                <p class="text-xs sm:text-sm font-black ${bStatusColor.subText} pt-0.5 tracking-wide text-center leading-snug">เกณฑ์: ${bStatusColor.subtext}</p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    pieAnimations.push({ id: `budget`, offset: dashOffset, deg: needleDeg }); 
+                }
+
                 setTimeout(() => {
-                    document.querySelectorAll('#combined-bar-chart-container .bar-chart-col').forEach(bar => bar.style.height = bar.getAttribute('data-h') + '%');
-                    document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => {
-                        text.classList.remove('opacity-0');
+                    pieAnimations.forEach(anim => {
+                        const arc = document.getElementById(`svg-arc-${anim.id}`);
+                        const needle = document.getElementById(`svg-needle-${anim.id}`);
+                        if (arc) arc.style.strokeDashoffset = anim.offset;
+                        if (needle) needle.style.transform = `rotate(${anim.deg}deg)`;
                     });
                 }, 100);
 
-                // ================== 5. โซนภาพรวมสถานะ ==================
+                // ================== 4. โซนกราฟแท่ง (Reverted to Overlapping Bar Idea 1) ==================
+                const barLegend = document.getElementById('bar-legend-container');
+                let legendHtml = '';
+                unitKeys.forEach((unit, idx) => {
+                    const theme = kpiColorThemes[idx % kpiColorThemes.length];
+                    // สลับสี: แผน (actBg-เข้มกว้าง) / ผล (planBg-อ่อนแคบ)
+                    legendHtml += `
+                        <div class="flex items-center px-4 py-2 bg-[#F8FAFC] rounded-full shadow-sm border border-slate-200 font-bold text-xs sm:text-sm pt-1 gap-2.5">
+                            <div class="relative w-4 h-4 flex items-end justify-center">
+                                <div class="absolute bottom-0 w-full h-full ${theme.actBg} rounded-[2px] opacity-80"></div>
+                                <div class="absolute bottom-0 w-[55%] h-[60%] ${theme.planBg} rounded-[2px] z-10 border border-white/50 shadow-sm"></div>
+                            </div>
+                            <span class="${theme.darkText}">${unit}</span>
+                        </div>
+                    `;
+                });
+                if (budgetRows.length > 0) {
+                    legendHtml += `
+                        <div class="flex items-center px-4 py-2 bg-[#F8FAFC] rounded-full shadow-sm border border-slate-200 font-bold text-xs sm:text-sm pt-1 gap-2.5">
+                            <div class="relative w-4 h-4 flex items-end justify-center">
+                                <div class="absolute bottom-0 w-full h-full bg-amber-500 rounded-[2px] opacity-80"></div>
+                                <div class="absolute bottom-0 w-[55%] h-[60%] bg-amber-300 rounded-[2px] z-10 border border-white/50 shadow-sm"></div>
+                            </div>
+                            <span class="text-amber-800">งบประมาณ (บาท)</span>
+                        </div>
+                    `;
+                }
+                barLegend.innerHTML = legendHtml;
+
+                const barContainer = document.getElementById('combined-bar-chart-container');
+                barContainer.innerHTML = '';
+                const qData = [1, 2, 3, 4].map(q => {
+                    let kpis = unitKeys.map(unit => {
+                        let pPlan = 0, pAct = 0;
+                        for(let i=1; i<=q; i++) { pPlan += kpiByUnit[unit][`p${i}`]; pAct += kpiByUnit[unit][`a${i}`]; }
+                        if (q === currentQuarter) pAct = kpiByUnit[unit].actual;
+                        return { unit: unit, plan: pPlan, act: pAct };
+                    });
+                    let bPlan = 0, bAct = 0;
+                    if(budgetRows.length > 0) {
+                        budgetRows.forEach(bRow => { 
+                            for(let i=1; i<=q; i++) { bPlan += bRow[`planQ${i}`]; bAct += bRow[`actualQ${i}`]; } 
+                            if (q === currentQuarter) bAct = bRow.actual;
+                        });
+                    }
+                    return { q: q, name: `ไตรมาสที่ ${q}`, showActual: currentQuarter >= q, kpis: kpis, bPlan: bPlan, bAct: bAct };
+                });
+
+                const minWidth = Math.max(1200, (unitKeys.length + (budgetRows.length > 0 ? 1 : 0)) * 300); 
+                barContainer.style.minWidth = `${minWidth}px`;
+
+                qData.forEach((q, index) => {
+                    const isQ1Q3 = (q.q === 1 || q.q === 3);
+                    const cardBgClass = isQ1Q3 ? "bg-[#FED7AA] shadow-sm border border-orange-300" : "bg-[#FFF7ED] shadow-sm border border-orange-200";
+                    const labelBgClass = isQ1Q3 ? "bg-emerald-700 text-white shadow-md" : "bg-emerald-200 text-slate-900 shadow-sm";
+
+                    let barsHtml = '';
+                    q.kpis.forEach((kpi, kpiIdx) => {
+                        if (kpi.plan === 0 && kpi.act === 0) return;
+
+                        const theme = kpiColorThemes[kpiIdx % kpiColorThemes.length];
+                        const maxValRaw = Math.max(kpiByUnit[kpi.unit].target, kpiByUnit[kpi.unit].actual, ...[1,2,3,4].map(qx => { let s=0; for(let i=1; i<=qx; i++) s+= kpiByUnit[kpi.unit][`p${i}`]; return s; }));
+                        const maxVal = maxValRaw > 0 ? maxValRaw * 1.15 : 1; 
+
+                        const ppH = Math.min((kpi.plan / maxVal) * 100, 100);
+                        const paH = q.showActual ? Math.min((kpi.act / maxVal) * 100, 100) : 0;
+                        
+                        const pctVal = kpi.plan > 0 ? (kpi.act / kpi.plan) * 100 : (kpi.act > 0 ? 100 : 0);
+                        let pctText = pctVal === 0 || pctVal === 100 ? `${Math.round(pctVal)}%` : `${pctVal.toFixed(2)}%`;
+                        
+                        let pctColor = "text-white";
+                        if (kpi.plan > 0) {
+                            if (pctVal >= 100) pctColor = "text-emerald-400";
+                            else if (pctVal >= 50) pctColor = "text-yellow-400";
+                            else pctColor = "text-red-400";
+                        }
+
+                        barsHtml += `
+                            <div class="flex flex-col items-center justify-end h-full relative w-10 sm:w-14 group/item mx-2 hover:z-50 cursor-pointer">
+                                
+                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-[60] group-hover/item:-translate-y-3 group-hover/item:opacity-100 transition-all duration-300 pointer-events-none" style="bottom: ${Math.max(ppH, paH)}%">
+                                    <div class="bg-slate-800 text-white px-3 py-2.5 rounded-xl shadow-2xl border border-slate-600 text-center relative z-50 min-w-[110px]">
+                                        ${q.showActual ? `
+                                            <span class="block text-[11px] text-slate-300 font-bold mb-1 pt-1 border-b border-slate-600 pb-1.5">แผน: <span class="text-white">${formatAutoDecimal(kpi.plan)}</span></span>
+                                            <span class="block text-[11px] text-slate-300 font-bold pt-1">ผล: <span class="text-white">${formatAutoDecimal(kpi.act)}</span></span>
+                                            <span class="block text-sm ${pctColor} font-black mt-1">${pctText}</span>
+                                        ` : `
+                                            <span class="block text-[11px] text-slate-300 font-bold mb-1 pt-1 border-b border-slate-600 pb-1.5">แผน (ล่วงหน้า)</span>
+                                            <span class="block text-xs text-white font-black pt-1">${formatAutoDecimal(kpi.plan)}</span>
+                                        `}
+                                        <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-slate-800 transform rotate-45 border-r border-b border-slate-600"></div>
+                                    </div>
+                                </div>
+
+                                <div class="absolute bottom-0 w-full ${theme.actBg} rounded-t-sm bar-chart-col opacity-90 transition-all duration-700 ease-out shadow-sm border-t border-white/20" style="height: 0%" data-h="${ppH}"></div>
+
+                                ${q.showActual ? `
+                                <div class="absolute bottom-0 w-[55%] ${theme.planBg} rounded-t-sm bar-chart-col z-10 transition-all duration-700 ease-out shadow-md border border-white/60" style="height: 0%" data-h="${paH}"></div>
+                                ` : ''}
+                            </div>`;
+                    });
+
+                    if(budgetRows.length > 0 && (q.bPlan > 0 || q.bAct > 0)) {
+                        const bObj = budgetRows[0];
+                        const maxBRaw = Math.max(bObj.target, bObj.actual, ...[1,2,3,4].map(qx => { let s=0; for(let i=1; i<=qx; i++) s+= bObj[`planQ${i}`]; return s; }));
+                        const maxB = maxBRaw > 0 ? maxBRaw * 1.15 : 1; 
+
+                        const bpH = Math.min((q.bPlan / maxB) * 100, 100);
+                        const baH = q.showActual ? Math.min((q.bAct / maxB) * 100, 100) : 0;
+                        
+                        const pctVal = q.bPlan > 0 ? (q.bAct / q.bPlan) * 100 : (q.bAct > 0 ? 100 : 0);
+                        let pctText = pctVal === 0 || pctVal === 100 ? `${Math.round(pctVal)}%` : `${pctVal.toFixed(2)}%`;
+                        
+                        let pctColor = "text-white";
+                        if (q.bPlan > 0) {
+                            if (pctVal >= 100) pctColor = "text-emerald-400";
+                            else if (pctVal >= 50) pctColor = "text-yellow-400";
+                            else pctColor = "text-red-400";
+                        }
+
+                        barsHtml += `<div class="w-4 border-l border-dashed border-orange-300/50 mx-2"></div>`;
+                        
+                        barsHtml += `
+                            <div class="flex flex-col items-center justify-end h-full relative w-10 sm:w-14 group/item mx-2 hover:z-50 cursor-pointer">
+                                
+                                <div class="absolute flex flex-col items-center pb-2 opacity-0 bar-chart-col-text z-[60] group-hover/item:-translate-y-3 group-hover/item:opacity-100 transition-all duration-300 pointer-events-none" style="bottom: ${Math.max(bpH, baH)}%">
+                                    <div class="bg-slate-800 text-white px-3 py-2.5 rounded-xl shadow-2xl border border-slate-600 text-center relative z-50 min-w-[120px]">
+                                        ${q.showActual ? `
+                                            <span class="block text-[11px] text-slate-300 font-bold mb-1 pt-1 border-b border-slate-600 pb-1.5">แผน: <span class="text-white">${formatMoney(q.bPlan)}</span></span>
+                                            <span class="block text-[11px] text-slate-300 font-bold pt-1">ผล: <span class="text-white">${formatMoney(q.bAct)}</span></span>
+                                            <span class="block text-sm ${pctColor} font-black mt-1">${pctText}</span>
+                                        ` : `
+                                            <span class="block text-[11px] text-slate-300 font-bold mb-1 pt-1 border-b border-slate-600 pb-1.5">แผนงบฯ (ล่วงหน้า)</span>
+                                            <span class="block text-xs text-white font-black pt-1">${formatMoney(q.bPlan)}</span>
+                                        `}
+                                        <div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-slate-800 transform rotate-45 border-r border-b border-slate-600"></div>
+                                    </div>
+                                </div>
+
+                                <div class="absolute bottom-0 w-full bg-amber-500 rounded-t-sm bar-chart-col opacity-90 transition-all duration-700 ease-out shadow-sm border-t border-white/20" style="height: 0%" data-h="${bpH}"></div>
+
+                                ${q.showActual ? `
+                                <div class="absolute bottom-0 w-[55%] bg-amber-300 rounded-t-sm bar-chart-col z-10 transition-all duration-700 ease-out shadow-md border border-white/60" style="height: 0%" data-h="${baH}"></div>
+                                ` : ''}
+                            </div>`;
+                    }
+
+                    if (barsHtml === '') barsHtml = `<div class="flex items-center justify-center h-full w-full opacity-50 font-bold pt-1 ${isQ1Q3 ? 'text-white' : 'text-slate-700'}">ไม่มีแผนงานสะสมในไตรมาสนี้</div>`;
+
+                    barContainer.innerHTML += `
+                        <div class="group/bar flex flex-col items-center flex-1 h-full justify-end ${cardBgClass} rounded-2xl mx-2 pt-12 pb-2 transition-all duration-300 hover:shadow-xl relative overflow-visible">
+                            <div class="flex items-end justify-center h-full w-full px-2">${barsHtml}</div>
+                            <div class="mt-4 mb-2 px-6 py-2 ${labelBgClass} rounded-full text-sm sm:text-base font-bold w-[85%] truncate pt-3 text-center border border-white/20 shadow-md relative z-10">${q.name}</div>
+                        </div>`;
+                });
+
+                setTimeout(() => {
+                    document.querySelectorAll('#combined-bar-chart-container .bar-chart-col').forEach(bar => bar.style.height = bar.getAttribute('data-h') + '%');
+                    document.querySelectorAll('#combined-bar-chart-container .bar-chart-col-text').forEach(text => text.classList.remove('opacity-0'));
+                }, 50);
+
+                // ================== 5. โซนภาพรวมสถานะ (แก้บั๊กหายไปให้กลับมาโชว์ 100%) ==================
                 let summaryTitle = "";
                 let firstCardTitle = "";
                 let tableTitle = "";
@@ -1078,7 +1253,9 @@
                         </div>
                     </div>
                 `;
-                summaryContainer.classList.remove('hidden');
+                
+                // 🚀 ล็อกเป้า โชว์โซนนี้แน่นอน 100%
+                document.getElementById('status-summary-container').classList.remove('hidden');
 
                 // ================== 6. โซนตาราง ==================
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>${tableTitle}`;
