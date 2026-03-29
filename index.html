@@ -229,7 +229,7 @@
         <div class="w-px h-5 lg:w-6 lg:h-px bg-slate-300 mx-0.5 lg:mx-0 lg:my-0.5 flex-shrink-0"></div>
 
         <button onclick="window.scrollTo({top:document.body.scrollHeight, behavior:'smooth'})" class="p-2 lg:p-2.5 rounded-full hover:bg-slate-100/80 text-slate-600 transition-all hover:scale-110 hover:text-emerald-600 focus:outline-none flex-shrink-0" title="ลงล่างสุด">
-            <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            <svg class="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7-7m0 0l-7-7m7 7V3"></path></svg>
         </button>
     </div>
 
@@ -255,13 +255,14 @@
             { planBg: 'bg-pink-300', planBorder: 'border-pink-400', planText: 'text-pink-700', darkText: 'text-pink-900', actBg: 'bg-pink-500', actBorder: 'border-pink-600', actText: 'text-pink-600', legendPlanBg: 'bg-pink-300', legendActBg: 'bg-pink-500', cardPlanBg: 'bg-gradient-to-br from-pink-200 to-pink-300', cardPlanText: 'text-pink-900', cardActBg: 'bg-gradient-to-br from-pink-500 to-pink-600', cardActText: 'text-white', cardPctBg: 'bg-pink-50', cardPctText: 'text-pink-800' }
         ];
 
+        // 🚀 อัปเดตสีสถานะ "เป็นไปตามแผน" ให้เป็นสีดำ (slate-900)
         const getDonutStatusColorConfig = (status) => {
-            if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-emerald-500', badgeText: 'text-slate-900', pctText: 'text-slate-900', border: 'border-emerald-600', subBg: 'bg-white', subText: 'text-emerald-700', subBorder: 'border-emerald-200', animClass: 'anim-success-alt', subtext: 'ร้อยละ ≥ 100' };
-            if (status === "ล่าช้า") return { ring: '#FACC15', badgeBg: 'bg-amber-400', badgeText: 'text-slate-900', pctText: 'text-slate-900', border: 'border-amber-500', subBg: 'bg-white', subText: 'text-amber-800', subBorder: 'border-amber-200', animClass: 'anim-warning-alt', subtext: 'ร้อยละ 50 - 99' }; 
-            if (status === "เสี่ยง") return { ring: '#EF4444', badgeBg: 'bg-red-500', badgeText: 'text-white', pctText: 'text-white', border: 'border-red-600', subBg: 'bg-white', subText: 'text-red-700', subBorder: 'border-red-200', animClass: 'anim-danger-alt', subtext: 'ต่ำกว่าร้อยละ 50' };
-            if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return { ring: '#1E293B', badgeBg: 'bg-slate-800', badgeText: 'text-white', pctText: 'text-white', border: 'border-slate-900', subBg: 'bg-white', subText: 'text-slate-800', subBorder: 'border-slate-300', animClass: 'anim-critical-alt', subtext: 'ผลงาน = 0' };
-            if (status.includes("มีแผนอยู่ใน")) return { ring: '#94A3B8', badgeBg: 'bg-slate-300', badgeText: 'text-slate-800', pctText: 'text-slate-800', border: 'border-slate-400', subBg: 'bg-white', subText: 'text-slate-700', subBorder: 'border-slate-200', animClass: '', subtext: 'ยังไม่ถึงช่วงแผนงาน' };
-            return { ring: '#CBD5E1', badgeBg: 'bg-slate-200', badgeText: 'text-slate-700', pctText: 'text-slate-700', border: 'border-slate-300', subBg: 'bg-white', subText: 'text-slate-600', subBorder: 'border-slate-200', animClass: '', subtext: '-' };
+            if (status === "เป็นไปตามแผน") return { ring: '#10B981', badgeBg: 'bg-emerald-500', badgeText: 'text-slate-900', pctText: 'text-slate-900', border: 'border-emerald-600', subBg: 'bg-white', subText: 'text-emerald-700', subBorder: 'border-emerald-200', animClass: 'anim-success-alt', subtext: 'ร้อยละ ≥ 100', sepBorder: 'border-slate-800/20' };
+            if (status === "ล่าช้า") return { ring: '#FACC15', badgeBg: 'bg-amber-400', badgeText: 'text-slate-900', pctText: 'text-slate-900', border: 'border-amber-500', subBg: 'bg-white', subText: 'text-amber-800', subBorder: 'border-amber-200', animClass: 'anim-warning-alt', subtext: 'ร้อยละ 50 - 99', sepBorder: 'border-slate-800/20' }; 
+            if (status === "เสี่ยง") return { ring: '#EF4444', badgeBg: 'bg-red-500', badgeText: 'text-white', pctText: 'text-white', border: 'border-red-600', subBg: 'bg-white', subText: 'text-red-700', subBorder: 'border-red-200', animClass: 'anim-danger-alt', subtext: 'ต่ำกว่าร้อยละ 50', sepBorder: 'border-white/30' };
+            if (status === "ยังไม่ดำเนินการ" || status === "ไม่มี") return { ring: '#1E293B', badgeBg: 'bg-slate-800', badgeText: 'text-white', pctText: 'text-white', border: 'border-slate-900', subBg: 'bg-white', subText: 'text-slate-800', subBorder: 'border-slate-300', animClass: 'anim-critical-alt', subtext: 'ผลงาน = 0', sepBorder: 'border-white/20' };
+            if (status.includes("มีแผนอยู่ใน")) return { ring: '#94A3B8', badgeBg: 'bg-slate-300', badgeText: 'text-slate-800', pctText: 'text-slate-800', border: 'border-slate-400', subBg: 'bg-white', subText: 'text-slate-700', subBorder: 'border-slate-200', animClass: '', subtext: 'ยังไม่ถึงช่วงแผนงาน', sepBorder: 'border-slate-400/50' };
+            return { ring: '#CBD5E1', badgeBg: 'bg-slate-200', badgeText: 'text-slate-700', pctText: 'text-slate-700', border: 'border-slate-300', subBg: 'bg-white', subText: 'text-slate-600', subBorder: 'border-slate-200', animClass: '', subtext: '-', sepBorder: 'border-slate-300/50' };
         };
 
         const getStatusStyles = (status) => {
@@ -398,6 +399,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // 🚀 ข้ามหน้างบประมาณอัตโนมัติ
         window.navigatePrev = function() { 
             let prevIdx = currentProjectIndex - 1;
             while(prevIdx >= 0 && MASTER_INDEX[prevIdx].name.includes("งบประมาณ")) prevIdx--;
@@ -436,6 +438,7 @@
                     const isGroup = item.url === "AUTO_GROUP";
                     const isSub = item.name.trim().startsWith("-"); 
                     
+                    // 🚀 ซ่อนเมนู "งบประมาณ" ออกจาก Dropdown
                     const isHiddenBudget = item.name.includes("งบประมาณ");
                     if (isHiddenBudget) return; 
 
@@ -496,6 +499,7 @@
                 window.history.pushState({path:newUrl}, '', newUrl);
             }
 
+            // 🚀 ปิดปุ่มเมื่อถึงไฟล์งบประมาณหัว/ท้าย
             let prevIdx = index - 1;
             while(prevIdx >= 0 && MASTER_INDEX[prevIdx].name.includes("งบประมาณ")) prevIdx--;
             let nextIdx = index + 1;
@@ -747,7 +751,7 @@
                 // 🚀 ลบคำว่า "เฉพาะ KPI (...)" ออกจาก Title
                 let kpiTargetTitlePrefix = viewLevel === "ALL" ? "เป้าหมายทั้งหมด (พรบ.)" : (viewLevel === "GROUP" ? "เป้าหมายโครงการ (พรบ.)" : (isActivity ? "เป้าหมายกิจกรรมหลัก (พรบ.)" : "เป้าหมายโครงการ (พรบ.)"));
 
-                // ================== 1. การ์ด KPI (อัปเกรดฟอนต์ + สลับสีแผน/ผล) ==================
+                // ================== 1. การ์ด KPI ==================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
                 const unitKeys = Object.keys(kpiByUnit); 
@@ -763,7 +767,7 @@
                                 <div class="lg:col-span-2 ${theme.cardActBg} rounded-[1.5rem] shadow-md p-6 flex flex-col hover:-translate-y-1.5 transition-all duration-300">
                                     <div class="flex items-center mb-2">
                                         <div class="p-3 bg-white/20 rounded-xl mr-3 text-white"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path></svg></div>
-                                        <p class="text-xl sm:text-2xl lg:text-3xl font-black text-white pt-1 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis flex-1">${kpiTargetTitlePrefix}</p>
+                                        <p class="text-lg sm:text-xl lg:text-2xl font-black text-white py-1.5 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis flex-1 leading-normal">${kpiTargetTitlePrefix}</p>
                                     </div>
                                     <div class="mt-auto relative flex items-baseline justify-center w-full pt-4 min-h-[50px]">
                                         <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black text-white truncate px-16 sm:px-20">${formatAutoDecimal(d.target)}</h2>
@@ -774,7 +778,7 @@
                                 <div class="lg:col-span-2 ${theme.cardPlanBg} rounded-[1.5rem] shadow-md p-6 flex flex-col hover:-translate-y-1.5 transition-all duration-300">
                                     <div class="flex items-center mb-2">
                                         <div class="p-3 bg-white/50 rounded-xl mr-3 ${theme.cardPlanText}"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg></div>
-                                        <p class="text-xl sm:text-2xl lg:text-3xl font-black ${theme.cardPlanText} pt-1 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis flex-1">ผลการดำเนินงาน</p>
+                                        <p class="text-lg sm:text-xl lg:text-2xl font-black ${theme.cardPlanText} py-1.5 tracking-tight whitespace-nowrap overflow-hidden text-ellipsis flex-1 leading-normal">ผลการดำเนินงาน</p>
                                     </div>
                                     <div class="mt-auto relative flex items-baseline justify-center w-full pt-4 min-h-[50px]">
                                         <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black ${theme.cardPlanText} truncate px-16 sm:px-20">${formatAutoDecimal(d.actual)}</h2>
@@ -803,7 +807,7 @@
                     const pct = bObj.target > 0 ? (bObj.actual / bObj.target) * 100 : (bObj.actual > 0 ? 100 : 0);
                     budgetContainer.innerHTML = `
                         <div class="bg-gradient-to-br from-[#FDFBF7] via-[#F3E7D3] to-[#E8D0A5] rounded-[1.5rem] border-t-2 border-l-2 border-white/80 border-b border-r border-[#D4AF37]/30 p-5 sm:p-6 shadow-[0_8px_20px_rgba(212,175,55,0.15)] relative overflow-hidden transition-all duration-300">
-                            <h3 class="text-lg md:text-xl font-extrabold mb-4 flex items-center text-[#8B6508] drop-shadow-sm relative z-10 pt-1">
+                            <h3 class="text-lg md:text-xl font-extrabold mb-4 flex items-center text-[#8B6508] drop-shadow-sm relative z-10 py-1 leading-normal">
                                 <svg class="w-7 h-7 mr-3 text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08-.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 ${budgetTitleStr}
                             </h3>
@@ -829,7 +833,7 @@
                     budgetContainer.classList.remove('hidden');
                 } else budgetContainer.classList.add('hidden');
 
-                // ================== 3. โซนสถานะความก้าวหน้า (SVG Premium Gauge) ==================
+                // ================== 3. โซนสถานะความก้าวหน้า (SVG Premium Gauge + Smart Status Card) ==================
                 const pieChartsContainer = document.getElementById('pie-charts-container');
                 pieChartsContainer.innerHTML = '';
                 const pieAnimations = []; 
@@ -843,6 +847,8 @@
                     let statusObj = determineStatus(d.p1, d.p2, d.p3, d.p4, d.actual, currentQuarter, isLastMonthOfQuarter);
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
                     const statusColor = getDonutStatusColorConfig(statusObj);
+                    
+                    let displayStatusObj = statusObj.includes("มีแผนอยู่ใน") ? statusObj.replace("มีแผนอยู่ใน ", "มีแผนอยู่ใน<br>") : statusObj;
 
                     const pctVal = parseFloat(percentCumCurrent);
                     const arcLength = 251.32; 
@@ -904,7 +910,7 @@
                                         <div class="w-[68%] flex flex-col items-center justify-center pl-2 gap-1.5 relative z-10 overflow-hidden">
                                             <div class="flex items-center justify-center gap-1.5 w-full">
                                                 <span class="text-xl sm:text-2xl drop-shadow-md shrink-0">${getStatusEmoji(statusObj)}</span>
-                                                <span class="text-[17px] sm:text-[20px] lg:text-[22px] font-black ${statusColor.badgeText} pt-1 drop-shadow-md whitespace-nowrap tracking-tight">${statusObj.replace("มีแผนอยู่ใน ", "มีแผนอยู่ใน<br>")}</span>
+                                                <span class="text-[17px] sm:text-[20px] lg:text-[22px] font-black ${statusColor.badgeText} pt-1 drop-shadow-md whitespace-nowrap tracking-tight">${displayStatusObj}</span>
                                             </div>
                                             <div class="w-full px-2 py-1.5 bg-white/95 rounded-xl shadow-inner border border-white/60 flex items-center justify-center">
                                                 <p class="text-[10px] sm:text-xs font-black ${statusColor.subText} pt-0.5 tracking-wide text-center leading-snug">เกณฑ์: ${statusColor.subtext}</p>
@@ -924,6 +930,8 @@
                     const bPctCurrent = getPctVsCurrentPlan(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter).toFixed(2);
                     let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
                     const bStatusColor = getDonutStatusColorConfig(bStatus);
+                    
+                    let displayBStatus = bStatus.includes("มีแผนอยู่ใน") ? bStatus.replace("มีแผนอยู่ใน ", "มีแผนอยู่ใน<br>") : bStatus;
 
                     const bPctVal = parseFloat(bPctCurrent);
                     const arcLength = 251.32; 
@@ -985,7 +993,7 @@
                                         <div class="w-[68%] flex flex-col items-center justify-center pl-2 gap-1.5 relative z-10 overflow-hidden">
                                             <div class="flex items-center justify-center gap-1.5 w-full">
                                                 <span class="text-xl sm:text-2xl drop-shadow-md shrink-0">${getStatusEmoji(bStatus)}</span>
-                                                <span class="text-[17px] sm:text-[20px] lg:text-[22px] font-black ${bStatusColor.badgeText} pt-1 drop-shadow-md whitespace-nowrap tracking-tight">${bStatus.replace("มีแผนอยู่ใน ", "มีแผนอยู่ใน<br>")}</span>
+                                                <span class="text-[17px] sm:text-[20px] lg:text-[22px] font-black ${bStatusColor.badgeText} pt-1 drop-shadow-md whitespace-nowrap tracking-tight">${displayBStatus}</span>
                                             </div>
                                             <div class="w-full px-2 py-1.5 bg-white/95 rounded-xl shadow-inner border border-white/60 flex items-center justify-center">
                                                 <p class="text-[10px] sm:text-xs font-black ${bStatusColor.subText} pt-0.5 tracking-wide text-center leading-snug">เกณฑ์: ${bStatusColor.subtext}</p>
@@ -1014,7 +1022,6 @@
                 let legendHtml = '';
                 unitKeys.forEach((unit, idx) => {
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
-                    // 🚀 สลับสี Legend (แผน=actBg, ผล=planBg)
                     legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 ${theme.actText} font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 ${theme.legendActBg} border ${theme.actBorder} mr-2 rounded-sm shadow-inner"></div> แผนงาน (${unit})</div>`;
                     legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 ${theme.planText} font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 ${theme.legendPlanBg} border ${theme.planBorder} mr-2 rounded-sm shadow-inner"></div> ผลงาน (${unit})</div>`;
                 });
