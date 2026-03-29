@@ -399,7 +399,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // 🚀 อัปเดตฟังก์ชันปุ่มลูกศร ให้กระโดดข้ามหน้า "งบประมาณ" อัตโนมัติ
+        // 🚀 ข้ามหน้างบประมาณ
         window.navigatePrev = function() { 
             let prevIdx = currentProjectIndex - 1;
             while(prevIdx >= 0 && MASTER_INDEX[prevIdx].name.includes("งบประมาณ")) prevIdx--;
@@ -438,9 +438,9 @@
                     const isGroup = item.url === "AUTO_GROUP";
                     const isSub = item.name.trim().startsWith("-"); 
                     
-                    // 🚀 ดักจับและซ่อนเมนู "งบประมาณ"
+                    // 🚀 ซ่อนเมนูงบประมาณ
                     const isHiddenBudget = item.name.includes("งบประมาณ");
-                    if (isHiddenBudget) return; // ข้ามการสร้างเมนู
+                    if (isHiddenBudget) return; 
 
                     const seqStr = String(item.seq).trim();
                     const prefix = (seqStr && seqStr !== "0") ? (seqStr.includes('.') ? `${seqStr} ` : `${seqStr}. `) : '';
@@ -499,7 +499,7 @@
                 window.history.pushState({path:newUrl}, '', newUrl);
             }
 
-            // 🚀 อัปเดตเช็คปิดการทำงานปุ่มลูกศร (ข้ามหน้างบประมาณ)
+            // 🚀 ปิดปุ่มข้ามหน้างบประมาณ
             let prevIdx = index - 1;
             while(prevIdx >= 0 && MASTER_INDEX[prevIdx].name.includes("งบประมาณ")) prevIdx--;
             let nextIdx = index + 1;
@@ -749,7 +749,7 @@
                 let budgetTitleStr = viewLevel === "ALL" ? "งบประมาณทั้งปี (พรบ.)" : (viewLevel === "GROUP" ? "งบประมาณโครงการ (พรบ.)" : (isActivity ? "งบประมาณกิจกรรมหลัก (พรบ.)" : "งบประมาณโครงการ (พรบ.)"));
                 let kpiTargetTitlePrefix = viewLevel === "ALL" ? "เป้าหมายทั้งหมด (พรบ.)" : (viewLevel === "GROUP" ? "เป้าหมายโครงการ (พรบ.)" : (isActivity ? "เป้าหมายกิจกรรมหลัก (พรบ.)" : "เป้าหมายโครงการ (พรบ.)"));
 
-                // ================== 1. การ์ด KPI ==================
+                // ================== 1. การ์ด KPI (อัปเกรดฟอนต์ใหญ่ขึ้นตามบรีฟ) ==================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
                 const unitKeys = Object.keys(kpiByUnit); 
@@ -757,16 +757,31 @@
                     const d = kpiByUnit[unit];
                     const pct = d.target > 0 ? (d.actual / d.target) * 100 : (d.actual > 0 ? 100 : 0);
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
+                    
                     kpiContainer.innerHTML += `
                         <div class="fade-in-up w-full" style="animation-delay: ${idx * 100}ms">
                             <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 w-full ${idx < unitKeys.length - 1 ? 'mb-8' : ''}">
                                 <div class="lg:col-span-2 ${theme.cardPlanBg} rounded-[1.5rem] shadow-md p-6 flex flex-col hover:-translate-y-1.5 transition-all duration-300">
-                                    <div class="flex items-center mb-2"><div class="p-3 bg-white/50 rounded-xl mr-3 ${theme.cardPlanText}"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path></svg></div><p class="text-base sm:text-lg tracking-wide text-left pt-1 leading-relaxed whitespace-nowrap overflow-hidden text-ellipsis"><span class="font-extrabold ${theme.cardPlanText}">${kpiTargetTitlePrefix}</span> <span class="font-medium ${theme.cardPlanText} opacity-80">เฉพาะ KPI (${unit})</span></p></div>
-                                    <div class="mt-auto relative flex items-baseline justify-center w-full pt-4 min-h-[50px]"><h2 class="text-3xl lg:text-4xl xl:text-5xl font-black ${theme.cardPlanText} truncate px-14">${formatAutoDecimal(d.target)}</h2><p class="absolute right-0 bottom-[4px] text-xl lg:text-2xl font-bold ${theme.cardPlanText} opacity-90 pt-1">${unit}</p></div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="p-3 bg-white/50 rounded-xl mr-3 ${theme.cardPlanText}"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path></svg></div>
+                                        <p class="text-lg sm:text-xl lg:text-2xl tracking-wide text-left pt-1 leading-relaxed whitespace-nowrap overflow-hidden text-ellipsis flex-1">
+                                            <span class="font-black ${theme.cardPlanText}">${kpiTargetTitlePrefix}</span> <span class="font-bold ${theme.cardPlanText} opacity-90 text-base sm:text-lg lg:text-xl">เฉพาะ KPI (${unit})</span>
+                                        </p>
+                                    </div>
+                                    <div class="mt-auto relative flex items-baseline justify-center w-full pt-4 min-h-[50px]">
+                                        <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black ${theme.cardPlanText} truncate px-16 sm:px-20">${formatAutoDecimal(d.target)}</h2>
+                                        <p class="absolute right-0 bottom-[2px] text-2xl lg:text-3xl font-black ${theme.cardPlanText} opacity-90 pt-1">${unit}</p>
+                                    </div>
                                 </div>
                                 <div class="lg:col-span-2 ${theme.cardActBg} rounded-[1.5rem] shadow-md p-6 flex flex-col hover:-translate-y-1.5 transition-all duration-300">
-                                    <div class="flex items-center mb-2"><div class="p-3 bg-white/20 rounded-xl mr-3 text-white"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg></div><p class="text-base sm:text-lg font-extrabold text-white pt-1 truncate">ผลการดำเนินงาน</p></div>
-                                    <div class="mt-auto relative flex items-baseline justify-center w-full pt-4 min-h-[50px]"><h2 class="text-3xl lg:text-4xl xl:text-5xl font-black text-white truncate px-14">${formatAutoDecimal(d.actual)}</h2><p class="absolute right-0 bottom-[4px] text-xl lg:text-2xl font-bold text-white/90 pt-1">${unit}</p></div>
+                                    <div class="flex items-center mb-2">
+                                        <div class="p-3 bg-white/20 rounded-xl mr-3 text-white"><svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg></div>
+                                        <p class="text-lg sm:text-xl lg:text-2xl font-black text-white pt-1 truncate flex-1">ผลการดำเนินงาน</p>
+                                    </div>
+                                    <div class="mt-auto relative flex items-baseline justify-center w-full pt-4 min-h-[50px]">
+                                        <h2 class="text-3xl lg:text-4xl xl:text-5xl font-black text-white truncate px-16 sm:px-20">${formatAutoDecimal(d.actual)}</h2>
+                                        <p class="absolute right-0 bottom-[2px] text-2xl lg:text-3xl font-black text-white/90 pt-1">${unit}</p>
+                                    </div>
                                 </div>
                                 <div class="lg:col-span-1 ${theme.cardPctBg} rounded-[1.5rem] shadow-md p-6 flex flex-col items-center justify-center hover:-translate-y-1.5 transition-all duration-300">
                                     <div class="flex items-center justify-center mb-3 w-full">
@@ -914,7 +929,6 @@
                     let bStatus = determineStatus(bObj.planQ1, bObj.planQ2, bObj.planQ3, bObj.planQ4, bObj.actual, currentQuarter, isLastMonthOfQuarter);
                     const bStatusColor = getDonutStatusColorConfig(bStatus);
                     
-                    // 🚀 สมองกลตัดคำสถานะที่ยาวเกินไป
                     let displayBStatus = bStatus.includes("มีแผนอยู่ใน") ? bStatus.replace("มีแผนอยู่ใน ", "มีแผนอยู่ใน<br>") : bStatus;
 
                     const bPctVal = parseFloat(bPctCurrent);
@@ -1001,17 +1015,18 @@
                     });
                 }, 100);
 
-                // ================== 4. โซนกราฟแท่ง (Grouped Bar Chart ของวันศุกร์ 100%) ==================
+                // ================== 4. โซนกราฟแท่ง (สลับสีตามบรีฟ แผน=เข้ม, ผล=อ่อน) ==================
                 const barLegend = document.getElementById('bar-legend-container');
                 let legendHtml = '';
                 unitKeys.forEach((unit, idx) => {
                     const theme = kpiColorThemes[idx % kpiColorThemes.length];
-                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 ${theme.planText} font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 ${theme.legendPlanBg} border ${theme.planBorder} mr-2 rounded-sm shadow-inner"></div> แผนงาน (${unit})</div>`;
-                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 ${theme.actText} font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 ${theme.legendActBg} border ${theme.actBorder} mr-2 rounded-sm shadow-inner"></div> ผลงาน (${unit})</div>`;
+                    // 🚀 สลับสี Legend (แผน=actBg, ผล=planBg)
+                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 ${theme.actText} font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 ${theme.legendActBg} border ${theme.actBorder} mr-2 rounded-sm shadow-inner"></div> แผนงาน (${unit})</div>`;
+                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 ${theme.planText} font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 ${theme.legendPlanBg} border ${theme.planBorder} mr-2 rounded-sm shadow-inner"></div> ผลงาน (${unit})</div>`;
                 });
                 if (budgetRows.length > 0) {
-                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 text-yellow-700 font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 bg-yellow-300 border border-yellow-400 mr-2 rounded-sm shadow-inner"></div> แผนงบประมาณ</div>`;
-                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 text-yellow-700 font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 bg-yellow-500 border border-yellow-600 mr-2 rounded-sm shadow-inner"></div> ผลเบิกจ่าย</div>`;
+                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 text-yellow-700 font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 bg-yellow-500 border border-yellow-600 mr-2 rounded-sm shadow-inner"></div> แผนงบประมาณ</div>`;
+                    legendHtml += `<div class="flex items-center px-3 py-1.5 bg-[#F8FAFC] rounded-full shadow-md border border-slate-200 text-yellow-700 font-bold text-xs sm:text-sm pt-1"><div class="w-3 h-3 bg-yellow-300 border border-yellow-400 mr-2 rounded-sm shadow-inner"></div> ผลเบิกจ่าย</div>`;
                 }
                 barLegend.innerHTML = legendHtml;
 
@@ -1072,7 +1087,7 @@
                                         <span class="text-right font-bold text-[11px] ${theme.darkText} opacity-90 leading-none whitespace-nowrap mt-1">${kpi.unit}</span>
                                     </div>
                                 </div>
-                                <div class="w-full ${theme.planBg} border ${theme.planBorder} rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${ppH}"></div>
+                                <div class="w-full ${theme.actBg} border ${theme.actBorder} rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${ppH}"></div>
                             </div>`;
                             
                         if(q.showActual) {
@@ -1085,7 +1100,7 @@
                                         <span class="text-right font-bold text-[11px] ${theme.darkText} opacity-90 leading-none whitespace-nowrap mt-1">${kpi.unit}</span>
                                     </div>
                                 </div>
-                                <div class="w-full ${theme.actBg} border ${theme.actBorder} rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${paH}"></div>
+                                <div class="w-full ${theme.planBg} border ${theme.planBorder} rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${paH}"></div>
                             </div>`;
                         } else { barsHtml += `<div class="w-8 sm:w-10 lg:w-12 mx-1"></div>`; }
                     });
@@ -1117,7 +1132,7 @@
                                         <span class="text-right font-bold text-[11px] text-yellow-700 opacity-90 leading-none whitespace-nowrap mt-1">บาท</span>
                                     </div>
                                 </div>
-                                <div class="w-full bg-[#FDE047] border border-yellow-500 rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${bpH}"></div>
+                                <div class="w-full bg-[#D97706] border border-amber-700 rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${bpH}"></div>
                             </div>`;
                             
                         if(q.showActual) {
@@ -1130,7 +1145,7 @@
                                         <span class="text-right font-bold text-[11px] text-amber-800 opacity-90 leading-none whitespace-nowrap mt-1">บาท</span>
                                     </div>
                                 </div>
-                                <div class="w-full bg-[#D97706] border border-amber-700 rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${baH}"></div>
+                                <div class="w-full bg-[#FDE047] border border-yellow-500 rounded-t-sm bar-chart-col bar-3d relative overflow-hidden" style="height: 0%" data-h="${baH}"></div>
                             </div>`;
                         } else { barsHtml += `<div class="w-8 sm:w-10 lg:w-12 mx-1"></div>`; }
                     }
@@ -1314,7 +1329,7 @@
                         statusTextColor = "text-slate-500";
                     }
 
-                    // 🚀 ขีดเส้นแบ่งไตรมาสบนแกนความก้าวหน้าหลอดเดี่ยว
+                    // ซ่อนเส้นที่ซ้อนทับกัน
                     let markersHtml = '';
                     let seenPositions = new Set();
                     [ {p: q1Pos, l: 'Q1'}, {p: q2Pos, l: 'Q2'}, {p: q3Pos, l: 'Q3'}, {p: q4Pos, l: 'Q4'} ].forEach(q => {
@@ -1327,7 +1342,7 @@
                         }
                     });
 
-                    // 🚀 รูปแบบตารางหลอดเดี่ยวของวันศุกร์เป๊ะๆ (ไม่มีการปนเปื้อนของหลอดคู่)
+                    // จับป้าย % มารวมกัน
                     const progressHtml = `
                         <div class="w-full relative mt-8 mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
                             <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pctYearly, 100)}">
