@@ -174,9 +174,9 @@
                             <th class="px-6 py-4 min-w-[280px] text-center align-middle pt-2">
                                 <div class="flex flex-col items-center justify-center">
                                     <span class="mb-1">ความก้าวหน้า</span>
-                                    <div class="flex flex-col items-start bg-white/60 px-4 py-2 rounded-xl border border-emerald-300 shadow-md text-xs sm:text-sm font-extrabold text-slate-900 normal-case tracking-normal mt-2 w-full max-w-[240px]">
-                                        <div class="flex items-center mb-1.5"><div class="w-3 h-3 bg-blue-500 rounded-[2px] mr-2.5 shadow-sm flex-shrink-0"></div> <span class="pt-0.5 text-slate-700">แถบเป้าหมาย (ตามแผน)</span></div>
-                                        <div class="flex items-center"><div class="w-3 h-3 bg-emerald-400 rounded-[2px] mr-2.5 shadow-sm flex-shrink-0 border border-slate-300"></div> <span class="pt-0.5 text-slate-700">แถบผลงาน (สีตามสถานะ)</span></div>
+                                    <div class="flex flex-col items-start bg-white/60 px-4 py-2 rounded-xl border border-orange-300 shadow-md text-xs sm:text-sm font-extrabold text-slate-900 normal-case tracking-normal mt-2">
+                                        <div class="flex items-center mb-1.5"><div class="w-3 h-3 bg-slate-800 rounded-[2px] mr-2.5 shadow-sm flex-shrink-0"></div> <span class="pt-0.5">ร้อยละความก้าวหน้าทั้งปี</span></div>
+                                        <div class="flex items-center"><div class="w-3 h-3 bg-[#F8FAFC] border border-slate-300 rounded-[2px] mr-2.5 shadow-sm flex-shrink-0"></div> <span class="pt-0.5">ร้อยละความก้าวหน้า ณ ไตรมาสปัจจุบัน</span></div>
                                     </div>
                                 </div>
                             </th>
@@ -1001,7 +1001,7 @@
                     });
                 }, 100);
 
-                // ================== 4. โซนกราฟแท่ง (Grouped Bar Chart กลับมาเป็นเวอร์ชันวันศุกร์ 100%) ==================
+                // ================== 4. โซนกราฟแท่ง (Grouped Bar Chart ของวันศุกร์ 100%) ==================
                 const barLegend = document.getElementById('bar-legend-container');
                 let legendHtml = '';
                 unitKeys.forEach((unit, idx) => {
@@ -1271,7 +1271,7 @@
                 `;
                 summaryContainer.classList.remove('hidden');
 
-                // ================== 6. โซนตาราง (Single Progress Bar กลับมาเป็นเวอร์ชันวันศุกร์ 100%) ==================
+                // ================== 6. โซนตาราง ==================
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>${tableTitle}`;
                 document.getElementById('table-col-1-header').textContent = col1Title;
 
@@ -1314,7 +1314,7 @@
                         statusTextColor = "text-slate-500";
                     }
 
-                    // ซ่อนเส้นที่ซ้อนทับกัน
+                    // 🚀 ขีดเส้นแบ่งไตรมาสบนแกนความก้าวหน้าหลอดเดี่ยว
                     let markersHtml = '';
                     let seenPositions = new Set();
                     [ {p: q1Pos, l: 'Q1'}, {p: q2Pos, l: 'Q2'}, {p: q3Pos, l: 'Q3'}, {p: q4Pos, l: 'Q4'} ].forEach(q => {
@@ -1327,7 +1327,7 @@
                         }
                     });
 
-                    // จับป้าย % มารวมกัน
+                    // 🚀 รูปแบบตารางหลอดเดี่ยวของวันศุกร์เป๊ะๆ (ไม่มีการปนเปื้อนของหลอดคู่)
                     const progressHtml = `
                         <div class="w-full relative mt-8 mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
                             <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pctYearly, 100)}">
