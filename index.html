@@ -302,7 +302,6 @@
             return parseFloat(String(foundVal).replace(/,/g, '')) || 0;
         };
 
-        // 🚀 กู้คืนฟังก์ชันดึงสถานะจาก CSV เพื่อให้ตารางใช้ข้อมูลจริง
         function getDynamicStatus(row, quarter) {
             for (let i = quarter; i >= 1; i--) {
                 const cleanTarget = `สถานะไตรมาส${i}`;
@@ -316,7 +315,6 @@
             return "ยังไม่ดำเนินการ";
         }
 
-        // 🚀 สูตรคำนวณแบบอิงแผนปัจจุบัน 100%
         function getPctVsCurrentPlan(p1, p2, p3, p4, actual, q) {
             let pCum = 0;
             if (q >= 1) pCum += p1;
@@ -543,11 +541,11 @@
 
             let opDate = selectedItem.opDate;
             if (!opDate && MASTER_INDEX.length > 0) opDate = MASTER_INDEX[0].opDate; 
-            if (!opDate) opDate = "รอระบุข้อมูล";
+            if (!opDate) opDate = "รออัปเดตจากไฟล์สารบัญ";
 
             let bgDate = selectedItem.bgDate;
             if (!bgDate && MASTER_INDEX.length > 0) bgDate = MASTER_INDEX[0].bgDate; 
-            if (!bgDate) bgDate = "รอระบุข้อมูล";
+            if (!bgDate) bgDate = "รออัปเดตจากไฟล์สารบัญ";
 
             document.getElementById('display-op-date').textContent = opDate;
             document.getElementById('display-bg-date').textContent = bgDate;
@@ -618,7 +616,7 @@
 
                         let groupName = viewLevel === "ALL" ? (fileItem.group || "โครงการอื่นๆ") : (viewLevel === "GROUP" ? fileItem.name.replace(/^- /, '') : name);
                         
-                        // 🚀 ปลดล็อกการดึงงบจากไฟล์ย่อย
+                        // 💡 โค้ดเดิมที่ถูกต้อง 100% (ไม่มีการดักคำว่าปีงบประมาณ คุณจะจัดการใน Sheets เอง)
                         let isBudget = name.includes("งบประมาณ");
                         
                         let rawTarget = getSafeNum(rawRow, "เป้าหมาย");
@@ -641,8 +639,8 @@
                             planQ2: p2, actualQ2: getSafeNum(rawRow, "ผลไตรมาส2"),
                             planQ3: p3, actualQ3: getSafeNum(rawRow, "ผลไตรมาส3"),
                             planQ4: p4, actualQ4: getSafeNum(rawRow, "ผลไตรมาส4"),
-                            issue: issueText,
-                            dynamicStat: getDynamicStatus(rawRow, currentQuarter) // 🚀 คืนชีพให้ระบบดึงข้อมูลจาก CSV
+                            issue: issueText, 
+                            dynamicStat: getDynamicStatus(rawRow, currentQuarter)
                         });
                     });
                 });
@@ -655,7 +653,7 @@
                         target: r.target, actual: r.actual,
                         planQ1: r.planQ1, planQ2: r.planQ2, planQ3: r.planQ3, planQ4: r.planQ4,
                         actualQ1: r.actualQ1, actualQ2: r.actualQ2, actualQ3: r.actualQ3, actualQ4: r.actualQ4,
-                        status: r.dynamicStat, // 🚀 ใช้ค่าสถานะจริงจาก CSV ไม่ให้ Error
+                        status: r.dynamicStat,
                         issue: r.issue
                     }));
                 } else {
@@ -703,7 +701,7 @@
                             target: agg.target, actual: agg.actual,
                             planQ1: agg.p1, planQ2: agg.p2, planQ3: agg.p3, planQ4: agg.p4,
                             actualQ1: agg.a1, actualQ2: agg.a2, actualQ3: agg.a3, actualQ4: agg.a4,
-                            status: determineStatus(agg.p1, agg.p2, agg.p3, agg.p4, agg.actual, currentQuarter), // 🚀 ไม่มี isLastMonthOfQuarter
+                            status: determineStatus(agg.p1, agg.p2, agg.p3, agg.p4, agg.actual, currentQuarter),
                             issue: viewLevel === "GROUP" ? agg.issues.join("<br>") : ""
                         });
                     });
@@ -714,13 +712,12 @@
                             target: budgetAgg.target, actual: budgetAgg.actual,
                             planQ1: budgetAgg.p1, planQ2: budgetAgg.p2, planQ3: budgetAgg.p3, planQ4: budgetAgg.p4,
                             actualQ1: budgetAgg.a1, actualQ2: budgetAgg.a2, actualQ3: budgetAgg.a3, actualQ4: budgetAgg.a4,
-                            status: determineStatus(budgetAgg.p1, budgetAgg.p2, budgetAgg.p3, budgetAgg.p4, budgetAgg.actual, currentQuarter), // 🚀 ไม่มี isLastMonthOfQuarter
+                            status: determineStatus(budgetAgg.p1, budgetAgg.p2, budgetAgg.p3, budgetAgg.p4, budgetAgg.actual, currentQuarter),
                             issue: ""
                         });
                     }
                 }
                 
-                // 🚀 คืนชีพให้ตัวเปลี่ยนไตรมาสอัตโนมัติ
                 const qText = document.getElementById('dynamic-quarter-text');
                 if(qText) qText.textContent = `ณ ไตรมาสที่ ${currentQuarter}`;
 
@@ -767,7 +764,7 @@
                 let budgetTitleStr = viewLevel === "ALL" ? "งบประมาณทั้งปี (พรบ.)" : (viewLevel === "GROUP" ? "งบประมาณโครงการ (พรบ.)" : (isActivity ? "งบประมาณกิจกรรมหลัก (พรบ.)" : "งบประมาณโครงการ (พรบ.)"));
                 let kpiTargetTitlePrefix = viewLevel === "ALL" ? "เป้าหมายทั้งหมด (พรบ.)" : (viewLevel === "GROUP" ? "เป้าหมายโครงการ (พรบ.)" : (isActivity ? "เป้าหมายกิจกรรมหลัก (พรบ.)" : "เป้าหมายโครงการ (พรบ.)"));
 
-                // ================== 1. การ์ด KPI (🚀 2 บรรทัด ฟอนต์เท่ากัน) ==================
+                // ================== 1. การ์ด KPI ==================
                 const kpiContainer = document.getElementById('kpi-cards-container');
                 kpiContainer.innerHTML = '';
                 
@@ -832,7 +829,7 @@
                 }
                 kpiContainer.classList.remove('hidden');
 
-                // ================== 2. การ์ดงบประมาณ (🚀 ขยายกรอบ, ลดฟอนต์ตัวเลขกันพันล้านล้นกรอบ, 2 บรรทัด) ==================
+                // ================== 2. การ์ดงบประมาณ ==================
                 const budgetContainer = document.getElementById('budget-cards-container');
                 budgetContainer.innerHTML = '';
                 if (budgetRows.length > 0) {
@@ -1227,9 +1224,9 @@
                 let col1Title = "";
                 if (viewLevel === "ALL") {
                     summaryTitle = "ภาพรวมสถานะโครงการทั้งหมด (อ้างอิงไตรมาสปัจจุบัน)";
-                    firstCardTitle = "โครงการทั้งหมด";
+                    firstCardTitle = "ผลผลิต/โครงการ<br>ทั้งหมด";
                     tableTitle = "ตารางแสดงการติดตามสถานะโครงการ";
-                    col1Title = "โครงการ";
+                    col1Title = "ผลผลิต/โครงการ";
                 } else if (viewLevel === "GROUP") {
                     summaryTitle = "ภาพรวมสถานะกิจกรรมหลักทั้งหมด (อ้างอิงไตรมาสปัจจุบัน)";
                     firstCardTitle = "กิจกรรมทั้งหมด";
@@ -1296,7 +1293,7 @@
                         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                             <div class="bg-blue-600 rounded-[1.5rem] p-4 flex flex-col items-center justify-center text-white shadow-md border border-blue-700 hover:-translate-y-1 transition-transform relative overflow-hidden">
                                 <div class="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-xl pointer-events-none"></div>
-                                <p class="text-base sm:text-lg font-bold opacity-90 mb-1 z-10 pt-1 text-center whitespace-nowrap">${firstCardTitle}</p>
+                                <p class="text-base sm:text-lg font-bold opacity-90 mb-1 z-10 pt-1 text-center leading-tight">${firstCardTitle}</p>
                                 <h2 class="text-5xl font-black z-10 leading-none pt-1 mb-2">${cTotal}</h2>
                             </div>
                             
@@ -1339,7 +1336,7 @@
                 `;
                 summaryContainer.classList.remove('hidden');
 
-                // ================== 6. โซนตาราง (🚀 โค้ดเดิมจาก Text.txt 100% ไม่มีย่อบรรทัด) ==================
+                // ================== 6. โซนตาราง ==================
                 document.getElementById('dynamic-table-title').innerHTML = `<svg class="w-6 h-6 mr-3 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>${tableTitle}`;
                 document.getElementById('table-col-1-header').textContent = col1Title;
 
@@ -1359,7 +1356,6 @@
                     const q3Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3) / safeTarget) * 100, 100);
                     const q4Pos = Math.min(((act.planQ1 + act.planQ2 + act.planQ3 + act.planQ4) / safeTarget) * 100, 100);
 
-                    // สี Progress Bar และป้ายสถานะ
                     let barColor = "bg-slate-400"; 
                     let statusTextColor = "text-slate-600";
                     let displayStatus = act.status;
@@ -1382,7 +1378,6 @@
                         statusTextColor = "text-slate-500";
                     }
 
-                    // ซ่อนเส้นที่ซ้อนทับกัน
                     let markersHtml = '';
                     let seenPositions = new Set();
                     [ {p: q1Pos, l: 'Q1'}, {p: q2Pos, l: 'Q2'}, {p: q3Pos, l: 'Q3'}, {p: q4Pos, l: 'Q4'} ].forEach(q => {
@@ -1395,7 +1390,6 @@
                         }
                     });
 
-                    // จับป้าย % มารวมกัน
                     const progressHtml = `
                         <div class="w-full relative mt-8 mb-6 group-hover/row:scale-[1.02] transition-transform duration-300">
                             <div class="absolute -top-7 -translate-x-1/2 z-20 bar-chart-col-text flex flex-col items-center" style="left: 0%" data-left="${Math.min(pctYearly, 100)}">
